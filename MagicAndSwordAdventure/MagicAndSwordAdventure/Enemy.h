@@ -1,13 +1,14 @@
 #pragma once
 #include <DxLib.h>
 #include <memory>
+class Collision;
 class Enemy
 {
 public:
 	Enemy();
 	virtual ~Enemy();
 
-	void Init();
+	void Init(std::shared_ptr<Collision> pCollsion);
 	void Update();
 	void Draw();
 	VECTOR GetPos() const { return m_pos; }
@@ -21,7 +22,7 @@ public:
 private:
 	VECTOR m_pos;
 	VECTOR m_vec;
-	
+	std::shared_ptr<Collision> m_pCollsion;
 	float m_moveSpeed;
 	bool m_isDir;
 };

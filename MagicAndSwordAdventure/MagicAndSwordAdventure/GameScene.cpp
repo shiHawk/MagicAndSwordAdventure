@@ -44,19 +44,35 @@ void GameScene::Init()
 	// ゲーム画面に表示される
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
 	SetCameraNearFar(10.0f, 1000.0f);
+
+	m_pPlayer = std::make_shared<Player>();
+	m_pEnemy = std::make_shared<Enemy>();
+	m_pCollision = std::make_shared<Collision>();
+
+	m_pPlayer->Init(m_pEnemy);
+	m_pEnemy->Init(m_pCollision);
+	m_pCollision->Init(m_pPlayer, m_pEnemy);
 }
 
 void GameScene::End()
 {
+	m_pPlayer->End();
+	m_pCollision->End();
 }
 
 SceneBase* GameScene::Update()
 {
+	m_pPlayer->Update();
+	m_pEnemy->Update();
+	m_pCollision->Update();
 	return this;
 }
 
 void GameScene::Draw()
 {
+	m_pPlayer->Draw();
+	m_pEnemy->Draw();
+	m_pCollision->Draw();
 	DrawGrid();
 }
 

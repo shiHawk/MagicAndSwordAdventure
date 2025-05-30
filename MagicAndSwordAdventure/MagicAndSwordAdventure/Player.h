@@ -1,5 +1,6 @@
 #pragma once
 #include "DxLib.h"
+#include "Enemy.h"
 #include <memory>
 class Player
 {
@@ -7,7 +8,7 @@ public:
 	Player();
 	~Player();
 
-	void Init();
+	void Init(std::shared_ptr<Enemy> pEnemy);
 	void End();
 	void Update();
 	void Draw();
@@ -25,6 +26,7 @@ private:
 	VECTOR m_vec;
 	int m_damageFrame;
 	int m_hp;
+	std::shared_ptr<Enemy> m_pEnemy;
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
 	// プレイヤーの向いている方向

@@ -27,12 +27,12 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::Init()
+void Enemy::Init(std::shared_ptr<Collision> pCollsion)
 {
 	m_pos = VGet(680, 80, 0);
 	m_posIndex = 0;
 	m_moveSpeed = 5.0f;
-	//m_pCollision = pCollsion;
+	m_pCollsion = pCollsion;
 	m_isDir = false;
 }
 

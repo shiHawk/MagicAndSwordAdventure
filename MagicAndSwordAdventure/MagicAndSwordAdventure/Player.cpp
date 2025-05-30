@@ -21,17 +21,24 @@ namespace
 }
 
 
-Player::Player()
+Player::Player():m_handle(-1),
+m_damageFrame(0),
+m_hp(kMaxHp),
+m_rotMtx(MGetIdent()),
+m_angle(0.0f)
 {
+	m_pos = { 0, 0, 0 };
+	m_vec = VGet(0, 0, 0);
 }
 
 Player::~Player()
 {
 }
 
-void Player::Init()
+void Player::Init(std::shared_ptr<Enemy> pEnemy)
 {
 	m_pos = VGet(0, 40, 0);
+	m_pEnemy = pEnemy;
 }
 
 void Player::End()
@@ -48,7 +55,7 @@ void Player::Draw()
 
 float Player::GetColRadius() const
 {
-	return 0.0f;
+	return kColRadius;
 }
 
 void Player::OnDamage()

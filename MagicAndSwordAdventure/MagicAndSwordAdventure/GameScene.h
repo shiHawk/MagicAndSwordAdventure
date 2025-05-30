@@ -1,7 +1,14 @@
 #pragma once
 #include "SceneBase.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Collision.h"
 #include <memory>
 #include "DxLib.h"
+
+class Player;
+class Enemy;
+class Collision;
 class GameScene :public SceneBase
 {
 public:
@@ -24,5 +31,11 @@ private:
 	// ƒJƒƒ‰ˆÚ“®‰‰o
 	float m_cameraMoveAngle;
 	int m_CountDownFrame;
+
+	std::shared_ptr<Player> m_pPlayer;
+	std::shared_ptr<Enemy> m_pEnemy;
+	std::shared_ptr<Collision> m_pCollision;
+	Player m_player;
+	Enemy m_enemy;
 };
 
