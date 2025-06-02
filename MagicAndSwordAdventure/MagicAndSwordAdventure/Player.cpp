@@ -47,10 +47,31 @@ void Player::End()
 
 void Player::Update()
 {
+	if (Pad::isPress(PAD_INPUT_RIGHT))
+	{
+		m_vec.x = kMoveSpeed;
+	}
+	if (Pad::isPress(PAD_INPUT_LEFT))
+	{
+		m_vec.x = -kMoveSpeed;
+	}
+	if (Pad::isPress(PAD_INPUT_UP))
+	{
+		m_vec.z = kMoveSpeed;
+	}
+	if (Pad::isPress(PAD_INPUT_DOWN))
+	{
+		m_vec.z = -kMoveSpeed;
+	}
+
+	m_vec.x *= kMoveDecRate;
+	m_vec.z *= kMoveDecRate;
+	m_pos = VAdd(m_pos, m_vec);
 }
 
 void Player::Draw()
 {
+	DrawSphere3D(m_pos, kColRadius,8,0xffff00,0xffffff,true);
 }
 
 float Player::GetColRadius() const
