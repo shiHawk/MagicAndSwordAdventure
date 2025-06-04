@@ -5,6 +5,12 @@
 class Player
 {
 public:
+	struct AttackSphere
+	{
+		float x, y, z, radius;
+		bool active;
+		float timer;
+	};
 	Player();
 	~Player();
 
@@ -20,6 +26,7 @@ public:
 	float GetColRadius() const;
 	void OnDamage();
 	int GetHp() const { return m_hp; }
+	void DoAttack();
 private:
 	int m_handle;
 	VECTOR m_pos;
@@ -31,5 +38,7 @@ private:
 	MATRIX m_rotMtx;
 	// ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚é•ûŒü
 	float m_angle;
+	bool m_isJump;
+	bool m_isDir;
 };
 

@@ -6,6 +6,8 @@
 namespace
 {
 	constexpr float kMoveSpeed = 2.5f;
+	constexpr float kJumpPower = 13.0f;
+	constexpr float kGravity = -0.5f;
 	// ˆÚ“®ŒÀŠE
 	constexpr float kXLimit = 900.0f;
 	constexpr float kBackLimit = 100.0f;
@@ -25,7 +27,9 @@ Player::Player():m_handle(-1),
 m_damageFrame(0),
 m_hp(kMaxHp),
 m_rotMtx(MGetIdent()),
-m_angle(0.0f)
+m_angle(0.0f),
+m_isJump(false),
+m_isDir(true)
 {
 	m_pos = { 0, 0, 0 };
 	m_vec = VGet(0, 0, 0);
@@ -47,13 +51,20 @@ void Player::End()
 
 void Player::Update()
 {
+	if (m_isJump)
+	{
+		m_vec.y += kGravity;
+	}
+	
 	if (Pad::isPress(PAD_INPUT_RIGHT))
 	{
 		m_vec.x = kMoveSpeed;
+		m_isDir = true;
 	}
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
 		m_vec.x = -kMoveSpeed;
+		m_isDir = false;
 	}
 	if (Pad::isPress(PAD_INPUT_UP))
 	{
@@ -63,10 +74,21 @@ void Player::Update()
 	{
 		m_vec.z = -kMoveSpeed;
 	}
+	if (Pad::isPress(PAD_INPUT_1) && !m_isJump)
+	{
+		m_vec.y = kJumpPower;
+		m_isJump = true;
+	}
 
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
+
 	m_pos = VAdd(m_pos, m_vec);
+	if (m_pos.y < 40.0f)
+	{
+		m_pos.y = 40.0f;
+		m_isJump = false;
+	}
 }
 
 void Player::Draw()
@@ -81,4 +103,21 @@ float Player::GetColRadius() const
 
 void Player::OnDamage()
 {
+}
+
+void Player::DoAttack()
+{
+	AttackSphere attack = { 0,0,0,30,false,0 };
+	attack.active = true;
+	attack.timer = 10.0f;
+	if (m_isDir)
+	{
+		attack.x = m_pos.x + 30;
+	}
+	else
+	{
+		attack.x = m_pos.x - 30;
+	}
+	attack.y = m_pos.y;
+	attack.z = m_pos.z;
 }

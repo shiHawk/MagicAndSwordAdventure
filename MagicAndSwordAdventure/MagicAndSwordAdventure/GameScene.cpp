@@ -43,7 +43,7 @@ void GameScene::Init()
 	// カメラからnear以上離れていてfarより近くにあるものが
 	// ゲーム画面に表示される
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
-	SetCameraNearFar(10.0f, 1000.0f);
+	SetCameraNearFar(10.0f, 700.0f);
 
 	m_pPlayer = std::make_shared<Player>();
 	m_pEnemy = std::make_shared<Enemy>();
