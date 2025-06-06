@@ -27,6 +27,7 @@ public:
 	void OnDamage();
 	int GetHp() const { return m_hp; }
 	void DoAttack();
+	AttackSphere attack = { 0,0,0,30,false,0 };
 private:
 	int m_handle;
 	VECTOR m_pos;
@@ -39,6 +40,8 @@ private:
 	// ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚é•ûŒü
 	float m_angle;
 	bool m_isJump;
-	bool m_isDir;
+	bool m_isDirRight;
+	bool m_isPrevButton;
+	bool m_isNowButton;
 };
 

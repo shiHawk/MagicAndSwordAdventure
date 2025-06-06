@@ -29,7 +29,9 @@ m_hp(kMaxHp),
 m_rotMtx(MGetIdent()),
 m_angle(0.0f),
 m_isJump(false),
-m_isDir(true)
+m_isDirRight(true),
+m_isPrevButton(false),
+m_isNowButton(false)
 {
 	m_pos = { 0, 0, 0 };
 	m_vec = VGet(0, 0, 0);
@@ -43,6 +45,7 @@ void Player::Init(std::shared_ptr<Enemy> pEnemy)
 {
 	m_pos = VGet(0, 40, 0);
 	m_pEnemy = pEnemy;
+	
 }
 
 void Player::End()
@@ -51,6 +54,7 @@ void Player::End()
 
 void Player::Update()
 {
+	m_isNowButton = Pad::isPress(PAD_INPUT_2);
 	if (m_isJump)
 	{
 		m_vec.y += kGravity;
@@ -59,12 +63,12 @@ void Player::Update()
 	if (Pad::isPress(PAD_INPUT_RIGHT))
 	{
 		m_vec.x = kMoveSpeed;
-		m_isDir = true;
+		m_isDirRight = true;
 	}
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
 		m_vec.x = -kMoveSpeed;
-		m_isDir = false;
+		m_isDirRight = false;
 	}
 	if (Pad::isPress(PAD_INPUT_UP))
 	{
@@ -89,11 +93,30 @@ void Player::Update()
 		m_pos.y = 40.0f;
 		m_isJump = false;
 	}
+
+	if (m_isNowButton && !m_isPrevButton)
+	{
+		DoAttack();
+	}
+	m_isPrevButton = m_isNowButton;
+
+	if (attack.active)
+	{
+		attack.timer--;
+		if (attack.timer <= 0)
+		{
+			attack.active = false;
+		}
+	}
 }
 
 void Player::Draw()
 {
 	DrawSphere3D(m_pos, kColRadius,8,0xffff00,0xffffff,true);
+	if (attack.active)
+	{
+		DrawSphere3D(VGet(attack.x,attack.y,attack.z),attack.radius,8,0xff0000,0xffffff,false);
+	}
 }
 
 float Player::GetColRadius() const
@@ -107,17 +130,16 @@ void Player::OnDamage()
 
 void Player::DoAttack()
 {
-	AttackSphere attack = { 0,0,0,30,false,0 };
 	attack.active = true;
 	attack.timer = 10.0f;
-	if (m_isDir)
+	if (m_isDirRight)
 	{
-		attack.x = m_pos.x + 30;
+		attack.x = m_pos.x + 40;
 	}
 	else
 	{
-		attack.x = m_pos.x - 30;
+		attack.x = m_pos.x - 40;
 	}
 	attack.y = m_pos.y;
-	attack.z = m_pos.z;
+	attack.z = m_pos.z-30;
 }
