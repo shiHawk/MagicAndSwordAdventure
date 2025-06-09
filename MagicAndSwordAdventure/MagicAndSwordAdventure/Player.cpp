@@ -6,6 +6,7 @@
 namespace
 {
 	constexpr float kMoveSpeed = 2.5f;
+	constexpr float kDashSpeed = 5.0f;
 	constexpr float kJumpPower = 13.0f;
 	constexpr float kGravity = -0.5f;
 	// ˆÚ“®ŒÀŠE
@@ -63,22 +64,38 @@ void Player::Update()
 	if (Pad::isPress(PAD_INPUT_RIGHT))
 	{
 		m_vec.x = kMoveSpeed;
+		if (Pad::isPress(PAD_INPUT_3))
+		{
+			m_vec.x = kDashSpeed;
+		}
 		m_isDirRight = true;
 	}
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
 		m_vec.x = -kMoveSpeed;
+		if (Pad::isPress(PAD_INPUT_3))
+		{
+			m_vec.x = -kDashSpeed;
+		}
 		m_isDirRight = false;
 	}
 	if (Pad::isPress(PAD_INPUT_UP))
 	{
 		m_vec.z = kMoveSpeed;
+		if (Pad::isPress(PAD_INPUT_3))
+		{
+			m_vec.z = kDashSpeed;
+		}
 	}
 	if (Pad::isPress(PAD_INPUT_DOWN))
 	{
 		m_vec.z = -kMoveSpeed;
+		if (Pad::isPress(PAD_INPUT_3))
+		{
+			m_vec.z = -kDashSpeed;
+		}
 	}
-	if (Pad::isPress(PAD_INPUT_1) && !m_isJump)
+	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
 	{
 		m_vec.y = kJumpPower;
 		m_isJump = true;
@@ -134,11 +151,11 @@ void Player::DoAttack()
 	attack.timer = 10.0f;
 	if (m_isDirRight)
 	{
-		attack.x = m_pos.x + 40;
+		attack.x = m_pos.x + 50;
 	}
 	else
 	{
-		attack.x = m_pos.x - 40;
+		attack.x = m_pos.x - 50;
 	}
 	attack.y = m_pos.y;
 	attack.z = m_pos.z-30;
