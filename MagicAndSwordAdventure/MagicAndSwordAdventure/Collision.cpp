@@ -1,9 +1,7 @@
 #include "Collision.h"
 
 Collision::Collision():
-	m_isColl(false),
-	m_score(0),
-	m_fontHandle(0)
+	m_isColl(false)
 {
 }
 
@@ -16,12 +14,11 @@ void Collision::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEn
 	m_pPlayer = pPlayer;
 	m_pEnemy = pEnemy;
 	m_isColl = false;
-	m_fontHandle = CreateFontToHandle(NULL, 40, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 }
 
 void Collision::End()
 {
-	DeleteFontToHandle(m_fontHandle);
+	
 }
 
 void Collision::Update()
@@ -33,17 +30,12 @@ void Collision::Update()
 		m_pPlayer->OnDamage();
 		m_isColl = true;
 	}
+	else
+	{
+		m_isColl = false;
+	}
 }
 
 void Collision::Draw()
 {
-}
-
-void Collision::CheckCol()
-{
-	if (!m_isColl)
-	{
-		
-	}
-	m_isColl = false;
 }

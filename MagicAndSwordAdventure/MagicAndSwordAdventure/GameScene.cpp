@@ -24,7 +24,7 @@ void GameScene::Init()
 	// カメラ(始点)の位置
 	m_cameraPos.x = 0.0f;
 	m_cameraPos.y = 200.0f;
-	m_cameraPos.z = -550.0f;
+	m_cameraPos.z = -700.0f;
 
 	// カメラがどこを見ているか(注視点)
 	m_cameraTarget.x = 0.0f;
@@ -43,7 +43,7 @@ void GameScene::Init()
 	// カメラからnear以上離れていてfarより近くにあるものが
 	// ゲーム画面に表示される
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
-	SetCameraNearFar(10.0f, 700.0f);
+	SetCameraNearFar(10.0f, 1000.0f);
 
 	m_pPlayer = std::make_shared<Player>();
 	m_pEnemy = std::make_shared<Enemy>();

@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "DxLib.h"
 #include "Pad.h"
-#include <cmath>
 
 namespace
 {
@@ -10,14 +9,12 @@ namespace
 	constexpr float kJumpPower = 13.0f;
 	constexpr float kGravity = -0.5f;
 	// à⁄ìÆå¿äE
-	constexpr float kXLimit = 900.0f;
 	constexpr float kBackLimit = 100.0f;
 	constexpr float kFrontLimit = -340.0f;
-	constexpr float kLeftLimit = -475.0f;
-	constexpr float kRightLimit = 472.0f;
 
 	// ìñÇΩÇËîªíËÇÃîÕàÕ
 	constexpr float kColRadius = 50.0f;
+	// ç≈ëÂHP
 	constexpr int kMaxHp = 50;
 	// å∏ë¨
 	constexpr float kMoveDecRate = 0.80f;
@@ -32,7 +29,8 @@ m_angle(0.0f),
 m_isJump(false),
 m_isDirRight(true),
 m_isPrevButton(false),
-m_isNowButton(false)
+m_isNowButton(false),
+m_playerHandle(0)
 {
 	m_pos = { 0, 0, 0 };
 	m_vec = VGet(0, 0, 0);
@@ -46,11 +44,12 @@ void Player::Init(std::shared_ptr<Enemy> pEnemy)
 {
 	m_pos = VGet(0, 40, 0);
 	m_pEnemy = pEnemy;
-	
+	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 }
 
 void Player::End()
 {
+	MV1DeleteModel(m_playerHandle);
 }
 
 void Player::Update()
@@ -105,6 +104,7 @@ void Player::Update()
 	m_vec.z *= kMoveDecRate;
 
 	m_pos = VAdd(m_pos, m_vec);
+	MV1SetPosition(m_playerHandle,m_pos);
 	if (m_pos.y < 40.0f)
 	{
 		m_pos.y = 40.0f;
@@ -127,18 +127,21 @@ void Player::Update()
 	}
 }
 
-void Player::Draw()
+void  Player::Draw() const
 {
-	DrawSphere3D(m_pos, kColRadius,8,0xffff00,0xffffff,true);
+	DrawSphere3D(m_pos, kColRadius,8,0x0000ff,0xffffff,true);
+	MV1DrawModel(m_playerHandle);
+#if _DEBUG
 	if (attack.active)
 	{
 		DrawSphere3D(VGet(attack.x,attack.y,attack.z),attack.radius,8,0xff0000,0xffffff,false);
 	}
+#endif
 }
 
 float Player::GetColRadius() const
 {
-	return kColRadius;
+	return kColRadius; 
 }
 
 void Player::OnDamage()

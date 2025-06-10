@@ -17,11 +17,8 @@ public:
 	void Init(std::shared_ptr<Enemy> pEnemy);
 	void End();
 	void Update();
-	void Draw();
+	void Draw() const;
 	VECTOR GetPos() { return m_pos; };
-	float GetPosX() { return m_pos.x; };
-	float GetPosY() { return m_pos.y; };
-	float GetPosZ() { return m_pos.z; };
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const;
 	void OnDamage();
@@ -34,6 +31,7 @@ private:
 	VECTOR m_vec;
 	int m_damageFrame;
 	int m_hp;
+	int m_playerHandle;
 	std::shared_ptr<Enemy> m_pEnemy;
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
