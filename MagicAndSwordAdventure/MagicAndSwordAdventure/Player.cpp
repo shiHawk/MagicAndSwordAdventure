@@ -97,7 +97,8 @@ void Player::Update()
 	m_vec.z *= kMoveDecRate;
 
 	m_pos = VAdd(m_pos, m_vec);
-	MV1SetPosition(m_playerHandle,m_pos);
+	MV1SetScale(m_playerHandle,VGet(50,50,50));
+	//MV1SetPosition(m_playerHandle,m_pos);
 	if (m_pos.y < 40.0f)
 	{
 		m_pos.y = 40.0f;
