@@ -4,10 +4,10 @@
 
 namespace
 {
-	constexpr float kMoveSpeed = 2.5f;
-	constexpr float kDashSpeed = 5.0f;
-	constexpr float kJumpPower = 13.0f;
-	constexpr float kGravity = -0.5f;
+	constexpr float kMoveSpeed = 8.0f;
+	constexpr float kDashSpeed = 12.0f;
+	constexpr float kJumpPower = 10.0f;
+	constexpr float kJumpGravity = -0.4f;
 	// ˆÚ“®ŒÀŠE
 	constexpr float kBackLimit = 100.0f;
 	constexpr float kFrontLimit = -340.0f;
@@ -57,7 +57,7 @@ void Player::Update()
 	m_isNowButton = Pad::isPress(PAD_INPUT_2);
 	if (m_isJump)
 	{
-		m_vec.y += kGravity;
+		m_vec.y += kJumpGravity;
 	}
 	
 	if (Pad::isPress(PAD_INPUT_RIGHT))
@@ -81,19 +81,12 @@ void Player::Update()
 	if (Pad::isPress(PAD_INPUT_UP))
 	{
 		m_vec.z = kMoveSpeed;
-		if (Pad::isPress(PAD_INPUT_3))
-		{
-			m_vec.z = kDashSpeed;
-		}
 	}
 	if (Pad::isPress(PAD_INPUT_DOWN))
 	{
 		m_vec.z = -kMoveSpeed;
-		if (Pad::isPress(PAD_INPUT_3))
-		{
-			m_vec.z = -kDashSpeed;
-		}
 	}
+
 	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
 	{
 		m_vec.y = kJumpPower;
@@ -108,6 +101,7 @@ void Player::Update()
 	if (m_pos.y < 40.0f)
 	{
 		m_pos.y = 40.0f;
+		m_vec.y = 0;
 		m_isJump = false;
 	}
 
@@ -152,12 +146,28 @@ void Player::DoAttack()
 {
 	attack.active = true;
 	attack.timer = 10.0f;
+	attack.count++;
+	if (attack.count > 4)
+	{
+		attack.count = 1;
+	}
+	printfDx(L"attack.count:%d", attack.count);
 	if (m_isDirRight)
 	{
+		m_vec.x = +kMoveSpeed * 0.5f;
+		if (attack.count == 4)
+		{
+			m_vec.x = +kMoveSpeed;
+		}
 		attack.x = m_pos.x + 50;
 	}
 	else
 	{
+		m_vec.x = -kMoveSpeed * 0.5f;
+		if (attack.count == 4)
+		{
+			m_vec.x = -kMoveSpeed;
+		}
 		attack.x = m_pos.x - 50;
 	}
 	attack.y = m_pos.y;

@@ -10,6 +10,7 @@ public:
 		float x, y, z, radius;
 		bool active;
 		float timer;
+		int count;
 	};
 	Player();
 	~Player();
@@ -24,7 +25,7 @@ public:
 	void OnDamage();
 	int GetHp() const { return m_hp; }
 	void DoAttack();
-	AttackSphere attack = { 0,0,0,30,false,0 };
+	AttackSphere attack = { 0,0,0,30,false,0,0 };
 private:
 	int m_handle;
 	VECTOR m_pos;
