@@ -54,6 +54,10 @@ void Player::End()
 
 void Player::Update()
 {
+	if (m_vec.y > 0)
+	{
+		m_isJump = true;
+	}
 	m_isNowButton = Pad::isPress(PAD_INPUT_2);
 	if (m_isJump)
 	{
@@ -125,7 +129,7 @@ void Player::Update()
 void  Player::Draw() const
 {
 	DrawSphere3D(m_pos, kColRadius,8,0x0000ff,0xffffff,true);
-	MV1DrawModel(m_playerHandle);
+	//MV1DrawModel(m_playerHandle);
 #if _DEBUG
 	if (attack.active)
 	{
@@ -173,4 +177,10 @@ void Player::DoAttack()
 	}
 	attack.y = m_pos.y;
 	attack.z = m_pos.z-30;
+}
+
+void Player::DoEvade()
+{
+	m_vec.x = kMoveSpeed;
+	m_vec.y = kJumpPower * 0.5f;
 }

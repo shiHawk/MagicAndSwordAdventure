@@ -25,6 +25,7 @@ public:
 	void OnDamage();
 	int GetHp() const { return m_hp; }
 	void DoAttack();
+	void DoEvade();
 	AttackSphere attack = { 0,0,0,30,false,0,0 };
 private:
 	int m_handle;
