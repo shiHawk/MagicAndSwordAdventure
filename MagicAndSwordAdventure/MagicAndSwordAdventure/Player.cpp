@@ -94,7 +94,11 @@ void Player::Update()
 	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
 	{
 		m_vec.y = kJumpPower;
-		m_isJump = true;
+	}
+
+	if (Pad::isTrigger(PAD_INPUT_6))
+	{
+		DoEvade();
 	}
 
 	m_vec.x *= kMoveDecRate;
@@ -181,6 +185,17 @@ void Player::DoAttack()
 
 void Player::DoEvade()
 {
-	m_vec.x = kMoveSpeed;
-	m_vec.y = kJumpPower * 0.5f;
+	if (!m_isJump)
+	{
+		if (m_isDirRight)
+		{
+			m_vec.x = kMoveSpeed;
+		}
+		else
+		{
+			m_vec.x = -kMoveSpeed;
+		}
+
+		m_vec.y = kJumpPower * 0.5f;
+	}
 }
