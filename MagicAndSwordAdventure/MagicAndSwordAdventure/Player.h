@@ -28,6 +28,19 @@ public:
 	void DoEvade();
 	AttackSphere attack = { 0,0,0,30,false,0,0 };
 private:
+	struct AnimData 
+	{
+		int attachNo;		// アタッチ番号
+		float count;		// カウンタ
+		bool isLoop;	// 終わった時にループするか
+
+		bool isEnd;		// 非ループアニメが終了した
+		// true:ループする false:最後のフレームで停止
+	};
+	AnimData animData = { -1,0.0f,false,false };
+	// アニメーションのアタッチ
+	void AttachAnime(AnimData& data, const char* animName, bool isLoop);
+	void UpdateAnime();
 	int m_handle;
 	VECTOR m_pos;
 	VECTOR m_vec;
@@ -43,5 +56,7 @@ private:
 	bool m_isDirRight;
 	bool m_isPrevButton;
 	bool m_isNowButton;
+	int m_attachIndex;
+	float m_animTotalTime;
 };
 

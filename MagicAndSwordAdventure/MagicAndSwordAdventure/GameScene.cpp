@@ -24,7 +24,7 @@ void GameScene::Init()
 	// カメラ(始点)の位置
 	m_cameraPos.x = 0.0f;
 	m_cameraPos.y = 200.0f;
-	m_cameraPos.z = -700.0f;
+	m_cameraPos.z = -600.0f;
 
 	// カメラがどこを見ているか(注視点)
 	m_cameraTarget.x = 0.0f;

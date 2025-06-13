@@ -18,6 +18,9 @@ namespace
 	constexpr int kMaxHp = 50;
 	// Œ¸‘¬
 	constexpr float kMoveDecRate = 0.80f;
+
+	const char* kIdleAnimName = "CharacterArmature|Idle";
+	const char* kRunAnimName = "CharacterArmature|Run";
 }
 
 
@@ -45,6 +48,9 @@ void Player::Init(std::shared_ptr<Enemy> pEnemy)
 	m_pos = VGet(0, 40, 0);
 	m_pEnemy = pEnemy;
 	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
+	MV1SetRotationXYZ(m_playerHandle,VGet(0.0,270.0f*DX_PI_F / 180.0f,0.0f));
+	m_attachIndex = MV1AttachAnim(m_playerHandle,1,-1);
+	m_animTotalTime = MV1GetAttachAnimTotalTime(m_playerHandle,m_attachIndex);
 }
 
 void Player::End()
@@ -54,6 +60,7 @@ void Player::End()
 
 void Player::Update()
 {
+	UpdateAnime();
 	if (m_vec.y > 0)
 	{
 		m_isJump = true;
@@ -106,7 +113,7 @@ void Player::Update()
 
 	m_pos = VAdd(m_pos, m_vec);
 	MV1SetScale(m_playerHandle,VGet(50,50,50));
-	//MV1SetPosition(m_playerHandle,m_pos);
+	MV1SetPosition(m_playerHandle,m_pos);
 	if (m_pos.y < 40.0f)
 	{
 		m_pos.y = 40.0f;
@@ -132,8 +139,8 @@ void Player::Update()
 
 void  Player::Draw() const
 {
-	DrawSphere3D(m_pos, kColRadius,8,0x0000ff,0xffffff,true);
-	//MV1DrawModel(m_playerHandle);
+	//DrawSphere3D(m_pos, kColRadius,8,0x0000ff,0xffffff,true);
+	MV1DrawModel(m_playerHandle);
 #if _DEBUG
 	if (attack.active)
 	{
@@ -179,8 +186,9 @@ void Player::DoAttack()
 		}
 		attack.x = m_pos.x - 50;
 	}
-	attack.y = m_pos.y;
-	attack.z = m_pos.z-30;
+
+	attack.y = m_pos.y+30;
+	attack.z = m_pos.z;
 }
 
 void Player::DoEvade()
@@ -189,13 +197,28 @@ void Player::DoEvade()
 	{
 		if (m_isDirRight)
 		{
-			m_vec.x = kMoveSpeed;
+			m_vec.x = kMoveSpeed * 1.5f;
 		}
 		else
 		{
-			m_vec.x = -kMoveSpeed;
+			m_vec.x = -kMoveSpeed * 1.5f;
 		}
 
 		m_vec.y = kJumpPower * 0.5f;
 	}
+}
+
+void Player::AttachAnime(AnimData& data, const char* animName, bool isLoop)
+{
+	
+}
+
+void Player::UpdateAnime()
+{
+	animData.count += 100.0f;
+	if (animData.count > m_animTotalTime)
+	{
+		animData.count = 0.0f;
+	}
+	MV1SetAttachAnimTime(m_playerHandle,m_attachIndex,animData.count);
 }
