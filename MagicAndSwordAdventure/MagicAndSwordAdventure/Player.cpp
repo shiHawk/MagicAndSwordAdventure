@@ -4,9 +4,9 @@
 
 namespace
 {
-	constexpr float kMoveSpeed = 8.0f;
-	constexpr float kDashSpeed = 12.0f;
-	constexpr float kJumpPower = 10.0f;
+	constexpr float kMoveSpeed = 5.0f;
+	constexpr float kDashSpeed = 10.0f;
+	constexpr float kJumpPower = 9.0f;
 	constexpr float kJumpGravity = -0.4f;
 	// ˆÚ“®ŒÀŠE
 	constexpr float kBackLimit = 100.0f;
@@ -19,8 +19,12 @@ namespace
 	// Œ¸‘¬
 	constexpr float kMoveDecRate = 0.80f;
 
+	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
+	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
+
 	const char* kIdleAnimName = "CharacterArmature|Idle";
 	const char* kRunAnimName = "CharacterArmature|Run";
+	bool isStartGravity = false;
 }
 
 
@@ -31,9 +35,13 @@ m_rotMtx(MGetIdent()),
 m_angle(0.0f),
 m_isJump(false),
 m_isDirRight(true),
+m_isEvade(false),
 m_isPrevButton(false),
 m_isNowButton(false),
-m_playerHandle(0)
+m_playerHandle(0),
+m_jumpCount(0),
+m_evadeCount(0),
+m_isAttackDirRight(true)
 {
 	m_pos = { 0, 0, 0 };
 	m_vec = VGet(0, 0, 0);
@@ -45,10 +53,10 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Enemy> pEnemy)
 {
-	m_pos = VGet(0, 40, 0);
+	m_pos = VGet(0, 0, 0);
 	m_pEnemy = pEnemy;
 	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
-	MV1SetRotationXYZ(m_playerHandle,VGet(0.0,270.0f*DX_PI_F / 180.0f,0.0f));
+	MV1SetRotationXYZ(m_playerHandle, kRightDir);
 	m_attachIndex = MV1AttachAnim(m_playerHandle,1,-1);
 	m_animTotalTime = MV1GetAttachAnimTotalTime(m_playerHandle,m_attachIndex);
 }
@@ -63,30 +71,40 @@ void Player::Update()
 	UpdateAnime();
 	if (m_vec.y > 0)
 	{
-		m_isJump = true;
+		isStartGravity = true;
 	}
 	m_isNowButton = Pad::isPress(PAD_INPUT_2);
-	if (m_isJump)
+	if (isStartGravity)
 	{
 		m_vec.y += kJumpGravity;
 	}
 	
 	if (Pad::isPress(PAD_INPUT_RIGHT))
 	{
+		if (!m_isEvade)
+		{
+			MV1SetRotationXYZ(m_playerHandle, kRightDir);
+		}
 		m_vec.x = kMoveSpeed;
 		if (Pad::isPress(PAD_INPUT_3))
 		{
 			m_vec.x = kDashSpeed;
 		}
+		m_isAttackDirRight = true;
 		m_isDirRight = true;
 	}
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
+		if (!m_isEvade)
+		{
+			MV1SetRotationXYZ(m_playerHandle, kLeftDir);
+		}
 		m_vec.x = -kMoveSpeed;
 		if (Pad::isPress(PAD_INPUT_3))
 		{
 			m_vec.x = -kDashSpeed;
 		}
+		m_isAttackDirRight = false;
 		m_isDirRight = false;
 	}
 	if (Pad::isPress(PAD_INPUT_UP))
@@ -101,11 +119,20 @@ void Player::Update()
 	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
 	{
 		m_vec.y = kJumpPower;
+		m_jumpCount++;
 	}
 
-	if (Pad::isTrigger(PAD_INPUT_6))
+	if (m_jumpCount > 1)
 	{
-		DoEvade();
+		m_isJump = true;
+	}
+
+	if (Pad::isTrigger(PAD_INPUT_6) )
+	{
+		if (m_evadeCount < 1)
+		{
+			DoEvade();
+		}
 	}
 
 	m_vec.x *= kMoveDecRate;
@@ -114,11 +141,14 @@ void Player::Update()
 	m_pos = VAdd(m_pos, m_vec);
 	MV1SetScale(m_playerHandle,VGet(50,50,50));
 	MV1SetPosition(m_playerHandle,m_pos);
-	if (m_pos.y < 40.0f)
+	if (m_pos.y < 0.0f)
 	{
-		m_pos.y = 40.0f;
+		m_pos.y = 0.0f;
 		m_vec.y = 0;
 		m_isJump = false;
+		m_isEvade = false;
+		m_jumpCount = 0;
+		m_evadeCount = 0;
 	}
 
 	if (m_isNowButton && !m_isPrevButton)
@@ -139,7 +169,6 @@ void Player::Update()
 
 void  Player::Draw() const
 {
-	//DrawSphere3D(m_pos, kColRadius,8,0x0000ff,0xffffff,true);
 	MV1DrawModel(m_playerHandle);
 #if _DEBUG
 	if (attack.active)
@@ -167,8 +196,8 @@ void Player::DoAttack()
 	{
 		attack.count = 1;
 	}
-	printfDx(L"attack.count:%d", attack.count);
-	if (m_isDirRight)
+	//printfDx(L"attack.count:%d", attack.count);
+	if (m_isAttackDirRight)
 	{
 		m_vec.x = +kMoveSpeed * 0.5f;
 		if (attack.count == 4)
@@ -177,7 +206,7 @@ void Player::DoAttack()
 		}
 		attack.x = m_pos.x + 50;
 	}
-	else
+	else 
 	{
 		m_vec.x = -kMoveSpeed * 0.5f;
 		if (attack.count == 4)
@@ -187,25 +216,28 @@ void Player::DoAttack()
 		attack.x = m_pos.x - 50;
 	}
 
-	attack.y = m_pos.y+30;
+	attack.y = m_pos.y+40;
 	attack.z = m_pos.z;
 }
 
 void Player::DoEvade()
 {
-	if (!m_isJump)
+	m_evadeCount++;
+	m_isEvade = true;
+	if (m_isDirRight)
 	{
-		if (m_isDirRight)
-		{
-			m_vec.x = kMoveSpeed * 1.5f;
-		}
-		else
-		{
-			m_vec.x = -kMoveSpeed * 1.5f;
-		}
-
-		m_vec.y = kJumpPower * 0.5f;
+		MV1SetRotationXYZ(m_playerHandle, kLeftDir);
+		m_vec.x = kMoveSpeed * 2.5f;
+		m_isAttackDirRight = false;
 	}
+	else
+	{
+		MV1SetRotationXYZ(m_playerHandle, kRightDir);
+		m_vec.x = -kMoveSpeed * 2.5f;
+		m_isAttackDirRight = true;
+	}
+
+	m_vec.y = kJumpPower * 0.5f;
 }
 
 void Player::AttachAnime(AnimData& data, const char* animName, bool isLoop)

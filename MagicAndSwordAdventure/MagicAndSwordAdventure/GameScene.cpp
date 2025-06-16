@@ -45,6 +45,8 @@ void GameScene::Init()
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
 	SetCameraNearFar(10.0f, 1000.0f);
 
+	CreateDirLightHandle(VGet(-0.577f,-0.577f,0.577));
+
 	m_pPlayer = std::make_shared<Player>();
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pCollision = std::make_shared<Collision>();
@@ -65,6 +67,8 @@ SceneBase* GameScene::Update()
 	m_pPlayer->Update();
 	m_pEnemy->Update();
 	m_pCollision->Update();
+	/*VECTOR lightDir = GetLightDirection();
+	printfDx(L"%f\n", lightDir.z);*/
 	return this;
 }
 

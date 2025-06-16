@@ -41,12 +41,15 @@ private:
 	// アニメーションのアタッチ
 	void AttachAnime(AnimData& data, const char* animName, bool isLoop);
 	void UpdateAnime();
+	bool m_isAttackDirRight;
 	int m_handle;
 	VECTOR m_pos;
 	VECTOR m_vec;
 	int m_damageFrame;
 	int m_hp;
 	int m_playerHandle;
+	int m_jumpCount;
+	int m_evadeCount;
 	std::shared_ptr<Enemy> m_pEnemy;
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
@@ -54,6 +57,7 @@ private:
 	float m_angle;
 	bool m_isJump;
 	bool m_isDirRight;
+	bool m_isEvade;
 	bool m_isPrevButton;
 	bool m_isNowButton;
 	int m_attachIndex;
