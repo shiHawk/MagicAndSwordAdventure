@@ -67,8 +67,6 @@ SceneBase* GameScene::Update()
 	m_pPlayer->Update();
 	m_pEnemy->Update();
 	m_pCollision->Update();
-	/*VECTOR lightDir = GetLightDirection();
-	printfDx(L"%f\n", lightDir.z);*/
 	return this;
 }
 

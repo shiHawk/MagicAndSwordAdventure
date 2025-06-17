@@ -86,7 +86,7 @@ void Player::Update()
 			MV1SetRotationXYZ(m_playerHandle, kRightDir);
 		}
 		m_vec.x = kMoveSpeed;
-		if (Pad::isPress(PAD_INPUT_3))
+		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
 		{
 			m_vec.x = kDashSpeed;
 		}
@@ -100,7 +100,7 @@ void Player::Update()
 			MV1SetRotationXYZ(m_playerHandle, kLeftDir);
 		}
 		m_vec.x = -kMoveSpeed;
-		if (Pad::isPress(PAD_INPUT_3))
+		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
 		{
 			m_vec.x = -kDashSpeed;
 		}
@@ -160,6 +160,7 @@ void Player::Update()
 	if (attack.active)
 	{
 		attack.timer--;
+		attack.comboDuration--;
 		if (attack.timer <= 0)
 		{
 			attack.active = false;
@@ -191,29 +192,33 @@ void Player::DoAttack()
 {
 	attack.active = true;
 	attack.timer = 10.0f;
+	attack.comboDuration = 20.0f;
 	attack.count++;
 	if (attack.count > 4)
 	{
 		attack.count = 1;
 	}
-	//printfDx(L"attack.count:%d", attack.count);
+	printfDx(L"attack.count:%d", attack.count);
 	if (m_isAttackDirRight)
 	{
 		m_vec.x = +kMoveSpeed * 0.5f;
+		attack.x = m_pos.x + 50;
 		if (attack.count == 4)
 		{
 			m_vec.x = +kMoveSpeed;
+			attack.x = m_pos.x + 60;
 		}
-		attack.x = m_pos.x + 50;
 	}
 	else 
 	{
 		m_vec.x = -kMoveSpeed * 0.5f;
+		attack.x = m_pos.x - 50;
 		if (attack.count == 4)
 		{
 			m_vec.x = -kMoveSpeed;
+			attack.x = m_pos.x - 60;
 		}
-		attack.x = m_pos.x - 50;
+		
 	}
 
 	attack.y = m_pos.y+40;

@@ -11,6 +11,7 @@ public:
 		bool active;
 		float timer;
 		int count;
+		int comboDuration;
 	};
 	Player();
 	~Player();
@@ -26,7 +27,7 @@ public:
 	int GetHp() const { return m_hp; }
 	void DoAttack();
 	void DoEvade();
-	AttackSphere attack = { 0,0,0,30,false,0,0 };
+	AttackSphere attack = { 0,0,0,30,false,0,0,30 };
 private:
 	struct AnimData 
 	{
