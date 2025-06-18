@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "DxLib.h"
 #include <cmath>
+#include "game.h"
 GameScene::GameScene() :
 	m_cameraMoveAngle(0.0f),
 	m_viewAngle(DX_PI_F / 3.0f),
@@ -67,6 +68,18 @@ SceneBase* GameScene::Update()
 	m_pPlayer->Update();
 	m_pEnemy->Update();
 	m_pCollision->Update();
+	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
+	{
+		
+		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
+		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
+	}
+	/*else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.5f)
+	{
+		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
+		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
+	}*/
+	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	return this;
 }
 

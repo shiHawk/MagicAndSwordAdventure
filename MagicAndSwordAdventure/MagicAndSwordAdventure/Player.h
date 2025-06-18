@@ -21,6 +21,7 @@ public:
 	void Update();
 	void Draw() const;
 	VECTOR GetPos() { return m_pos; };
+	VECTOR GetScreenPos();
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const;
 	void OnDamage();
@@ -46,6 +47,7 @@ private:
 	int m_handle;
 	VECTOR m_pos;
 	VECTOR m_vec;
+	VECTOR m_screenPos;
 	int m_damageFrame;
 	int m_hp;
 	int m_playerHandle;

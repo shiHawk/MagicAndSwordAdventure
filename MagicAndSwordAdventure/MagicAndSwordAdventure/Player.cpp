@@ -53,7 +53,7 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Enemy> pEnemy)
 {
-	m_pos = VGet(0, 0, 0);
+	m_pos = VGet(-580, 0, 0);
 	m_pEnemy = pEnemy;
 	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetRotationXYZ(m_playerHandle, kRightDir);
@@ -166,6 +166,7 @@ void Player::Update()
 			attack.active = false;
 		}
 	}
+	printfDx(L"%f\n", m_screenPos.x);
 }
 
 void  Player::Draw() const
@@ -177,6 +178,12 @@ void  Player::Draw() const
 		DrawSphere3D(VGet(attack.x,attack.y,attack.z),attack.radius,8,0xff0000,0xffffff,false);
 	}
 #endif
+}
+
+VECTOR Player::GetScreenPos()
+{
+	m_screenPos = ConvWorldPosToScreenPos(m_pos);
+	return m_screenPos;
 }
 
 float Player::GetColRadius() const
