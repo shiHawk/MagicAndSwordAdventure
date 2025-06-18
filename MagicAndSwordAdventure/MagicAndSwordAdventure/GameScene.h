@@ -31,6 +31,7 @@ private:
 	// ƒJƒƒ‰ˆÚ“®‰‰o
 	float m_cameraMoveAngle;
 	int m_CountDownFrame;
+	float m_t;
 
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;

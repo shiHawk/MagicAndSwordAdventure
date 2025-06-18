@@ -166,7 +166,7 @@ void Player::Update()
 			attack.active = false;
 		}
 	}
-	printfDx(L"%f\n", m_screenPos.x);
+	//printfDx(L"%f\n", m_screenPos.x);
 }
 
 void  Player::Draw() const
@@ -205,7 +205,7 @@ void Player::DoAttack()
 	{
 		attack.count = 1;
 	}
-	printfDx(L"attack.count:%d", attack.count);
+	//printfDx(L"attack.count:%d", attack.count);
 	if (m_isAttackDirRight)
 	{
 		m_vec.x = +kMoveSpeed * 0.5f;
@@ -239,17 +239,17 @@ void Player::DoEvade()
 	if (m_isDirRight)
 	{
 		MV1SetRotationXYZ(m_playerHandle, kLeftDir);
-		m_vec.x = kMoveSpeed * 2.5f;
+		m_vec.x = kMoveSpeed * 3.0f;
 		m_isAttackDirRight = false;
 	}
 	else
 	{
 		MV1SetRotationXYZ(m_playerHandle, kRightDir);
-		m_vec.x = -kMoveSpeed * 2.5f;
+		m_vec.x = -kMoveSpeed * 3.0f;
 		m_isAttackDirRight = true;
 	}
 
-	m_vec.y = kJumpPower * 0.5f;
+	m_vec.y = kJumpPower * 0.50f;
 }
 
 void Player::AttachAnime(AnimData& data, const char* animName, bool isLoop)

@@ -7,7 +7,8 @@ GameScene::GameScene() :
 	m_viewAngle(DX_PI_F / 3.0f),
 	m_cameraPos(VGet(0, 0, 0)),
 	m_cameraTarget(VGet(0, 0, 0)),
-	m_CountDownFrame(220)
+	m_CountDownFrame(220),
+	m_t(0.1f)
 {
 }
 
@@ -70,15 +71,14 @@ SceneBase* GameScene::Update()
 	m_pCollision->Update();
 	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
 	{
-		
 		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
 		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
 	}
-	/*else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.5f)
+	else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.4f)
 	{
-		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
-		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
-	}*/
+		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
+		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
+	}
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	return this;
 }
