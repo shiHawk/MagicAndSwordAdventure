@@ -26,6 +26,8 @@ private:
 	VECTOR m_cameraPos;
 	// カメラの注視点(見ている場所)
 	VECTOR m_cameraTarget;
+	// カメラの目標移動位置
+	VECTOR m_cameraMoveTargetPos;
 	// カメラの視野角
 	float m_viewAngle;
 	// カメラ移動演出
@@ -36,7 +38,5 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;
-	Player m_player;
-	Enemy m_enemy;
 };
 

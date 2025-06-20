@@ -53,7 +53,7 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Enemy> pEnemy)
 {
-	m_pos = VGet(-580, 0, 0);
+	m_pos = VGet(0, 0, 0);
 	m_pEnemy = pEnemy;
 	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetRotationXYZ(m_playerHandle, kRightDir);
@@ -73,6 +73,7 @@ void Player::Update()
 	{
 		isStartGravity = true;
 	}
+	// Bボタンを押したとき
 	m_isNowButton = Pad::isPress(PAD_INPUT_2);
 	if (isStartGravity)
 	{
@@ -86,6 +87,7 @@ void Player::Update()
 			MV1SetRotationXYZ(m_playerHandle, kRightDir);
 		}
 		m_vec.x = kMoveSpeed;
+		// ダッシュボタンを押した場合
 		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
 		{
 			m_vec.x = kDashSpeed;
@@ -100,6 +102,7 @@ void Player::Update()
 			MV1SetRotationXYZ(m_playerHandle, kLeftDir);
 		}
 		m_vec.x = -kMoveSpeed;
+		// ダッシュボタンを押した場合
 		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
 		{
 			m_vec.x = -kDashSpeed;
@@ -115,18 +118,19 @@ void Player::Update()
 	{
 		m_vec.z = -kMoveSpeed;
 	}
-
+	// Aボタンを押したときジャンプ
 	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
 	{
 		m_vec.y = kJumpPower;
 		m_jumpCount++;
 	}
-
+	// ジャンプは2回まで
 	if (m_jumpCount > 1)
 	{
 		m_isJump = true;
 	}
 
+	//RBボタンを押したとき
 	if (Pad::isTrigger(PAD_INPUT_6) )
 	{
 		if (m_evadeCount < 1)
@@ -151,6 +155,7 @@ void Player::Update()
 		m_evadeCount = 0;
 	}
 
+	// Bボタンが押されっぱなしでない
 	if (m_isNowButton && !m_isPrevButton)
 	{
 		DoAttack();
@@ -166,7 +171,7 @@ void Player::Update()
 			attack.active = false;
 		}
 	}
-	//printfDx(L"%f\n", m_screenPos.x);
+	printfDx(L"%f\n", m_screenPos.x);
 }
 
 void  Player::Draw() const

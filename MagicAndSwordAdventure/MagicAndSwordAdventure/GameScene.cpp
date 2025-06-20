@@ -2,6 +2,10 @@
 #include "DxLib.h"
 #include <cmath>
 #include "game.h"
+namespace
+{
+	constexpr float kLerpSpeed = 0.1f;
+}
 GameScene::GameScene() :
 	m_cameraMoveAngle(0.0f),
 	m_viewAngle(DX_PI_F / 3.0f),
@@ -71,14 +75,16 @@ SceneBase* GameScene::Update()
 	m_pCollision->Update();
 	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
 	{
-		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
-		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
+		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
+		//m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
 	}
-	else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.4f)
+	else if (m_pPlayer->GetScreenPos().x < 500.0f)
 	{
-		m_cameraPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
-		m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
+		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - 500.0f;
+		//m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
 	}
+	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	return this;
 }

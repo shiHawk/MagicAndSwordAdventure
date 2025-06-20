@@ -27,6 +27,7 @@ public:
 	void OnDamage();
 	int GetHp() const { return m_hp; }
 	void DoAttack();
+	// 回避
 	void DoEvade();
 	AttackSphere attack = { 0,0,0,30,false,0,0,30 };
 private:
@@ -43,6 +44,7 @@ private:
 	// アニメーションのアタッチ
 	void AttachAnime(AnimData& data, const char* animName, bool isLoop);
 	void UpdateAnime();
+	// 攻撃が出る方向
 	bool m_isAttackDirRight;
 	int m_handle;
 	VECTOR m_pos;
@@ -51,7 +53,9 @@ private:
 	int m_damageFrame;
 	int m_hp;
 	int m_playerHandle;
+	// ジャンプ回数
 	int m_jumpCount;
+	// 回避回数
 	int m_evadeCount;
 	std::shared_ptr<Enemy> m_pEnemy;
 	// プレイヤーの回転行列
@@ -60,6 +64,7 @@ private:
 	float m_angle;
 	bool m_isJump;
 	bool m_isDirRight;
+	// 回避状態
 	bool m_isEvade;
 	bool m_isPrevButton;
 	bool m_isNowButton;
