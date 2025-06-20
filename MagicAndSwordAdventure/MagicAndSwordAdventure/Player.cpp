@@ -41,7 +41,8 @@ m_isNowButton(false),
 m_playerHandle(0),
 m_jumpCount(0),
 m_evadeCount(0),
-m_isAttackDirRight(true)
+m_isAttackDirRight(true),
+m_playTime(0.0f)
 {
 	m_pos = { 0, 0, 0 };
 	m_vec = VGet(0, 0, 0);
@@ -57,8 +58,7 @@ void Player::Init(std::shared_ptr<Enemy> pEnemy)
 	m_pEnemy = pEnemy;
 	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetRotationXYZ(m_playerHandle, kRightDir);
-	m_attachIndex = MV1AttachAnim(m_playerHandle,1,-1);
-	m_animTotalTime = MV1GetAttachAnimTotalTime(m_playerHandle,m_attachIndex);
+	AttachAnime(m_playerHandle,1);
 }
 
 void Player::End()
@@ -69,6 +69,10 @@ void Player::End()
 void Player::Update()
 {
 	UpdateAnime();
+	if (m_playTime >= m_animTotalTime)
+	{
+		m_playTime = 0.0f;
+	}
 	if (m_vec.y > 0)
 	{
 		isStartGravity = true;
@@ -257,17 +261,20 @@ void Player::DoEvade()
 	m_vec.y = kJumpPower * 0.50f;
 }
 
-void Player::AttachAnime(AnimData& data, const char* animName, bool isLoop)
+void Player::AttachAnime(int modelHandle, int animNo)
 {
-	
+	m_attachIndex = MV1AttachAnim(modelHandle, animNo, -1);
+	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_attachIndex);
 }
 
 void Player::UpdateAnime()
 {
-	animData.count += 100.0f;
+	m_playTime += 0.5f;
+	MV1SetAttachAnimTime(m_playerHandle, m_attachIndex, m_playTime);
+	/*animData.count += 100.0f;
 	if (animData.count > m_animTotalTime)
 	{
 		animData.count = 0.0f;
 	}
-	MV1SetAttachAnimTime(m_playerHandle,m_attachIndex,animData.count);
+	MV1SetAttachAnimTime(m_playerHandle,m_attachIndex,animData.count);*/
 }

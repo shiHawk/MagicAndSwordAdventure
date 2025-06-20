@@ -42,7 +42,7 @@ private:
 	};
 	AnimData animData = { -1,0.0f,false,false };
 	// アニメーションのアタッチ
-	void AttachAnime(AnimData& data, const char* animName, bool isLoop);
+	void AttachAnime(int modelHandle,int animNo);
 	void UpdateAnime();
 	// 攻撃が出る方向
 	bool m_isAttackDirRight;
@@ -66,9 +66,15 @@ private:
 	bool m_isDirRight;
 	// 回避状態
 	bool m_isEvade;
+
+	// 直前に押されているか
 	bool m_isPrevButton;
+	// 現在押されているか
 	bool m_isNowButton;
 	int m_attachIndex;
+	// 総再生時間
 	float m_animTotalTime;
+	// 再生時間
+	float m_playTime;
 };
 

@@ -102,8 +102,8 @@ void GameScene::DrawGrid() const
 	// VECTOR構造体
 	// 3D座標を表示するのに必要なx,y,zの3つをメンバーとして持つ構造体
 
-	VECTOR start = VGet(-900.0f,0.0f,0.0f); // 始点
-	VECTOR end = VGet(900.0f, 0.0f, 0.0f);   // 終点
+	VECTOR start = VGet(-2700.0f,0.0f,0.0f); // 始点
+	VECTOR end = VGet(2700.0f, 0.0f, 0.0f);   // 終点
 
 	// 横方向のグリッドをfor文を使って描画する
 	// 始点終点のXY座標は変わらない
