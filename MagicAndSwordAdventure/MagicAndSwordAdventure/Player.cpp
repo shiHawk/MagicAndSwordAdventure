@@ -35,12 +35,10 @@ m_rotMtx(MGetIdent()),
 m_angle(0.0f),
 m_isJump(false),
 m_isDirRight(true),
-m_isEvade(false),
 m_isPrevButton(false),
 m_isNowButton(false),
 m_playerHandle(0),
 m_jumpCount(0),
-m_evadeCount(0),
 m_isAttackDirRight(true),
 m_playTime(0.0f)
 {
@@ -52,13 +50,14 @@ Player::~Player()
 {
 }
 
-void Player::Init(std::shared_ptr<Enemy> pEnemy)
+void Player::Init(std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Animation> pAnimation)
 {
 	m_pos = VGet(0, 0, 0);
 	m_pEnemy = pEnemy;
+	m_pAnimation = pAnimation;
 	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetRotationXYZ(m_playerHandle, kRightDir);
-	AttachAnime(m_playerHandle,1);
+	m_pAnimation->AttachAnim(m_playerHandle, 1);
 }
 
 void Player::End()
@@ -68,7 +67,6 @@ void Player::End()
 
 void Player::Update()
 {
-	UpdateAnime();
 	if (m_playTime >= m_animTotalTime)
 	{
 		m_playTime = 0.0f;
@@ -84,12 +82,13 @@ void Player::Update()
 		m_vec.y += kJumpGravity;
 	}
 	
-	if (Pad::isPress(PAD_INPUT_RIGHT))
+	if (Pad::isPress(PAD_INPUT_RIGHT) && !evadeData.active)
 	{
-		if (!m_isEvade)
+		if (!evadeData.active)
 		{
 			MV1SetRotationXYZ(m_playerHandle, kRightDir);
 		}
+		
 		m_vec.x = kMoveSpeed;
 		// ダッシュボタンを押した場合
 		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
@@ -99,9 +98,9 @@ void Player::Update()
 		m_isAttackDirRight = true;
 		m_isDirRight = true;
 	}
-	if (Pad::isPress(PAD_INPUT_LEFT))
+	if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
 	{
-		if (!m_isEvade)
+		if (!evadeData.active)
 		{
 			MV1SetRotationXYZ(m_playerHandle, kLeftDir);
 		}
@@ -137,9 +136,19 @@ void Player::Update()
 	//RBボタンを押したとき
 	if (Pad::isTrigger(PAD_INPUT_6) )
 	{
-		if (m_evadeCount < 1)
+		if (evadeData.evadeCount < 1)
 		{
 			DoEvade();
+		}
+	}
+	if (evadeData.active)
+	{
+		evadeData.timer--;
+		if (evadeData.timer <= 0)
+		{
+			m_pAnimation->ChangeAnim(m_playerHandle, 1, true);
+			evadeData.active = false;
+			evadeData.evadeCount = 0;
 		}
 	}
 
@@ -154,9 +163,7 @@ void Player::Update()
 		m_pos.y = 0.0f;
 		m_vec.y = 0;
 		m_isJump = false;
-		m_isEvade = false;
 		m_jumpCount = 0;
-		m_evadeCount = 0;
 	}
 
 	// Bボタンが押されっぱなしでない
@@ -172,10 +179,12 @@ void Player::Update()
 		attack.comboDuration--;
 		if (attack.timer <= 0)
 		{
+			m_pAnimation->ChangeAnim(m_playerHandle,1,true);
 			attack.active = false;
 		}
 	}
-	printfDx(L"%f\n", m_screenPos.x);
+	//printfDx(L"%f\n", m_screenPos.x);
+	m_pAnimation->Update();
 }
 
 void  Player::Draw() const
@@ -191,6 +200,7 @@ void  Player::Draw() const
 
 VECTOR Player::GetScreenPos()
 {
+	// スクリーン座標に変換
 	m_screenPos = ConvWorldPosToScreenPos(m_pos);
 	return m_screenPos;
 }
@@ -207,18 +217,19 @@ void Player::OnDamage()
 void Player::DoAttack()
 {
 	attack.active = true;
-	attack.timer = 10.0f;
+	m_pAnimation->ChangeAnim(m_playerHandle, 31,false);
+	attack.timer = 50.0f;
 	attack.comboDuration = 20.0f;
 	attack.count++;
-	if (attack.count > 4)
+	if (attack.count > 3)
 	{
-		attack.count = 1;
+		attack.count = 0;
 	}
-	//printfDx(L"attack.count:%d", attack.count);
+	printfDx(L"attack.count:%d\n", attack.count);
 	if (m_isAttackDirRight)
 	{
 		m_vec.x = +kMoveSpeed * 0.5f;
-		attack.x = m_pos.x + 50;
+		attack.x = m_pos.x + 60;
 		if (attack.count == 4)
 		{
 			m_vec.x = +kMoveSpeed;
@@ -228,13 +239,12 @@ void Player::DoAttack()
 	else 
 	{
 		m_vec.x = -kMoveSpeed * 0.5f;
-		attack.x = m_pos.x - 50;
+		attack.x = m_pos.x - 60;
 		if (attack.count == 4)
 		{
 			m_vec.x = -kMoveSpeed;
 			attack.x = m_pos.x - 60;
 		}
-		
 	}
 
 	attack.y = m_pos.y+40;
@@ -243,8 +253,15 @@ void Player::DoAttack()
 
 void Player::DoEvade()
 {
-	m_evadeCount++;
-	m_isEvade = true;
+	evadeData.active = true;
+	m_pAnimation->ChangeAnim(m_playerHandle, 16, false);
+	evadeData.evadeCount++;
+	evadeData.timer = 30.0f;
+	if (evadeData.evadeCount > 1)
+	{
+		return;
+	}
+
 	if (m_isDirRight)
 	{
 		MV1SetRotationXYZ(m_playerHandle, kLeftDir);
@@ -259,22 +276,4 @@ void Player::DoEvade()
 	}
 
 	m_vec.y = kJumpPower * 0.50f;
-}
-
-void Player::AttachAnime(int modelHandle, int animNo)
-{
-	m_attachIndex = MV1AttachAnim(modelHandle, animNo, -1);
-	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_attachIndex);
-}
-
-void Player::UpdateAnime()
-{
-	m_playTime += 0.5f;
-	MV1SetAttachAnimTime(m_playerHandle, m_attachIndex, m_playTime);
-	/*animData.count += 100.0f;
-	if (animData.count > m_animTotalTime)
-	{
-		animData.count = 0.0f;
-	}
-	MV1SetAttachAnimTime(m_playerHandle,m_attachIndex,animData.count);*/
 }

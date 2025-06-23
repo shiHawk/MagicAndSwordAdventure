@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Collision.h"
+#include "Animation.h"
 #include <memory>
 #include "DxLib.h"
 
@@ -38,5 +39,6 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;
+	std::shared_ptr<Animation> m_pAnimation;
 };
 

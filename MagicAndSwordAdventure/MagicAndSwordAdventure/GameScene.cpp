@@ -56,10 +56,12 @@ void GameScene::Init()
 	m_pPlayer = std::make_shared<Player>();
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pCollision = std::make_shared<Collision>();
+	m_pAnimation = std::make_shared<Animation>();
 
-	m_pPlayer->Init(m_pEnemy);
+	m_pPlayer->Init(m_pEnemy,m_pAnimation);
 	m_pEnemy->Init(m_pCollision);
 	m_pCollision->Init(m_pPlayer, m_pEnemy);
+	m_pAnimation->Init();
 }
 
 void GameScene::End()

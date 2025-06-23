@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "Enemy.h"
+#include "Animation.h"
 #include <memory>
 class Player
 {
@@ -16,7 +17,7 @@ public:
 	Player();
 	~Player();
 
-	void Init(std::shared_ptr<Enemy> pEnemy);
+	void Init(std::shared_ptr<Enemy> pEnemy ,std::shared_ptr<Animation> pAnimation);
 	void End();
 	void Update();
 	void Draw() const;
@@ -40,10 +41,14 @@ private:
 		bool isEnd;		// 非ループアニメが終了した
 		// true:ループする false:最後のフレームで停止
 	};
+	struct EvadeData
+	{
+		int evadeCount; // 回避回数
+		bool active; // 回避状態
+		float timer; // 無敵時間
+	};
 	AnimData animData = { -1,0.0f,false,false };
-	// アニメーションのアタッチ
-	void AttachAnime(int modelHandle,int animNo);
-	void UpdateAnime();
+	EvadeData evadeData = { 0,false,0.0f };
 	// 攻撃が出る方向
 	bool m_isAttackDirRight;
 	int m_handle;
@@ -55,17 +60,14 @@ private:
 	int m_playerHandle;
 	// ジャンプ回数
 	int m_jumpCount;
-	// 回避回数
-	int m_evadeCount;
 	std::shared_ptr<Enemy> m_pEnemy;
+	std::shared_ptr<Animation> m_pAnimation;
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
 	// プレイヤーの向いている方向
 	float m_angle;
 	bool m_isJump;
 	bool m_isDirRight;
-	// 回避状態
-	bool m_isEvade;
 
 	// 直前に押されているか
 	bool m_isPrevButton;
