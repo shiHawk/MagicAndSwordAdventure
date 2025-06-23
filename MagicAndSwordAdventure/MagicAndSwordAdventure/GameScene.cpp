@@ -4,7 +4,7 @@
 #include "game.h"
 namespace
 {
-	constexpr float kLerpSpeed = 0.1f;
+	constexpr float kLerpSpeed = 0.2f;
 }
 GameScene::GameScene() :
 	m_cameraMoveAngle(0.0f),

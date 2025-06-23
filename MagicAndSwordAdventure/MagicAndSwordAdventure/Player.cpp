@@ -136,6 +136,7 @@ void Player::Update()
 	//RBƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½‚Æ‚«
 	if (Pad::isTrigger(PAD_INPUT_6) )
 	{
+		// ‰ñ”ð‚Í1‰ñ
 		if (evadeData.evadeCount < 1)
 		{
 			DoEvade();
@@ -144,9 +145,10 @@ void Player::Update()
 	if (evadeData.active)
 	{
 		evadeData.timer--;
+		// ‰ñ”ðŽžŠÔ‚ªI‚í‚Á‚½‚ç
 		if (evadeData.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_playerHandle, 1, true);
+			m_pAnimation->ChangeAnim(m_playerHandle, 1, true,0.5f);
 			evadeData.active = false;
 			evadeData.evadeCount = 0;
 		}
@@ -179,7 +181,7 @@ void Player::Update()
 		attack.comboDuration--;
 		if (attack.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_playerHandle,1,true);
+			m_pAnimation->ChangeAnim(m_playerHandle,1,true,0.5f);
 			attack.active = false;
 		}
 	}
@@ -217,33 +219,50 @@ void Player::OnDamage()
 void Player::DoAttack()
 {
 	attack.active = true;
-	m_pAnimation->ChangeAnim(m_playerHandle, 31,false);
+	if (m_vec.y > 0)
+	{
+		m_pAnimation->ChangeAnim(m_playerHandle, 39, false,0.7f);
+	}
+	else
+	{
+		m_pAnimation->ChangeAnim(m_playerHandle, 31, false,0.5f);
+	}
 	attack.timer = 50.0f;
 	attack.comboDuration = 20.0f;
 	attack.count++;
 	if (attack.count > 3)
 	{
-		attack.count = 0;
+		attack.count = 1;
 	}
 	printfDx(L"attack.count:%d\n", attack.count);
 	if (m_isAttackDirRight)
 	{
 		m_vec.x = +kMoveSpeed * 0.5f;
 		attack.x = m_pos.x + 60;
-		if (attack.count == 4)
+		if (attack.count == 2 && !m_vec.y > 0)
+		{
+			m_pAnimation->ChangeAnim(m_playerHandle, 40, false, 0.7f);
+		}
+		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = +kMoveSpeed;
-			attack.x = m_pos.x + 60;
+			attack.x = m_pos.x + 80;
+			m_pAnimation->ChangeAnim(m_playerHandle, 42, false, 0.7f);
 		}
 	}
 	else 
 	{
 		m_vec.x = -kMoveSpeed * 0.5f;
 		attack.x = m_pos.x - 60;
-		if (attack.count == 4)
+		if (attack.count == 2 && !m_vec.y > 0)
+		{
+			m_pAnimation->ChangeAnim(m_playerHandle, 40, false, 0.7f);
+		}
+		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = -kMoveSpeed;
-			attack.x = m_pos.x - 60;
+			attack.x = m_pos.x - 80;
+			m_pAnimation->ChangeAnim(m_playerHandle, 42, false, 0.7f);
 		}
 	}
 
@@ -254,7 +273,7 @@ void Player::DoAttack()
 void Player::DoEvade()
 {
 	evadeData.active = true;
-	m_pAnimation->ChangeAnim(m_playerHandle, 16, false);
+	m_pAnimation->ChangeAnim(m_playerHandle, 16, false,0.5f);
 	evadeData.evadeCount++;
 	evadeData.timer = 30.0f;
 	if (evadeData.evadeCount > 1)

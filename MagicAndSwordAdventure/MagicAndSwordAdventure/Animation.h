@@ -7,12 +7,14 @@ public:
 	void Init();
 	void AttachAnim(int modelHandle, int animNo);
 	void Update();
-	void ChangeAnim(int modelHandle, int animNo ,bool isLoop);
+	void ChangeAnim(int modelHandle, int animNo ,bool isLoop, float increment);
 private:
 	// 総再生時間
 	float m_animTotalTime;
 	// 再生時間
 	float m_playTime;
+	// 以前のアニメーションのアタッチ番号
+	int m_oldAttachNo;
 	// 現在のアニメーションのアタッチ番号
 	int m_currentAttachNo;
 	// 次のアニメーションのアタッチ番号
@@ -23,5 +25,7 @@ private:
 	bool m_isLoop;
 	// アニメーションを終わらせるか
 	bool m_isEnd;
+	// 再生時間の増分
+	float m_timeIncrement;
 };
 

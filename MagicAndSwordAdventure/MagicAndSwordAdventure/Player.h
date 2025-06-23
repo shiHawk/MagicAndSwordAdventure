@@ -8,11 +8,11 @@ class Player
 public:
 	struct AttackSphere
 	{
-		float x, y, z, radius;
-		bool active;
-		float timer;
-		int count;
-		int comboDuration;
+		float x, y, z, radius; // UŒ‚‚Ì”»’è
+		bool active; // UŒ‚ó‘Ô
+		float timer; // UŒ‚ŠÔ
+		int count; // UŒ‚‰ñ”
+		int comboDuration; // ‘±ŠÔ
 	};
 	Player();
 	~Player();
@@ -45,7 +45,7 @@ private:
 	{
 		int evadeCount; // ‰ñ”ğ‰ñ”
 		bool active; // ‰ñ”ğó‘Ô
-		float timer; // –³“GŠÔ
+		float timer; // ‰ñ”ğŠÔ
 	};
 	AnimData animData = { -1,0.0f,false,false };
 	EvadeData evadeData = { 0,false,0.0f };

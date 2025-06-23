@@ -4,11 +4,13 @@
 Animation::Animation():
 	m_animTotalTime(0),
 	m_playTime(0),
+	m_oldAttachNo(-1),
 	m_currentAttachNo(-1),
 	m_nextAttachNo(-1),
 	m_isLoop(true),
 	m_isEnd(false),
-	m_modelHandle(-1)
+	m_modelHandle(-1),
+	m_timeIncrement(0.5f)
 {
 }
 
@@ -29,7 +31,7 @@ void Animation::AttachAnim(int modelHandle, int animNo)
 
 void Animation::Update()
 {
-	m_playTime += 0.5f;
+	m_playTime += m_timeIncrement;
 	MV1SetAttachAnimTime(m_modelHandle,m_currentAttachNo,m_playTime);
 	if (m_playTime >= m_animTotalTime)
 	{
@@ -37,7 +39,7 @@ void Animation::Update()
 	}
 }
 
-void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop)
+void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop, float increment)
 {
 	m_nextAttachNo = MV1AttachAnim(modelHandle, animNo);
 	if (m_nextAttachNo != m_currentAttachNo)
@@ -45,8 +47,8 @@ void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop)
 		MV1DetachAnim(modelHandle, m_currentAttachNo);
 		m_isLoop = isLoop;
 		m_playTime = 0.0f;
+		m_timeIncrement = increment;
 		m_currentAttachNo = m_nextAttachNo;
-		m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_currentAttachNo);
+		m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_nextAttachNo);
 	}
-	
 }
