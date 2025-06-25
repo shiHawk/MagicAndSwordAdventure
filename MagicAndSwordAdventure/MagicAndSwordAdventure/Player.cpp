@@ -28,7 +28,7 @@ namespace
 }
 
 
-Player::Player():m_handle(-1),
+Player::Player():
 m_damageFrame(0),
 m_hp(kMaxHp),
 m_rotMtx(MGetIdent()),
@@ -37,13 +37,11 @@ m_isJump(false),
 m_isDirRight(true),
 m_isPrevButton(false),
 m_isNowButton(false),
-m_playerHandle(0),
 m_jumpCount(0),
-m_isAttackDirRight(true),
-m_playTime(0.0f)
+m_isAttackDirRight(true)
 {
 	m_pos = { 0, 0, 0 };
-	m_vec = VGet(0, 0, 0);
+	m_vec = { 0, 0, 0 };
 }
 
 Player::~Player()
@@ -55,22 +53,18 @@ void Player::Init(std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Animation> pAni
 	m_pos = VGet(0, 0, 0);
 	m_pEnemy = pEnemy;
 	m_pAnimation = pAnimation;
-	m_playerHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
-	MV1SetRotationXYZ(m_playerHandle, kRightDir);
-	m_pAnimation->AttachAnim(m_playerHandle, 1);
+	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
+	MV1SetRotationXYZ(m_modelHandle, kRightDir);
+	m_pAnimation->AttachAnim(m_modelHandle, 1);
 }
 
 void Player::End()
 {
-	MV1DeleteModel(m_playerHandle);
+	MV1DeleteModel(m_modelHandle);
 }
 
 void Player::Update()
 {
-	if (m_playTime >= m_animTotalTime)
-	{
-		m_playTime = 0.0f;
-	}
 	if (m_vec.y > 0)
 	{
 		isStartGravity = true;
@@ -86,7 +80,7 @@ void Player::Update()
 	{
 		if (!evadeData.active)
 		{
-			MV1SetRotationXYZ(m_playerHandle, kRightDir);
+			MV1SetRotationXYZ(m_modelHandle, kRightDir);
 		}
 		
 		m_vec.x = kMoveSpeed;
@@ -102,7 +96,7 @@ void Player::Update()
 	{
 		if (!evadeData.active)
 		{
-			MV1SetRotationXYZ(m_playerHandle, kLeftDir);
+			MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 		}
 		m_vec.x = -kMoveSpeed;
 		// ダッシュボタンを押した場合
@@ -134,7 +128,7 @@ void Player::Update()
 	}
 
 	//RBボタンを押したとき
-	if (Pad::isTrigger(PAD_INPUT_6) )
+	if (Pad::isTrigger(PAD_INPUT_6))
 	{
 		// 回避は1回
 		if (evadeData.evadeCount < 1)
@@ -148,7 +142,7 @@ void Player::Update()
 		// 回避時間が終わったら
 		if (evadeData.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_playerHandle, 1, true,0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
 			evadeData.active = false;
 			evadeData.evadeCount = 0;
 		}
@@ -156,10 +150,9 @@ void Player::Update()
 
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
-
+	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
+	MV1SetPosition(m_modelHandle, m_pos);
 	m_pos = VAdd(m_pos, m_vec);
-	MV1SetScale(m_playerHandle,VGet(50,50,50));
-	MV1SetPosition(m_playerHandle,m_pos);
 	if (m_pos.y < 0.0f)
 	{
 		m_pos.y = 0.0f;
@@ -181,21 +174,21 @@ void Player::Update()
 		attack.comboDuration--;
 		if (attack.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_playerHandle,1,true,0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
 			attack.active = false;
 		}
 	}
 	//printfDx(L"%f\n", m_screenPos.x);
-	m_pAnimation->Update();
+	m_pAnimation->UpdateAnim();
 }
 
-void  Player::Draw() const
+void Player::Draw() const
 {
-	MV1DrawModel(m_playerHandle);
+	MV1DrawModel(m_modelHandle);
 #if _DEBUG
-	if (attack.active)
+	if (attack.active && !m_vec.y > 0)
 	{
-		DrawSphere3D(VGet(attack.x,attack.y,attack.z),attack.radius,8,0xff0000,0xffffff,false);
+		DrawSphere3D(VGet(attack.x, attack.y, attack.z), attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 #endif
 }
@@ -209,7 +202,7 @@ VECTOR Player::GetScreenPos()
 
 float Player::GetColRadius() const
 {
-	return kColRadius; 
+	return kColRadius;
 }
 
 void Player::OnDamage()
@@ -221,11 +214,11 @@ void Player::DoAttack()
 	attack.active = true;
 	if (m_vec.y > 0)
 	{
-		m_pAnimation->ChangeAnim(m_playerHandle, 39, false,0.7f);
+		m_pAnimation->ChangeAnim(m_modelHandle, 39, false, 0.7f);
 	}
 	else
 	{
-		m_pAnimation->ChangeAnim(m_playerHandle, 31, false,0.5f);
+		m_pAnimation->ChangeAnim(m_modelHandle, 31, false, 0.5f);
 	}
 	attack.timer = 50.0f;
 	attack.comboDuration = 20.0f;
@@ -241,13 +234,13 @@ void Player::DoAttack()
 		attack.x = m_pos.x + 60;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
-			m_pAnimation->ChangeAnim(m_playerHandle, 40, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 40, false, 0.7f);
 		}
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = +kMoveSpeed;
 			attack.x = m_pos.x + 80;
-			m_pAnimation->ChangeAnim(m_playerHandle, 42, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 0.7f);
 		}
 	}
 	else 
@@ -256,13 +249,13 @@ void Player::DoAttack()
 		attack.x = m_pos.x - 60;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
-			m_pAnimation->ChangeAnim(m_playerHandle, 40, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 40, false, 0.7f);
 		}
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = -kMoveSpeed;
 			attack.x = m_pos.x - 80;
-			m_pAnimation->ChangeAnim(m_playerHandle, 42, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 0.7f);
 		}
 	}
 
@@ -273,26 +266,22 @@ void Player::DoAttack()
 void Player::DoEvade()
 {
 	evadeData.active = true;
-	m_pAnimation->ChangeAnim(m_playerHandle, 16, false,0.5f);
+	// 回避アニメーションに切り替え
+	m_pAnimation->ChangeAnim(m_modelHandle, 16, false, 0.5f);
+	// 回避回数を増やす
 	evadeData.evadeCount++;
 	evadeData.timer = 30.0f;
-	if (evadeData.evadeCount > 1)
-	{
-		return;
-	}
-
 	if (m_isDirRight)
 	{
-		MV1SetRotationXYZ(m_playerHandle, kLeftDir);
+		MV1SetRotationXYZ(m_modelHandle, kLeftDir); // モデルは進行方向に背を向ける
 		m_vec.x = kMoveSpeed * 3.0f;
 		m_isAttackDirRight = false;
 	}
 	else
 	{
-		MV1SetRotationXYZ(m_playerHandle, kRightDir);
+		MV1SetRotationXYZ(m_modelHandle, kRightDir); // モデルは進行方向に背を向ける
 		m_vec.x = -kMoveSpeed * 3.0f;
 		m_isAttackDirRight = true;
 	}
-
 	m_vec.y = kJumpPower * 0.50f;
 }

@@ -10,7 +10,8 @@ Animation::Animation():
 	m_isLoop(true),
 	m_isEnd(false),
 	m_modelHandle(-1),
-	m_timeIncrement(0.5f)
+	m_timeIncrement(0.5f),
+	m_blendRate(0.0f)
 {
 }
 
@@ -20,6 +21,7 @@ Animation::~Animation()
 
 void Animation::Init()
 {
+	m_blendRate = 1.0f;
 }
 
 void Animation::AttachAnim(int modelHandle, int animNo)
@@ -29,7 +31,7 @@ void Animation::AttachAnim(int modelHandle, int animNo)
 	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_currentAttachNo);
 }
 
-void Animation::Update()
+void Animation::UpdateAnim()
 {
 	m_playTime += m_timeIncrement;
 	MV1SetAttachAnimTime(m_modelHandle,m_currentAttachNo,m_playTime);
@@ -42,13 +44,10 @@ void Animation::Update()
 void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop, float increment)
 {
 	m_nextAttachNo = MV1AttachAnim(modelHandle, animNo);
-	if (m_nextAttachNo != m_currentAttachNo)
-	{
-		MV1DetachAnim(modelHandle, m_currentAttachNo);
-		m_isLoop = isLoop;
-		m_playTime = 0.0f;
-		m_timeIncrement = increment;
-		m_currentAttachNo = m_nextAttachNo;
-		m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_nextAttachNo);
-	}
+	MV1DetachAnim(modelHandle, m_currentAttachNo);
+	m_isLoop = isLoop;
+	m_playTime = 0.0f;
+	m_timeIncrement = increment;
+	m_currentAttachNo = m_nextAttachNo;
+	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_nextAttachNo);
 }

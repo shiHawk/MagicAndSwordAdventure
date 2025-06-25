@@ -2,62 +2,41 @@
 #include "DxLib.h"
 #include "Enemy.h"
 #include "Animation.h"
+#include "CharacterBase.h"
 #include <memory>
-class Player
+class Player:public CharacterBase
 {
 public:
-	struct AttackSphere
-	{
-		float x, y, z, radius; // 攻撃の判定
-		bool active; // 攻撃状態
-		float timer; // 攻撃時間
-		int count; // 攻撃回数
-		int comboDuration; // 持続時間
-	};
 	Player();
 	~Player();
 
-	void Init(std::shared_ptr<Enemy> pEnemy ,std::shared_ptr<Animation> pAnimation);
+	void Init(std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Animation> pAnimation);
 	void End();
 	void Update();
 	void Draw() const;
-	VECTOR GetPos() { return m_pos; };
 	VECTOR GetScreenPos();
 	// エネミーの当たり判定の半径を取得する
-	float GetColRadius() const;
+	float GetColRadius() const ;
 	void OnDamage();
-	int GetHp() const { return m_hp; }
+	
 	void DoAttack();
 	// 回避
 	void DoEvade();
 	AttackSphere attack = { 0,0,0,30,false,0,0,30 };
 private:
-	struct AnimData 
-	{
-		int attachNo;		// アタッチ番号
-		float count;		// カウンタ
-		bool isLoop;	// 終わった時にループするか
-
-		bool isEnd;		// 非ループアニメが終了した
-		// true:ループする false:最後のフレームで停止
-	};
 	struct EvadeData
 	{
 		int evadeCount; // 回避回数
 		bool active; // 回避状態
 		float timer; // 回避時間
 	};
-	AnimData animData = { -1,0.0f,false,false };
 	EvadeData evadeData = { 0,false,0.0f };
 	// 攻撃が出る方向
 	bool m_isAttackDirRight;
-	int m_handle;
-	VECTOR m_pos;
-	VECTOR m_vec;
 	VECTOR m_screenPos;
 	int m_damageFrame;
 	int m_hp;
-	int m_playerHandle;
+	//int m_modelHandle;
 	// ジャンプ回数
 	int m_jumpCount;
 	std::shared_ptr<Enemy> m_pEnemy;
@@ -73,10 +52,5 @@ private:
 	bool m_isPrevButton;
 	// 現在押されているか
 	bool m_isNowButton;
-	int m_attachIndex;
-	// 総再生時間
-	float m_animTotalTime;
-	// 再生時間
-	float m_playTime;
 };
 

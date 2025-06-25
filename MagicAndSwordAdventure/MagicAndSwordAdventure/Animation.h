@@ -1,4 +1,5 @@
 #pragma once
+
 class Animation
 {
 public:
@@ -6,7 +7,7 @@ public:
 	~Animation();
 	void Init();
 	void AttachAnim(int modelHandle, int animNo);
-	void Update();
+	void UpdateAnim();
 	void ChangeAnim(int modelHandle, int animNo ,bool isLoop, float increment);
 private:
 	// 総再生時間
@@ -23,9 +24,11 @@ private:
 	int m_modelHandle;
 	// アニメーションをループさせるか否か
 	bool m_isLoop;
-	// アニメーションを終わらせるか
+	// アニメーションが終了しているか
 	bool m_isEnd;
 	// 再生時間の増分
 	float m_timeIncrement;
+	// アニメーションのブレンド率
+	float m_blendRate;
 };
 

@@ -4,7 +4,7 @@
 #include "game.h"
 namespace
 {
-	constexpr float kLerpSpeed = 0.2f;
+	constexpr float kLerpSpeed = 0.01f;
 }
 GameScene::GameScene() :
 	m_cameraMoveAngle(0.0f),
@@ -75,14 +75,16 @@ SceneBase* GameScene::Update()
 	m_pPlayer->Update();
 	m_pEnemy->Update();
 	m_pCollision->Update();
+	float temp = VSize(VSub(m_cameraTarget, m_pPlayer->GetPos()));
+	printfDx(L"temp:%f\n", temp);
 	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
 	{
 		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
 		//m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
 	}
-	else if (m_pPlayer->GetScreenPos().x < 500.0f)
+	else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.4f)
 	{
-		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - 500.0f;
+		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
 		//m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
 	}
 	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
