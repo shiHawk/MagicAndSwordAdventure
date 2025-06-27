@@ -20,7 +20,6 @@ Enemy::Enemy()
 	m_vec = VGet(0, 0, 0);
 	m_posIndex = 0;
 	m_moveSpeed = 0.0f;
-	m_isDir = false;
 }
 
 Enemy::~Enemy()
@@ -33,7 +32,6 @@ void Enemy::Init(std::shared_ptr<Collision> pCollsion)
 	m_posIndex = 0;
 	m_moveSpeed = 5.0f;
 	m_pCollsion = pCollsion;
-	m_isDir = false;
 }
 
 void Enemy::Update()

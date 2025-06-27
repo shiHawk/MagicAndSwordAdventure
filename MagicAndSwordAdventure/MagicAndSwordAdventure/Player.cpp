@@ -71,6 +71,23 @@ void Player::Update()
 	}
 	// Bボタンを押したとき
 	m_isNowButton = Pad::isPress(PAD_INPUT_2);
+	// Bボタンが押されっぱなしでない
+	if (m_isNowButton && !m_isPrevButton)
+	{
+		DoAttack();
+	}
+	if (attack.active)
+	{
+		attack.timer--;
+		attack.comboDuration--;
+		if (attack.timer <= 0)
+		{
+			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
+			attack.active = false;
+		}
+	}
+
+	m_isPrevButton = m_isNowButton;
 	if (isStartGravity)
 	{
 		m_vec.y += kJumpGravity;
@@ -161,23 +178,6 @@ void Player::Update()
 		m_jumpCount = 0;
 	}
 
-	// Bボタンが押されっぱなしでない
-	if (m_isNowButton && !m_isPrevButton)
-	{
-		DoAttack();
-	}
-	m_isPrevButton = m_isNowButton;
-
-	if (attack.active)
-	{
-		attack.timer--;
-		attack.comboDuration--;
-		if (attack.timer <= 0)
-		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
-			attack.active = false;
-		}
-	}
 	//printfDx(L"%f\n", m_screenPos.x);
 	m_pAnimation->UpdateAnim();
 }
@@ -240,7 +240,7 @@ void Player::DoAttack()
 		{
 			m_vec.x = +kMoveSpeed;
 			attack.x = m_pos.x + 80;
-			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 1.0f);
 		}
 	}
 	else 
@@ -255,7 +255,7 @@ void Player::DoAttack()
 		{
 			m_vec.x = -kMoveSpeed;
 			attack.x = m_pos.x - 80;
-			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 1.0f);
 		}
 	}
 

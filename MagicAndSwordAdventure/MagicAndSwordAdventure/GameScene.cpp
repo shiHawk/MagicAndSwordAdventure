@@ -6,58 +6,19 @@ namespace
 {
 	constexpr float kLerpSpeed = 0.01f;
 }
-GameScene::GameScene() :
-	m_cameraMoveAngle(0.0f),
-	m_viewAngle(DX_PI_F / 3.0f),
-	m_cameraPos(VGet(0, 0, 0)),
-	m_cameraTarget(VGet(0, 0, 0)),
-	m_CountDownFrame(220),
-	m_t(0.1f)
+GameScene::GameScene()
 {
 }
 
 void GameScene::Init()
 {
-	// 3D表示の設定
-	SetUseZBuffer3D(true);	  // Zバッファを指定する
-	SetWriteZBuffer3D(true);  // Zバッファへの書き込みを行う
-
-	SetUseBackCulling(true);  // ポリゴンの裏面を表示しない
-
-	// カメラの位置の初期化を行う
-	// 600 * 600のグリッドが画面中央あたりに表示されるカメラを設定する
-
-	// カメラ(始点)の位置
-	m_cameraPos.x = 0.0f;
-	m_cameraPos.y = 200.0f;
-	m_cameraPos.z = -600.0f;
-
-	// カメラがどこを見ているか(注視点)
-	m_cameraTarget.x = 0.0f;
-	m_cameraTarget.y = 0.0f;
-	m_cameraTarget.z = 0.0f;
-
-	// カメラの位置と注視点を指定する
-	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
-
-	// カメラの視野角を設定する
-	m_viewAngle = DX_PI_F / 3.0f;	// 60度
-	SetupCamera_Perspective(m_viewAngle);
-
-	// カメラのnear,farを設定する
-	// 画面に表示される距離の範囲を設定する
-	// カメラからnear以上離れていてfarより近くにあるものが
-	// ゲーム画面に表示される
-	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
-	SetCameraNearFar(10.0f, 1000.0f);
-
-	CreateDirLightHandle(VGet(-0.577f,-0.577f,0.577));
-
+	m_pCamera = std::make_shared<Camera>();
 	m_pPlayer = std::make_shared<Player>();
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pCollision = std::make_shared<Collision>();
 	m_pAnimation = std::make_shared<Animation>();
 
+	m_pCamera->Init(m_pPlayer);
 	m_pPlayer->Init(m_pEnemy,m_pAnimation);
 	m_pEnemy->Init(m_pCollision);
 	m_pCollision->Init(m_pPlayer, m_pEnemy);
@@ -72,24 +33,10 @@ void GameScene::End()
 
 SceneBase* GameScene::Update()
 {
+	m_pCamera->Update();
 	m_pPlayer->Update();
 	m_pEnemy->Update();
 	m_pCollision->Update();
-	float temp = VSize(VSub(m_cameraTarget, m_pPlayer->GetPos()));
-	printfDx(L"temp:%f\n", temp);
-	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
-	{
-		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
-		//m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.5f;
-	}
-	else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.4f)
-	{
-		m_cameraMoveTargetPos.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
-		//m_cameraTarget.x += m_pPlayer->GetScreenPos().x - Game::kScreenWidth * 0.4f;
-	}
-	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
-	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
-	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	return this;
 }
 

@@ -1,8 +1,9 @@
 #pragma once
 #include <DxLib.h>
 #include <memory>
+#include "CharacterBase.h"
 class Collision;
-class Enemy
+class Enemy:public CharacterBase
 {
 public:
 	Enemy();

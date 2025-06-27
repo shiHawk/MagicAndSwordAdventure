@@ -9,6 +9,9 @@ public:
 	void AttachAnim(int modelHandle, int animNo);
 	void UpdateAnim();
 	void ChangeAnim(int modelHandle, int animNo ,bool isLoop, float increment);
+	void UpdateBlendAnim(int modelHandle, int animNo);
+	void StartBlending();
+	bool isNowPlaying() { return m_isNowPlaying; }
 private:
 	// 総再生時間
 	float m_animTotalTime;
@@ -30,5 +33,8 @@ private:
 	float m_timeIncrement;
 	// アニメーションのブレンド率
 	float m_blendRate;
+	// ブレンドの開始
+	bool m_isBlending;
+	bool m_isNowPlaying;
 };
 

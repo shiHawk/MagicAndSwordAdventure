@@ -11,7 +11,9 @@ Animation::Animation():
 	m_isEnd(false),
 	m_modelHandle(-1),
 	m_timeIncrement(0.5f),
-	m_blendRate(0.0f)
+	m_blendRate(0.0f),
+	m_isBlending(false),
+	m_isNowPlaying(false)
 {
 }
 
@@ -21,7 +23,7 @@ Animation::~Animation()
 
 void Animation::Init()
 {
-	m_blendRate = 1.0f;
+	
 }
 
 void Animation::AttachAnim(int modelHandle, int animNo)
@@ -33,8 +35,11 @@ void Animation::AttachAnim(int modelHandle, int animNo)
 
 void Animation::UpdateAnim()
 {
+	// 再生時間を進める
 	m_playTime += m_timeIncrement;
-	MV1SetAttachAnimTime(m_modelHandle,m_currentAttachNo,m_playTime);
+	// 再生時間をセットする
+	MV1SetAttachAnimTime(m_modelHandle, m_currentAttachNo, m_playTime);
+	//UpdateBlendAnim(m_modelHandle, m_nextAttachNo);
 	if (m_playTime >= m_animTotalTime)
 	{
 		m_playTime = 0.0f;
@@ -43,11 +48,36 @@ void Animation::UpdateAnim()
 
 void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop, float increment)
 {
+	// 次のアニメーションをアタッチ
 	m_nextAttachNo = MV1AttachAnim(modelHandle, animNo);
+	// 今アタッチされているアニメーションをデタッチ
 	MV1DetachAnim(modelHandle, m_currentAttachNo);
+	m_currentAttachNo = m_nextAttachNo;
+	// アニメーションのブレンドを開始
+	StartBlending();
 	m_isLoop = isLoop;
+	// 再生時間をリセット
 	m_playTime = 0.0f;
 	m_timeIncrement = increment;
-	m_currentAttachNo = m_nextAttachNo;
+	// 総再生時間を再設定
 	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_nextAttachNo);
+}
+
+void Animation::UpdateBlendAnim(int modelHandle, int animNo)
+{
+	if (!m_isBlending) return;
+	m_blendRate += 0.01;
+	if (m_blendRate > 1.0f)
+	{
+		m_blendRate = 1.0f;
+		m_isBlending = false;
+	}
+	MV1SetAttachAnimBlendRate(m_modelHandle, m_currentAttachNo, 1.0f - m_blendRate);
+	MV1SetAttachAnimBlendRate(m_modelHandle, animNo, m_blendRate);
+}
+
+void Animation::StartBlending()
+{
+	m_isBlending = true;
+	m_blendRate = 0.0f;
 }
