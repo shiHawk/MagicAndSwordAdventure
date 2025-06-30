@@ -1,6 +1,7 @@
 #include "Animation.h"
 #include "DxLib.h"
 
+
 Animation::Animation():
 	m_animTotalTime(0),
 	m_playTime(0),
@@ -39,7 +40,10 @@ void Animation::UpdateAnim()
 	m_playTime += m_timeIncrement;
 	// Ä¶ŽžŠÔ‚ðƒZƒbƒg‚·‚é
 	MV1SetAttachAnimTime(m_modelHandle, m_currentAttachNo, m_playTime);
-	//UpdateBlendAnim(m_modelHandle, m_nextAttachNo);
+	if (m_isBlending)
+	{
+		//UpdateBlendAnim(m_modelHandle, m_nextAttachNo);
+	}
 	if (m_playTime >= m_animTotalTime)
 	{
 		m_playTime = 0.0f;

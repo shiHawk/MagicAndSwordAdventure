@@ -56,6 +56,7 @@ void Player::Init(std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Animation> pAni
 	m_pEnemy = pEnemy;
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
+	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	m_pAnimation->AttachAnim(m_modelHandle, 1);
 }
@@ -197,13 +198,12 @@ void Player::Update()
 		idleCount = 0;
 		if (moveCount < 1)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 2, true, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, 3, true, 0.5f);
 		}
 		moveCount++;
 	}
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
-	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
 	MV1SetPosition(m_modelHandle, m_pos);
 	m_pos = VAdd(m_pos, m_vec);
 	if (m_pos.y < 0.0f)

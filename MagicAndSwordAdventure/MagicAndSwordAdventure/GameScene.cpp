@@ -67,15 +67,15 @@ void GameScene::DrawGrid() const
 		DrawLine3D(start, end, 0xffffff);
 	}
 
-	// 奥行方向のグリッドを同様に引く
-	start = VGet(0.0f, 0.0f, -300.0f); // 始点
-	end = VGet(0.0f, 0.0f, 300.0f);   // 終点
+	//// 奥行方向のグリッドを同様に引く
+	//start = VGet(0.0f, 0.0f, -300.0f); // 始点
+	//end = VGet(0.0f, 0.0f, 300.0f);   // 終点
 
-	for (int x = -900; x <= 900; x += 100)
-	{
-		start.x = x;
-		end.x = x;
+	//for (int x = -900; x <= 900; x += 100)
+	//{
+	//	start.x = x;
+	//	end.x = x;
 
-		DrawLine3D(start, end, 0xffffff);
-	}
+	//	DrawLine3D(start, end, 0xffffff);
+	//}
 }

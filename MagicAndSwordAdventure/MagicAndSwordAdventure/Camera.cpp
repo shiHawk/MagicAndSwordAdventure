@@ -67,9 +67,9 @@ void Camera::Update()
 	{
 		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;
 	}
-	else if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.45f)
+	if (m_pPlayer->GetScreenPos().x < Game::kScreenWidth * 0.45f)
 	{
-		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x - kOffSetPos;
+		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;
 	}
 	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
