@@ -40,7 +40,7 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	//DrawSphere3D(m_pos, kColRadius, 32, 0xff0000, 0xffffff, TRUE);
+	DrawSphere3D(m_pos, kColRadius, 32, 0xff0000, 0xffffff, TRUE);
 }
 
 float Enemy::GetColRadius() const

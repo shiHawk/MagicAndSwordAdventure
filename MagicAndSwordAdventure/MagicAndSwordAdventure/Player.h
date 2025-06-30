@@ -36,7 +36,6 @@ private:
 	VECTOR m_screenPos;
 	int m_damageFrame;
 	int m_hp;
-	//int m_modelHandle;
 	// ジャンプ回数
 	int m_jumpCount;
 	std::shared_ptr<Enemy> m_pEnemy;
@@ -44,9 +43,8 @@ private:
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
 	// プレイヤーの向いている方向
-	float m_angle;
-	bool m_isJump;
 	bool m_isDirRight;
+	bool m_isJump;
 
 	// 直前に押されているか
 	bool m_isPrevButton;

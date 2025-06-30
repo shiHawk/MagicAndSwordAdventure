@@ -25,6 +25,9 @@ namespace
 	const char* kIdleAnimName = "CharacterArmature|Idle";
 	const char* kRunAnimName = "CharacterArmature|Run";
 	bool isStartGravity = false;
+	bool isMove = false;
+	int moveCount = 0;
+	int idleCount = 0;
 }
 
 
@@ -32,7 +35,6 @@ Player::Player():
 m_damageFrame(0),
 m_hp(kMaxHp),
 m_rotMtx(MGetIdent()),
-m_angle(0.0f),
 m_isJump(false),
 m_isDirRight(true),
 m_isPrevButton(false),
@@ -99,7 +101,10 @@ void Player::Update()
 		{
 			MV1SetRotationXYZ(m_modelHandle, kRightDir);
 		}
-		
+		if (!isMove)
+		{
+			isMove = true;
+		}
 		m_vec.x = kMoveSpeed;
 		// ダッシュボタンを押した場合
 		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
@@ -109,11 +114,15 @@ void Player::Update()
 		m_isAttackDirRight = true;
 		m_isDirRight = true;
 	}
-	if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
+	else if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
 	{
 		if (!evadeData.active)
 		{
 			MV1SetRotationXYZ(m_modelHandle, kLeftDir);
+		}
+		if (!isMove)
+		{
+			isMove = true;
 		}
 		m_vec.x = -kMoveSpeed;
 		// ダッシュボタンを押した場合
@@ -124,13 +133,31 @@ void Player::Update()
 		m_isAttackDirRight = false;
 		m_isDirRight = false;
 	}
-	if (Pad::isPress(PAD_INPUT_UP))
+	else if (Pad::isPress(PAD_INPUT_UP))
 	{
+		if (!isMove)
+		{
+			isMove = true;
+		}
 		m_vec.z = kMoveSpeed;
 	}
-	if (Pad::isPress(PAD_INPUT_DOWN))
+	else if (Pad::isPress(PAD_INPUT_DOWN))
 	{
+		if (!isMove)
+		{
+			isMove = true;
+		}
 		m_vec.z = -kMoveSpeed;
+	}
+	else
+	{
+		isMove = false;
+		moveCount = 0;
+		if (idleCount < 1)
+		{
+			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
+		}
+		idleCount++;
 	}
 	// Aボタンを押したときジャンプ
 	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
@@ -165,6 +192,15 @@ void Player::Update()
 		}
 	}
 
+	if (isMove)
+	{
+		idleCount = 0;
+		if (moveCount < 1)
+		{
+			m_pAnimation->ChangeAnim(m_modelHandle, 2, true, 0.5f);
+		}
+		moveCount++;
+	}
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
 	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
@@ -186,6 +222,7 @@ void Player::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
 #if _DEBUG
+	DrawCapsule3D(VGet(m_pos.x, m_pos.y + 90, m_pos.z), VGet(m_pos.x, m_pos.y+20, m_pos.z), 30, 8, 0x00ff00, 0xffffff, false);
 	if (attack.active && !m_vec.y > 0)
 	{
 		DrawSphere3D(VGet(attack.x, attack.y, attack.z), attack.radius, 8, 0xff0000, 0xffffff, false);
