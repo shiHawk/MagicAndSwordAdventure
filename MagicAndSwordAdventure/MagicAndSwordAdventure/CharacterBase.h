@@ -17,7 +17,8 @@ public:
 	float m_DashSpeed;
 	struct AttackSphere
 	{
-		float x, y, z, radius; // UŒ‚‚Ì”»’è
+		float radius; // UŒ‚‚Ì”»’è
+		VECTOR pos;
 		bool active; // UŒ‚ó‘Ô
 		float timer; // UŒ‚ŠÔ
 		int count; // UŒ‚‰ñ”

@@ -26,16 +26,19 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::Init(std::shared_ptr<Collision> pCollsion)
+void Enemy::Init(std::shared_ptr<Collision> pCollsion, std::shared_ptr<Player> pPlayer)
 {
 	m_pos = VGet(680, 80, 0);
 	m_posIndex = 0;
 	m_moveSpeed = 5.0f;
 	m_pCollsion = pCollsion;
+	m_pPlayer = pPlayer;
 }
 
 void Enemy::Update()
 {
+	m_enemyToPlayerDistance = VSize(VSub(m_pos,m_pPlayer->GetPos()));
+
 }
 
 void Enemy::Draw()

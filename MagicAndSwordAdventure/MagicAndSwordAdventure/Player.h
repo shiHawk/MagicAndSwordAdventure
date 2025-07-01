@@ -10,7 +10,7 @@ public:
 	Player();
 	~Player();
 
-	void Init(std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Animation> pAnimation);
+	void Init(std::shared_ptr<Animation> pAnimation);
 	void End();
 	void Update();
 	void Draw() const;
@@ -22,7 +22,11 @@ public:
 	void DoAttack();
 	// 回避
 	void DoEvade();
-	AttackSphere attack = { 0,0,0,30,false,0,0,30 };
+	VECTOR GetPlayerPosHead();
+	VECTOR GetPlayerPosFoot();
+	VECTOR GetAttackPos() { return attack.pos; };
+	float GetAttackRadius() { return attack.radius; }
+	AttackSphere attack = { 30,{0,0,0},false,0,0,30};
 private:
 	struct EvadeData
 	{
@@ -38,14 +42,14 @@ private:
 	int m_hp;
 	// ジャンプ回数
 	int m_jumpCount;
-	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Animation> m_pAnimation;
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
 	// プレイヤーの向いている方向
 	bool m_isDirRight;
 	bool m_isJump;
-
+	VECTOR m_playerPosHead;
+	VECTOR m_playerPosFoot;
 	// 直前に押されているか
 	bool m_isPrevButton;
 	// 現在押されているか

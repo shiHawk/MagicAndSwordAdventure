@@ -6,7 +6,7 @@ void CharacterBase::Draw() const
 #if _DEBUG
 	if (attack.active && !m_vec.y > 0)
 	{
-		DrawSphere3D(VGet(attack.x, attack.y, attack.z), attack.radius, 8, 0xff0000, 0xffffff, false);
+		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 #endif
 }

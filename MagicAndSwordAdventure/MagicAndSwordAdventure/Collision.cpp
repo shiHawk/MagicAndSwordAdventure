@@ -14,6 +14,7 @@ void Collision::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEn
 	m_pPlayer = pPlayer;
 	m_pEnemy = pEnemy;
 	m_isColl = false;
+	m_invincibilityTime = 60.0f;
 }
 
 void Collision::End()
@@ -25,14 +26,23 @@ void Collision::Update()
 {
 	VECTOR playerToEnemy = VSub(m_pPlayer->GetPos(), m_pEnemy->GetPos());
 	float dist = VSize(playerToEnemy);
-	if (dist < m_pPlayer->GetColRadius() + m_pEnemy->GetColRadius())
+	if (dist < m_pPlayer->GetColRadius() + m_pEnemy->GetColRadius() && !m_isColl)
 	{
-		m_pPlayer->OnDamage();
 		m_isColl = true;
+		if (m_isColl)
+		{
+			m_pPlayer->OnDamage();
+		}
 	}
-	else
+
+	if (m_isColl)
 	{
-		m_isColl = false;
+		m_invincibilityTime--;
+		if (m_invincibilityTime < 0)
+		{
+			m_isColl = false;
+			m_invincibilityTime = 60.0f;
+		}
 	}
 }
 

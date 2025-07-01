@@ -50,10 +50,9 @@ Player::~Player()
 {
 }
 
-void Player::Init(std::shared_ptr<Enemy> pEnemy, std::shared_ptr<Animation> pAnimation)
+void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
 	m_pos = VGet(0, 0, 0);
-	m_pEnemy = pEnemy;
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
@@ -225,7 +224,7 @@ void Player::Draw() const
 	DrawCapsule3D(VGet(m_pos.x, m_pos.y + 90, m_pos.z), VGet(m_pos.x, m_pos.y+20, m_pos.z), 30, 8, 0x00ff00, 0xffffff, false);
 	if (attack.active && !m_vec.y > 0)
 	{
-		DrawSphere3D(VGet(attack.x, attack.y, attack.z), attack.radius, 8, 0xff0000, 0xffffff, false);
+		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 #endif
 }
@@ -244,6 +243,8 @@ float Player::GetColRadius() const
 
 void Player::OnDamage()
 {
+	m_hp -= 10;
+	printfDx(L"hp:%d\n", m_hp);
 }
 
 void Player::DoAttack()
@@ -264,11 +265,11 @@ void Player::DoAttack()
 	{
 		attack.count = 1;
 	}
-	printfDx(L"attack.count:%d\n", attack.count);
+	//printfDx(L"attack.count:%d\n", attack.count);
 	if (m_isAttackDirRight)
 	{
 		m_vec.x = +kMoveSpeed * 0.5f;
-		attack.x = m_pos.x + 60;
+		attack.pos.x = m_pos.x + 60;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
 			m_pAnimation->ChangeAnim(m_modelHandle, 40, false, 0.7f);
@@ -276,14 +277,14 @@ void Player::DoAttack()
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = +kMoveSpeed;
-			attack.x = m_pos.x + 80;
+			attack.pos.x = m_pos.x + 80;
 			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 1.0f);
 		}
 	}
 	else 
 	{
 		m_vec.x = -kMoveSpeed * 0.5f;
-		attack.x = m_pos.x - 60;
+		attack.pos.x = m_pos.x - 60;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
 			m_pAnimation->ChangeAnim(m_modelHandle, 40, false, 0.7f);
@@ -291,13 +292,13 @@ void Player::DoAttack()
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = -kMoveSpeed;
-			attack.x = m_pos.x - 80;
+			attack.pos.x = m_pos.x - 80;
 			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 1.0f);
 		}
 	}
 
-	attack.y = m_pos.y+40;
-	attack.z = m_pos.z;
+	attack.pos.y = m_pos.y+40;
+	attack.pos.z = m_pos.z;
 }
 
 void Player::DoEvade()
@@ -322,3 +323,17 @@ void Player::DoEvade()
 	}
 	m_vec.y = kJumpPower * 0.50f;
 }
+
+VECTOR Player::GetPlayerPosHead()
+{
+	m_playerPosHead = VGet(m_pos.x, m_pos.y + 90, m_pos.z);
+	return m_playerPosFoot;
+}
+
+VECTOR Player::GetPlayerPosFoot()
+{
+	m_playerPosFoot = VGet(m_pos.x, m_pos.y + 20, m_pos.z);
+	return m_playerPosFoot;
+}
+
+

@@ -19,8 +19,8 @@ void GameScene::Init()
 	m_pAnimation = std::make_shared<Animation>();
 
 	m_pCamera->Init(m_pPlayer);
-	m_pPlayer->Init(m_pEnemy,m_pAnimation);
-	m_pEnemy->Init(m_pCollision);
+	m_pPlayer->Init(m_pAnimation);
+	m_pEnemy->Init(m_pCollision,m_pPlayer);
 	m_pCollision->Init(m_pPlayer, m_pEnemy);
 	m_pAnimation->Init();
 }

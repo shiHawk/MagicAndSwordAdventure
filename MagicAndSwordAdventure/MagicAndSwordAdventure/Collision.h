@@ -19,5 +19,6 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	bool m_isColl;
+	float m_invincibilityTime;
 };
 
