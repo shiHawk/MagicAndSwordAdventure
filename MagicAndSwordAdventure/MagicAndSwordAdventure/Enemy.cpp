@@ -18,7 +18,6 @@ Enemy::Enemy()
 {
 	m_pos = { 0,0,0 };
 	m_vec = VGet(0, 0, 0);
-	m_posIndex = 0;
 	m_moveSpeed = 0.0f;
 }
 
@@ -29,7 +28,6 @@ Enemy::~Enemy()
 void Enemy::Init(std::shared_ptr<Collision> pCollsion, std::shared_ptr<Player> pPlayer)
 {
 	m_pos = VGet(680, 80, 0);
-	m_posIndex = 0;
 	m_moveSpeed = 5.0f;
 	m_pCollsion = pCollsion;
 	m_pPlayer = pPlayer;
@@ -37,8 +35,7 @@ void Enemy::Init(std::shared_ptr<Collision> pCollsion, std::shared_ptr<Player> p
 
 void Enemy::Update()
 {
-	m_enemyToPlayerDistance = VSize(VSub(m_pos,m_pPlayer->GetPos()));
-
+	m_enemyToPlayerDistance = VSize(VSub(m_pos, m_pPlayer->GetPos()));
 }
 
 void Enemy::Draw()

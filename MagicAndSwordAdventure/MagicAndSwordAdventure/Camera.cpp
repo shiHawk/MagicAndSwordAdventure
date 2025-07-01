@@ -38,18 +38,18 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// カメラ(始点)の位置
 	m_cameraPos.x = 0.0f;
 	m_cameraPos.y = 200.0f;
-	m_cameraPos.z = -500.0f;
+	m_cameraPos.z = -840.0f;
 
 	// カメラがどこを見ているか(注視点)
 	m_cameraTarget.x = 0.0f;
-	m_cameraTarget.y = 0.0f;
+	m_cameraTarget.y = 90.0f;
 	m_cameraTarget.z = 0.0f;
 
 	// カメラの位置と注視点を指定する
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 
 	// カメラの視野角を設定する
-	m_viewAngle = DX_PI_F / angle;	// 30度
+	m_viewAngle = 0.447f;	// 30度
 	SetupCamera_Perspective(m_viewAngle);
 
 	// カメラのnear,farを設定する
