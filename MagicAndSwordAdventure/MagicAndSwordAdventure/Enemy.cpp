@@ -10,7 +10,7 @@ namespace
 	// ˆÚ“®ŒÀŠE
 	constexpr float kMobilityLimitPosX = -900.0f;
 	// “–‚½‚è”»’è‚Ì‰~
-	constexpr float kColRadius = 70.0f;
+	constexpr float kColRadius = 30.0f;
 	// Å‘å‘¬“x
 	constexpr float kMaxSpeed = 15.0f;
 }
@@ -19,6 +19,7 @@ Enemy::Enemy()
 	m_pos = { 0,0,0 };
 	m_vec = VGet(0, 0, 0);
 	m_moveSpeed = 0.0f;
+	m_enemyToPlayerDistance = 0.0f;
 }
 
 Enemy::~Enemy()

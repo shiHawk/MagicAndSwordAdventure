@@ -10,7 +10,7 @@ namespace
 	constexpr float kJumpGravity = -0.4f;
 
 	// “–‚½‚è”»’è‚Ì”ÍˆÍ
-	constexpr float kColRadius = 50.0f;
+	constexpr float kColRadius = 40.0f;
 	// Å‘åHP
 	constexpr int kMaxHp = 50;
 	// Œ¸‘¬

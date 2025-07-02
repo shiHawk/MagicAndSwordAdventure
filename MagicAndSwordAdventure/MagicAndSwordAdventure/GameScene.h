@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "Collision.h"
 #include "Animation.h"
+#include "NormalSkelton.h"
 #include "Camera.h"
 #include <memory>
 #include "DxLib.h"
@@ -28,6 +29,7 @@ private:
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;
 	std::shared_ptr<Animation> m_pAnimation;
+	std::shared_ptr<NormalSkelton> m_pNormalSkelton;
 	std::shared_ptr<Camera> m_pCamera;
 };
 

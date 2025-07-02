@@ -14,10 +14,11 @@ Collision::~Collision()
 {
 }
 
-void Collision::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy)
+void Collision::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, std::shared_ptr<NormalSkelton> pNormalSkelton)
 {
 	m_pPlayer = pPlayer;
 	m_pEnemy = pEnemy;
+	m_pNormalSkelton = pNormalSkelton;
 	m_isPlayerHit = false;
 	m_invincibilityTime = 60.0f;
 }
@@ -28,11 +29,11 @@ void Collision::End()
 
 void Collision::Update()
 {
-	VECTOR m_playerToEnemy = VSub(m_pPlayer->GetPos(), m_pEnemy->GetPos());
-	VECTOR m_playerAttackToEnemy = VSub(m_pPlayer->GetAttackPos(), m_pEnemy->GetPos());
+	VECTOR m_playerToEnemy = VSub(m_pPlayer->GetPos(), m_pNormalSkelton->GetPos());
+	VECTOR m_playerAttackToEnemy = VSub(m_pPlayer->GetAttackPos(), m_pNormalSkelton->GetPos());
 	float dist = VSize(m_playerToEnemy);
 	m_playerAttackToEnemyDist = VSize(m_playerAttackToEnemy);
-	if (dist < m_pPlayer->GetColRadius() + m_pEnemy->GetColRadius() && !m_isPlayerHit)
+	if (dist < m_pPlayer->GetColRadius() + m_pNormalSkelton->GetColRadius() && !m_isPlayerHit)
 	{
 		m_isPlayerHit = true;
 		if (m_isPlayerHit)
@@ -40,7 +41,7 @@ void Collision::Update()
 			m_pPlayer->OnDamage();
 		}
 	}
-	if (m_playerAttackToEnemyDist < m_pPlayer->GetAttackRadius() + m_pEnemy->GetColRadius() && !m_enemyHit)
+	if (m_playerAttackToEnemyDist < m_pPlayer->GetAttackRadius() + m_pNormalSkelton->GetColRadius() && !m_enemyHit)
 	{
 		printfDx(L"Hit\n");
 		m_enemyHit = true;

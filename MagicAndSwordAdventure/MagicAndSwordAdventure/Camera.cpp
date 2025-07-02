@@ -5,7 +5,7 @@
 namespace
 {
 	constexpr float kLerpSpeed = 0.05f;
-	constexpr float kOffSetPos = 10.0f;
+	constexpr float kOffSetPos = 20.0f;
 	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
 }
 Camera::Camera():
