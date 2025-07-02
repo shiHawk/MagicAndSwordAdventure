@@ -16,9 +16,12 @@ public:
 	void Draw();
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const;
-	float m_enemyToPlayerDistance;
+	
 	bool m_isDirRight;
 	float m_moveSpeed;
+protected:
+	float m_enemyToPlayerDistance;
+	VECTOR m_enemyToPlayer;
 private:
 	std::shared_ptr<Collision> m_pCollsion;
 	std::shared_ptr<Player> m_pPlayer;

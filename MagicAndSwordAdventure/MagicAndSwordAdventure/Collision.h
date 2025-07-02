@@ -21,11 +21,14 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<NormalSkelton> m_pNormalSkelton;
+	// プレイヤーが攻撃が当たったか
 	bool m_isPlayerHit;
+	// エネミーが攻撃に当たったか
 	bool m_enemyHit;
+	// 無敵時間
 	float m_invincibilityTime;
 	float m_playerAttackToEnemyDist;
-	VECTOR m_playerToEnemy; // プレイヤーからエネミー
+	VECTOR m_playerToEnemyAttack; // プレイヤーからエネミー
 	VECTOR m_playerAttackToEnemy;
 };
 

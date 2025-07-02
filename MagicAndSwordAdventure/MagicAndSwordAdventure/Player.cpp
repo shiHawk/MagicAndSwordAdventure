@@ -57,7 +57,7 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
-	m_pos = { 0, 0, 0 };
+	m_pos = { -300, 0, 0 };
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
@@ -96,7 +96,17 @@ void Player::Update()
 		}
 	}
 	m_isPrevButton = m_isNowButton;
-	
+	// Aボタンを押したときジャンプ
+	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
+	{
+		m_vec.y = kJumpPower;
+		m_jumpCount++;
+	}
+	// ジャンプは2回まで
+	if (m_jumpCount > 1)
+	{
+		m_isJump = true;
+	}
 	DoMove();
 	DoJump();
 	
@@ -126,10 +136,7 @@ void Player::Update()
 		}
 		moveCount++;
 	}
-	m_vec.x *= kMoveDecRate;
-	m_vec.z *= kMoveDecRate;
-	MV1SetPosition(m_modelHandle, m_pos);
-	m_pos = VAdd(m_pos, m_vec);
+	
 	if (m_pos.y < 0.0f)
 	{
 		m_pos.y = 0.0f;
@@ -139,6 +146,7 @@ void Player::Update()
 	}
 
 	//printfDx(L"%f\n", m_screenPos.x);
+	//printfDx(L"m_pos.x:%f\n", m_pos.x);
 	m_pAnimation->UpdateAnim();
 }
 
@@ -250,6 +258,8 @@ void Player::DoEvade()
 		}
 		m_vec.y = kJumpPower * 0.50f;
 	}
+	MV1SetPosition(m_modelHandle, m_pos);
+	m_pos = VAdd(m_pos, m_vec);
 }
 
 void Player::DoMove()
@@ -323,21 +333,15 @@ void Player::DoMove()
 		}
 		idleCount++;
 	}
+	m_vec.x *= kMoveDecRate;
+	m_vec.z *= kMoveDecRate;
+	MV1SetPosition(m_modelHandle, m_pos);
+	m_pos = VAdd(m_pos, m_vec);
 }
 
 void Player::DoJump()
 {
-	// Aボタンを押したときジャンプ
-	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
-	{
-		m_vec.y = kJumpPower;
-		m_jumpCount++;
-	}
-	// ジャンプは2回まで
-	if (m_jumpCount > 1)
-	{
-		m_isJump = true;
-	}
+	
 }
 
 
