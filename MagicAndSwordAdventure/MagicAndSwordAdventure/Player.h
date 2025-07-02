@@ -19,16 +19,17 @@ public:
 	float GetColRadius() const ;
 	void OnDamage();
 	
+	// UŒ‚
 	void DoAttack();
 	// ‰ñ”ğ
 	void DoEvade();
-	VECTOR GetPlayerPosHead();
-	VECTOR GetPlayerPosFoot();
 	VECTOR GetAttackPos() { return attack.pos; };
 	float GetAttackRadius() { return attack.radius; }
 	AttackSphere attack = { 30,{0,0,0},false,0,0,30,60.0,40.0};
 private:
+	// ˆÚ“®
 	void DoMove();
+	// ƒWƒƒƒ“ƒv
 	void DoJump();
 	struct EvadeData
 	{

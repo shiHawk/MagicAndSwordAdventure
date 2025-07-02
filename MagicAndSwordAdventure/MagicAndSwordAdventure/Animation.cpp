@@ -24,7 +24,6 @@ Animation::~Animation()
 
 void Animation::Init()
 {
-	
 }
 
 void Animation::AttachAnim(int modelHandle, int animNo)

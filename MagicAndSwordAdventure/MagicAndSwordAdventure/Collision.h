@@ -18,7 +18,11 @@ public:
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
-	bool m_isColl;
+	bool m_isPlayerHit;
+	bool m_enemyHit;
 	float m_invincibilityTime;
+	float m_playerAttackToEnemyDist;
+	VECTOR m_playerToEnemy; // プレイヤーからエネミー
+	VECTOR m_playerAttackToEnemy;
 };
 

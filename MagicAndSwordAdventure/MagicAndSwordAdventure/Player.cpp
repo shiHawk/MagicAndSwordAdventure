@@ -8,9 +8,6 @@ namespace
 	constexpr float kDashSpeed = 10.0f;
 	constexpr float kJumpPower = 9.0f;
 	constexpr float kJumpGravity = -0.4f;
-	// 移動限界
-	constexpr float kBackLimit = 100.0f;
-	constexpr float kFrontLimit = -340.0f;
 
 	// 当たり判定の範囲
 	constexpr float kColRadius = 50.0f;
@@ -19,14 +16,20 @@ namespace
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
 
+	// カプセル用の位置
 	constexpr float playerHeadOffSet = 90;
 	constexpr float playerFootOffSet = 20;
 
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
 
-	const char* kIdleAnimName = "CharacterArmature|Idle";
-	const char* kRunAnimName = "CharacterArmature|Run";
+	// アニメーションの番号
+	constexpr int kIdleAnimNo = 1;
+	constexpr int kWalkAnimNo = 3;
+	constexpr int kAttack1AnimNo = 31;
+	constexpr int kAttack2AnimNo = 40;
+	constexpr int kAttack3AnimNo = 42;
+
 	bool isStartGravity = false;
 	bool isMove = false;
 	int moveCount = 0;
@@ -43,10 +46,9 @@ m_isDirRight(true),
 m_isPrevButton(false),
 m_isNowButton(false),
 m_jumpCount(0),
-m_isAttackDirRight(true)
+m_isAttackDirRight(true),
+m_screenPos({0.0f,0.0f,0.0f})
 {
-	m_pos = { 0, 0, 0 };
-	m_vec = { 0, 0, 0 };
 }
 
 Player::~Player()
@@ -55,7 +57,8 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
-	m_pos = VGet(0, 0, 0);
+	m_pos = { 0, 0, 0 };
+	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
@@ -87,17 +90,16 @@ void Player::Update()
 		attack.comboDuration--;
 		if (attack.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+			attack.pos = { 0.0f,0.0f,0.0f };
 			attack.active = false;
 		}
 	}
-
 	m_isPrevButton = m_isNowButton;
 	
 	DoMove();
 	DoJump();
 	
-
 	//RBボタンを押したとき
 	if (Pad::isTrigger(PAD_INPUT_6))
 	{
@@ -109,7 +111,7 @@ void Player::Update()
 		// 回避時間が終わったら
 		if (evadeData.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
 			evadeData.active = false;
 			evadeData.evadeCount = 0;
 		}
@@ -120,7 +122,7 @@ void Player::Update()
 		idleCount = 0;
 		if (moveCount < 1)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 3, true, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kWalkAnimNo, true, 0.5f);
 		}
 		moveCount++;
 	}
@@ -179,7 +181,7 @@ void Player::DoAttack()
 	}
 	else
 	{
-		m_pAnimation->ChangeAnim(m_modelHandle, 31, false, 0.5f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, 0.5f);
 	}
 	attack.timer = 50.0f;
 	attack.comboDuration = 20.0f;
@@ -195,13 +197,13 @@ void Player::DoAttack()
 		attack.pos.x = m_pos.x + attack.attackOffSetX;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 40, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 		}
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = +kMoveSpeed;
 			attack.pos.x = m_pos.x + attack.attackOffSetX;
-			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 1.0f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
 		}
 	}
 	else 
@@ -210,13 +212,13 @@ void Player::DoAttack()
 		attack.pos.x = m_pos.x - attack.attackOffSetX;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 40, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 		}
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
 			m_vec.x = -kMoveSpeed;
 			attack.pos.x = m_pos.x - attack.attackOffSetX;
-			m_pAnimation->ChangeAnim(m_modelHandle, 42, false, 1.0f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
 		}
 	}
 
@@ -248,18 +250,6 @@ void Player::DoEvade()
 		}
 		m_vec.y = kJumpPower * 0.50f;
 	}
-}
-
-VECTOR Player::GetPlayerPosHead()
-{
-	m_playerPosHead = VGet(m_pos.x, m_pos.y + 90, m_pos.z);
-	return m_playerPosFoot;
-}
-
-VECTOR Player::GetPlayerPosFoot()
-{
-	m_playerPosFoot = VGet(m_pos.x, m_pos.y + 20, m_pos.z);
-	return m_playerPosFoot;
 }
 
 void Player::DoMove()

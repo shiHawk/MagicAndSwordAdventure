@@ -5,17 +5,16 @@
 namespace
 {
 	constexpr float kLerpSpeed = 0.05f;
-	const float kOffSetPos = 10.0f;
-	float angle = 3.0f;
+	constexpr float kOffSetPos = 10.0f;
+	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
 }
 Camera::Camera():
 	m_cameraMoveAngle(0.0f),
 	m_viewAngle(DX_PI_F / 3.0f),
-	m_cameraPos(VGet(0, 0, 0)),
-	m_cameraTarget(VGet(0, 0, 0)),
+	m_cameraPos({ 0.0f,0.0f,0.0f }),
+	m_cameraTarget({ 0.0f,0.0f,0.0f }),
 	m_CountDownFrame(220),
-	m_t(0.1f),
-	m_cameraMoveTargetPos({0,0,0})
+	m_cameraMoveTargetPos({ 0.0f,0.0f,0.0f })
 {
 }
 
@@ -33,7 +32,6 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	SetUseBackCulling(true);  // ポリゴンの裏面を表示しない
 
 	// カメラの位置の初期化を行う
-	// 600 * 600のグリッドが画面中央あたりに表示されるカメラを設定する
 
 	// カメラ(始点)の位置
 	m_cameraPos.x = 0.0f;
@@ -49,7 +47,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 
 	// カメラの視野角を設定する
-	m_viewAngle = 0.447f;	// 30度
+	m_viewAngle = 0.447f;	
 	SetupCamera_Perspective(m_viewAngle);
 
 	// カメラのnear,farを設定する
@@ -59,7 +57,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
 	SetCameraNearFar(10.0f, 3000.0f);
 
-	CreateDirLightHandle(VGet(-0.577f, -0.577f, 0.577));
+	CreateDirLightHandle(kSecondLight);
 }
 
 void Camera::Update()
@@ -82,6 +80,7 @@ void Camera::Update()
 	}
 	SetupCamera_Perspective(m_viewAngle);
 	//printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
+	// 画面の半分を超えたら
 	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
 	{
 		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;
