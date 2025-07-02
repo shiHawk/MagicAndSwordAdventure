@@ -26,8 +26,10 @@ public:
 	VECTOR GetPlayerPosFoot();
 	VECTOR GetAttackPos() { return attack.pos; };
 	float GetAttackRadius() { return attack.radius; }
-	AttackSphere attack = { 30,{0,0,0},false,0,0,30};
+	AttackSphere attack = { 30,{0,0,0},false,0,0,30,60.0,40.0};
 private:
+	void DoMove();
+	void DoJump();
 	struct EvadeData
 	{
 		int evadeCount; // ‰ñ”ğ‰ñ”

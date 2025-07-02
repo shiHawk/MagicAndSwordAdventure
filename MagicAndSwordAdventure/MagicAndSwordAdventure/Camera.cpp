@@ -81,7 +81,7 @@ void Camera::Update()
 		m_cameraPos.z -= 10;
 	}
 	SetupCamera_Perspective(m_viewAngle);
-	printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
+	//printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
 	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
 	{
 		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;

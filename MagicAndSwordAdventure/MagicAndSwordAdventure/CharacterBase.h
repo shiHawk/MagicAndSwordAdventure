@@ -23,6 +23,8 @@ public:
 		float timer; // UŒ‚ŠÔ
 		int count; // UŒ‚‰ñ”
 		int comboDuration; // ‘±ŠÔ
+		float attackOffSetX;
+		float attackOffSetY;
 	};
 	AttackSphere attack;
 };
