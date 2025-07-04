@@ -10,7 +10,7 @@ public:
 	void Update() override;
 	void DoAttack();
 	void Draw()const;
-	VECTOR GetAttackPos() { return attack.pos; };
+	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }
 private:
 	std::shared_ptr<Player> m_pPlayer;
