@@ -27,8 +27,9 @@ private:
 	bool m_enemyHit;
 	// 無敵時間
 	float m_invincibilityTime;
-	float m_playerAttackToEnemyDist;
-	VECTOR m_playerToEnemyAttack; // プレイヤーからエネミー
-	VECTOR m_playerAttackToEnemy;
+	float m_playerAttackToEnemyDistance;
+	float m_enemyAttackToPlayerDistance;
+	VECTOR m_playerToEnemyAttack; // プレイヤーからエネミーの攻撃
+	VECTOR m_playerAttackToEnemy; // プレイヤーの攻撃から敵
 };
 

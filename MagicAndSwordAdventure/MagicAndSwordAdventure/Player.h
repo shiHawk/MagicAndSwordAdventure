@@ -23,10 +23,10 @@ public:
 	void DoAttack();
 	// ‰ñ”ð
 	void DoEvade();
-	VECTOR GetAttackPos() { return attack.pos; };
+	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }
 	bool GetDirRight() { return m_isDirRight; }
-	AttackSphere attack = { 30,{0,0,0},false,0,0,30,60.0,40.0};
+	AttackSphere attack = { 30,{-500,0,0},false,0,0,30,60.0,40.0};
 private:
 	// ˆÚ“®
 	void DoMove();

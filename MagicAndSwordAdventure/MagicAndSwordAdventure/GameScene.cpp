@@ -14,14 +14,12 @@ void GameScene::Init()
 {
 	m_pCamera = std::make_shared<Camera>();
 	m_pPlayer = std::make_shared<Player>();
-	//m_pEnemy = std::make_shared<Enemy>();
 	m_pCollision = std::make_shared<Collision>();
 	m_pAnimation = std::make_shared<Animation>();
 	m_pNormalSkelton = std::make_shared<NormalSkelton>();
 
 	m_pCamera->Init(m_pPlayer);
 	m_pPlayer->Init(m_pAnimation);
-	//m_pEnemy->Init(m_pCollision,m_pPlayer);
 	m_pNormalSkelton->Init(m_pPlayer);
 	m_pCollision->Init(m_pPlayer, m_pEnemy, m_pNormalSkelton);
 	m_pAnimation->Init();
@@ -38,7 +36,6 @@ SceneBase* GameScene::Update()
 {
 	m_pCamera->Update();
 	m_pPlayer->Update();
-	//m_pEnemy->Update();
 	m_pNormalSkelton->Update();
 	m_pCollision->Update();
 	return this;
@@ -47,7 +44,6 @@ SceneBase* GameScene::Update()
 void GameScene::Draw()
 {
 	m_pPlayer->Draw();
-	//m_pEnemy->Draw();
 	m_pNormalSkelton->Draw();
 	m_pCollision->Draw();
 	DrawGrid();

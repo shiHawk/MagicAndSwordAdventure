@@ -9,6 +9,7 @@ public:
 	virtual void Update() = 0;
 	VECTOR GetPos() { return m_pos; };
 	int GetHp() const { return m_hp; }
+	bool GetAttackActive() { return attack.active; }
 	VECTOR m_pos;
 	VECTOR m_vec;
 	int m_modelHandle;
@@ -24,8 +25,8 @@ public:
 		float timer; // 攻撃時間
 		int count; // 攻撃回数
 		int comboDuration; // 持続時間
-		float attackOffSetX;
-		float attackOffSetY;
+		float attackOffSetX; // 攻撃のX座標のオフセット
+		float attackOffSetY; // 攻撃のY座標のオフセット
 	};
 	AttackSphere attack;
 };
