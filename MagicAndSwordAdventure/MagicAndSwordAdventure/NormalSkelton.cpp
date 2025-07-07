@@ -13,7 +13,7 @@ namespace
 	constexpr float kDebugOffSet = 45.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
-	constexpr float kDefaultAttackCoolTime = 60.0f;
+	constexpr float kDefaultAttackCoolTime = 60.0f; // クールタイム
 	int attackCount = 0;
 }
 
@@ -26,6 +26,8 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer)
 {
 	m_pPlayer = pPlayer;
 	m_pos = { 200,0,0 };
+	attack.timer = 40.0f;
+	attack.attackCoolTime = -1.0f;
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
@@ -43,25 +45,27 @@ void NormalSkelton::Update()
 	// エネミーからプレイヤーまでの距離
 	m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 	//printfDx(L"m_enemyToPlayer.x:%f\n",m_enemyToPlayer.x);
-	if (m_enemyToPlayerDistance < kSerchRange)
+	if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
 	{
 		TrackPlayer();
 	}
 	if (attack.active)
 	{
 		attack.timer--;
-		attack.attackCoolTime--;
 		if (attack.timer <= 0)
 		{
 			attack.active = false;
 			attack.pos = { -100.0f,-100.0f,-100.0f };
 			ChangeAnim(m_modelHandle, 41, false, 0.5f);
+			attack.timer = 40.0f;
+			attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 			attackCount = 0;
 		}
 	}
-	if (attack.attackCoolTime < 0 && !attack.active)
+	else
 	{
-		attack.attackCoolTime = kDefaultAttackCoolTime;
+		// 攻撃が終わっているならクールタイムを減らす
+		attack.attackCoolTime--;
 	}
 	MV1SetPosition(m_modelHandle,m_pos);
 	UpdateAnim();
@@ -72,11 +76,9 @@ void NormalSkelton::DoAttack()
 	attack.active = true;
 	if (attackCount < 1)
 	{
-		ChangeAnim(m_modelHandle, 5, false, 0.7f);
+		ChangeAnim(m_modelHandle, 5, false, 1.0f);
 	}
 	attackCount++;
-	attack.timer = 40.0f;
-	attack.attackCoolTime = kDefaultAttackCoolTime;
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
@@ -97,6 +99,7 @@ void NormalSkelton::Draw() const
 #if _DEBUG
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kSerchRange, 8, 0x00ff00, 0xffffff, false);
+	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kAttackRange, 8, 0x0000ff, 0xffffff, false);
 	if (attack.active)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, false);
@@ -106,7 +109,7 @@ void NormalSkelton::Draw() const
 
 void NormalSkelton::TrackPlayer()
 {
-	if (m_enemyToPlayerDistance < kAttackRange && attack.attackCoolTime > 0)
+	if (m_enemyToPlayerDistance < kAttackRange)
 	{
 		DoAttack();
 	}
