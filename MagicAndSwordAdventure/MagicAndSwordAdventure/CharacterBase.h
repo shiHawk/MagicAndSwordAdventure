@@ -27,6 +27,7 @@ public:
 		int comboDuration; // 持続時間
 		float attackOffSetX; // 攻撃のX座標のオフセット
 		float attackOffSetY; // 攻撃のY座標のオフセット
+		float attackCoolTime; // 攻撃のクールタイム
 	};
 	AttackSphere attack;
 };

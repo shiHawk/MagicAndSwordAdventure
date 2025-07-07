@@ -13,7 +13,7 @@ namespace
 	constexpr float kDebugOffSet = 45.0f;
 	// Œ¸‘¬
 	constexpr float kMoveDecRate = 0.80f;
-	
+	constexpr float kDefaultAttackCoolTime = 60.0f;
 	int attackCount = 0;
 }
 
@@ -50,6 +50,7 @@ void NormalSkelton::Update()
 	if (attack.active)
 	{
 		attack.timer--;
+		attack.attackCoolTime--;
 		if (attack.timer <= 0)
 		{
 			attack.active = false;
@@ -57,6 +58,10 @@ void NormalSkelton::Update()
 			ChangeAnim(m_modelHandle, 41, false, 0.5f);
 			attackCount = 0;
 		}
+	}
+	if (attack.attackCoolTime < 0 && !attack.active)
+	{
+		attack.attackCoolTime = kDefaultAttackCoolTime;
 	}
 	MV1SetPosition(m_modelHandle,m_pos);
 	UpdateAnim();
@@ -71,6 +76,7 @@ void NormalSkelton::DoAttack()
 	}
 	attackCount++;
 	attack.timer = 40.0f;
+	attack.attackCoolTime = kDefaultAttackCoolTime;
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
@@ -100,7 +106,7 @@ void NormalSkelton::Draw() const
 
 void NormalSkelton::TrackPlayer()
 {
-	if (m_enemyToPlayerDistance < kAttackRange)
+	if (m_enemyToPlayerDistance < kAttackRange && attack.attackCoolTime > 0)
 	{
 		DoAttack();
 	}
