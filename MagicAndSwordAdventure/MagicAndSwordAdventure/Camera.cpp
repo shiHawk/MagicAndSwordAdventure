@@ -5,7 +5,7 @@
 namespace
 {
 	constexpr float kLerpSpeed = 0.05f;
-	constexpr float kOffSetPos = 20.0f;
+	constexpr float kOffSetPos = 10.0f;
 	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
 }
 Camera::Camera():
@@ -79,7 +79,7 @@ void Camera::Update()
 		m_cameraPos.z -= 10;
 	}
 	SetupCamera_Perspective(m_viewAngle);
-	//printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
+	printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
 	// ‰æ–Ê‚Ì”¼•ª‚ð’´‚¦‚½‚ç
 	if (m_pPlayer->GetScreenPos().x > Game::kScreenWidth * 0.5f)
 	{

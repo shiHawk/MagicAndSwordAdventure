@@ -41,7 +41,7 @@ void Collision::Update()
 	if (m_enemyAttackToPlayerDistance < m_pPlayer->GetColRadius() + m_pNormalSkelton->GetAttackRadius() && !m_isPlayerHit)
 	{
 		m_isPlayerHit = true;
-		if (m_isPlayerHit)
+		if (m_isPlayerHit && m_pNormalSkelton->GetAttackActive())
 		{
 			m_pPlayer->OnDamage();
 		}

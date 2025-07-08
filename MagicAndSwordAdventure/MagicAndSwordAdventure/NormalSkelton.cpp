@@ -55,7 +55,7 @@ void NormalSkelton::Update()
 		if (attack.timer <= 0)
 		{
 			attack.active = false;
-			attack.pos = { -100.0f,-100.0f,-100.0f };
+			attack.pos = { 0.0f,-100.0f,0.0f };
 			ChangeAnim(m_modelHandle, 41, false, 0.5f);
 			attack.timer = 40.0f;
 			attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定

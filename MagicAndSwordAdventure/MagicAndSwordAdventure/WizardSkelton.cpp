@@ -6,9 +6,10 @@ namespace
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
 	constexpr float kSerchRange = 300.0f; // 索敵範囲
+	constexpr float kAttackRange = 300.0f; // 攻撃範囲
 	constexpr float kMoveSpeed = 2.0f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
-	constexpr float kMoveDecRate = 1.1f;// 加速
+	constexpr float kMoveAccRate = 1.1f;// 加速
 	constexpr float kDefaultAttackCoolTime = 60.0f;
 	int attackCount = 0;
 }
@@ -25,6 +26,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer)
 	attack.pos.x = m_pos.x - attack.attackOffSetX;
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Mage.mv1");
 	attack.attackCoolTime = -1.0f;
+	attack.timer = 60.0f;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, 41);
@@ -48,12 +50,12 @@ void WizardSkelton::Update()
 	if (attack.active)
 	{
 		attack.timer--;
-		if (attack.timer <= 0)
+		if (VSize(VSub(attack.pos, m_pPlayer->GetPos())) > kAttackRange)
 		{
 			attack.active = false;
 			attack.pos = { m_pos.x,-100.0f,m_pos.z };
 			ChangeAnim(m_modelHandle, 41, false, 0.5f);
-			attack.timer = 40.0f;
+			attack.timer = 60.0f;
 			attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 			attackCount = 0;
 		}
@@ -77,18 +79,17 @@ void WizardSkelton::DoAttack()
 		ChangeAnim(m_modelHandle, 77, false, 0.5f);
 	}
 	attackCount++;
-	attack.timer = 40.0f;
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
-		attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;
-		attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveDecRate;
+		attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
+		attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
 	}
 	else
 	{
 		MV1SetRotationXYZ(m_modelHandle, kRightDir);
-		attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;
-		attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveDecRate;
+		attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
+		attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
 	}
 	attack.pos.y = m_pos.y + attack.attackOffSetY;
 }
