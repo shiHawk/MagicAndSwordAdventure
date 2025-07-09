@@ -19,5 +19,7 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	// プレイヤーに向かうベクトル
 	VECTOR m_toPlayerDir;
+	// 攻撃に移行するまでの時間
+	float m_attackWaitingTime;
 };
 

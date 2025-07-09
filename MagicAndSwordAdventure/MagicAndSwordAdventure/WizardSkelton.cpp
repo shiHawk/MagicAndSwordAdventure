@@ -15,7 +15,8 @@ namespace
 }
 
 WizardSkelton::WizardSkelton():
-m_toPlayerDir({0.0f,0.0f,0.0f})
+m_toPlayerDir({0.0f,0.0f,0.0f}),
+m_isAttackEnd(false)
 {
 }
 
@@ -45,11 +46,17 @@ void WizardSkelton::Update()
 	//printfDx(L"m_enemyToPlayerDistance:%f\n",m_enemyToPlayerDistance);
 	if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
 	{
-		DoAttack();
+		attack.active = true;
 	}
 	if (attack.active)
 	{
+		DoAttack();
 		attack.timer--;
+		if (attack.timer < 0.0f && !m_isAttackEnd)
+		{
+			m_isAttackEnd = true;
+			ChangeAnim(m_modelHandle, 41, false, 0.5f);
+		}
 		if (VSize(VSub(attack.pos, m_pPlayer->GetPos())) > kAttackRange)
 		{
 			attack.active = false;
@@ -58,6 +65,7 @@ void WizardSkelton::Update()
 			attack.timer = 60.0f;
 			attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 			attackCount = 0;
+			m_isAttackEnd = false;
 		}
 	}
 	else
@@ -76,21 +84,20 @@ void WizardSkelton::DoAttack()
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
 	if (attackCount < 1)
 	{
-		ChangeAnim(m_modelHandle, 77, false, 0.5f);
+		ChangeAnim(m_modelHandle, 77, false, 0.4f);
 	}
 	attackCount++;
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
-		attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
-		attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
 	}
 	else
 	{
 		MV1SetRotationXYZ(m_modelHandle, kRightDir);
-		attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
-		attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
 	}
+	// プレイヤーの位置に向かって攻撃を飛ばす
+	attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
+	attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
 	attack.pos.y = m_pos.y + attack.attackOffSetY;
 }
 

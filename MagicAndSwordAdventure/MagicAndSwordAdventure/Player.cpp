@@ -16,9 +16,12 @@ namespace
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
 
+	// カメラ移動用のしきい値
+	constexpr float kMoveCameraThreshold = 50.0f;
+
 	// カプセル用の位置
-	constexpr float playerHeadOffSet = 90;
-	constexpr float playerFootOffSet = 20;
+	constexpr float playerHeadOffSet = 90.0f;
+	constexpr float playerFootOffSet = 20.0f;
 
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
@@ -47,7 +50,12 @@ m_isPrevButton(false),
 m_isNowButton(false),
 m_jumpCount(0),
 m_isAttackDirRight(true),
-m_screenPos({0.0f,0.0f,0.0f})
+m_screenPos({0.0f,0.0f,0.0f}),
+m_isMovingFlag(false),
+m_isNowDirRight(true),
+m_isPrevDirRight(true),
+m_prevPos({0,0,0}),
+m_distanceAfterMoving(0.0f)
 {
 }
 
@@ -57,13 +65,14 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
-	m_pos = { -300, 0, 0 };
+	m_pos = { -200.0f, 0.0f, 0.0f };
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
 	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	m_pAnimation->AttachAnim(m_modelHandle, 1);
+	m_prevPos = m_pos;
 }
 
 void Player::End()
@@ -80,7 +89,7 @@ void Player::Update()
 	// Bボタンを押したとき
 	m_isNowButton = Pad::isPress(PAD_INPUT_2);
 	// Bボタンが押されっぱなしでない
-	if (m_isNowButton && !m_isPrevButton)
+	if (m_isNowButton && !m_isPrevButton && !m_isJump && !isMove)
 	{
 		DoAttack();
 	}
@@ -97,7 +106,7 @@ void Player::Update()
 	}
 	m_isPrevButton = m_isNowButton;
 	// Aボタンを押したときジャンプ
-	if (Pad::isTrigger(PAD_INPUT_1) && !m_isJump)
+	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)
 	{
 		m_vec.y = kJumpPower;
 		m_jumpCount++;
@@ -262,6 +271,25 @@ void Player::DoEvade()
 	m_pos = VAdd(m_pos, m_vec);
 }
 
+bool Player::GetIsMoving()
+{
+	// 振り向いたら距離をリセット
+	if (m_isPrevDirRight != m_isNowDirRight)
+	{
+		m_prevPos = m_pos;
+		m_isMovingFlag = false;
+	}
+	// 移動前と移動後の距離の大きさを測る
+	m_distanceAfterMoving = VSize(VSub(m_pos, m_prevPos));
+	m_isPrevDirRight = m_isNowDirRight;
+	if (!m_isMovingFlag && m_distanceAfterMoving > kMoveCameraThreshold)
+	{
+		m_isMovingFlag = true;
+	}
+	return m_isMovingFlag;
+}
+
+
 void Player::DoMove()
 {
 	if (isStartGravity)
@@ -271,6 +299,7 @@ void Player::DoMove()
 
 	if (Pad::isPress(PAD_INPUT_RIGHT) && !evadeData.active)
 	{
+		m_isNowDirRight = true;
 		if (!evadeData.active)
 		{
 			MV1SetRotationXYZ(m_modelHandle, kRightDir);
@@ -290,6 +319,7 @@ void Player::DoMove()
 	}
 	else if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
 	{
+		m_isNowDirRight = false;
 		if (!evadeData.active)
 		{
 			MV1SetRotationXYZ(m_modelHandle, kLeftDir);

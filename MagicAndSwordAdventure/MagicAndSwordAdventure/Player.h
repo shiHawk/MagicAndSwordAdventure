@@ -26,6 +26,7 @@ public:
 	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }
 	bool GetDirRight() { return m_isDirRight; }
+	bool GetIsMoving();
 	AttackSphere attack = { 30,{-500,0,0},false,0,0,30,60.0,40.0};
 private:
 	// 移動
@@ -54,9 +55,19 @@ private:
 	bool m_isJump;
 	VECTOR m_playerPosHead;
 	VECTOR m_playerPosFoot;
+	// 移動前の位置
+	VECTOR m_prevPos;
+	// 移動前と移動後の距離
+	float m_distanceAfterMoving;
 	// 直前に押されているか
 	bool m_isPrevButton;
 	// 現在押されているか
 	bool m_isNowButton;
+	// 移動したかどうか
+	bool m_isMovingFlag;
+	// 前回向いている方向
+	bool m_isPrevDirRight;
+	// 現在向いている方向
+	bool m_isNowDirRight;
 };
 

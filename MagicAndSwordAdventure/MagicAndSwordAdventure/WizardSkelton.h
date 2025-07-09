@@ -17,5 +17,6 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	// プレイヤーに向かうベクトル
 	VECTOR m_toPlayerDir;
+	bool m_isAttackEnd = false;
 };
 
