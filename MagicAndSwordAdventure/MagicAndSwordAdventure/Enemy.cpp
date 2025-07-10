@@ -39,6 +39,10 @@ void Enemy::Update()
 	m_enemyToPlayerDistance = VSize(VSub(m_pos, m_pPlayer->GetPos()));
 }
 
+void Enemy::OnDamage()
+{
+}
+
 void Enemy::Draw()
 {
 	DrawSphere3D(m_pos, kColRadius, 32, 0xff0000, 0xffffff, TRUE);

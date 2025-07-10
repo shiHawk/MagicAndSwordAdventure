@@ -4,7 +4,7 @@
 #include "Pad.h"
 namespace
 {
-	constexpr float kLerpSpeed = 0.01f;
+	constexpr float kLerpSpeed = 0.015f;
 	constexpr float kOffSetPos = 200.0f;
 	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
 }

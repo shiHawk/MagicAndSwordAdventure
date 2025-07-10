@@ -57,7 +57,7 @@ void WizardSkelton::Update()
 			m_isAttackEnd = true;
 			ChangeAnim(m_modelHandle, 41, false, 0.5f);
 		}
-		if (VSize(VSub(attack.pos, m_pPlayer->GetPos())) > kAttackRange)
+		if(VSize(VSub(attack.pos,m_pos)) > kAttackRange)
 		{
 			attack.active = false;
 			attack.pos = { m_pos.x,-100.0f,m_pos.z };

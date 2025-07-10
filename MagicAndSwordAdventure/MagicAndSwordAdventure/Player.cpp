@@ -17,7 +17,7 @@ namespace
 	constexpr float kMoveDecRate = 0.80f;
 
 	// カメラ移動用のしきい値
-	constexpr float kMoveCameraThreshold = 50.0f;
+	constexpr float kMoveCameraThreshold = 60.0f;
 
 	// カプセル用の位置
 	constexpr float playerHeadOffSet = 90.0f;
