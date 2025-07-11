@@ -34,6 +34,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer)
 	m_pos = { 200,0,0 };
 	attack.timer = 40.0f;
 	attack.attackCoolTime = -1.0f;
+	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
 	m_attackWaitingTime = 60.0f;
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
 	m_isDead = false;

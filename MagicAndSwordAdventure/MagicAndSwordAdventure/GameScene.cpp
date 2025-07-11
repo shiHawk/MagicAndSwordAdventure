@@ -33,7 +33,7 @@ void GameScene::Init()
 	m_pWizardSkelton = std::make_shared<WizardSkelton>();
 
 	m_pCamera->Init(m_pPlayer);
-	m_pPlayer->Init(m_pAnimation, m_pCollision);
+	m_pPlayer->Init(m_pAnimation);
 	m_pNormalSkelton->Init(m_pPlayer);
 	m_pWizardSkelton->Init(m_pPlayer);
 	m_pCollision->Init(m_pPlayer, m_pEnemy, m_pNormalSkelton, m_pWizardSkelton);
