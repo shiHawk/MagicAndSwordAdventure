@@ -12,6 +12,7 @@ public:
 	void UpdateBlendAnim(int modelHandle, int animNo);
 	void StartBlending();
 	bool isNowPlaying() { return m_isNowPlaying; }
+	bool GetIsAnimEnd() { return m_isEnd; }
 private:
 	// ‘Ä¶ŠÔ
 	float m_animTotalTime;

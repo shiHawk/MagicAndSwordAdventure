@@ -8,6 +8,7 @@
 #include "WizardSkelton.h"
 #include "Camera.h"
 #include <memory>
+#include <vector>
 #include "DxLib.h"
 
 class Player;
@@ -31,6 +32,8 @@ private:
 	std::shared_ptr<Collision> m_pCollision;
 	std::shared_ptr<Animation> m_pAnimation;
 	std::shared_ptr<NormalSkelton> m_pNormalSkelton;
+	std::vector<std::shared_ptr<NormalSkelton>> m_NormalSkeltons;
+	std::vector<std::shared_ptr<WizardSkelton>> m_WizardSkeltons;
 	std::shared_ptr<WizardSkelton> m_pWizardSkelton;
 	std::shared_ptr<Camera> m_pCamera;
 };

@@ -19,6 +19,7 @@ namespace
 	constexpr int kWalkAnimNo = 54;
 	constexpr int kAttackAnimNo = 5;
 	int attackCount = 0;
+	int deadCount = 0;
 }
 
 NormalSkelton::NormalSkelton():
@@ -35,6 +36,8 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer)
 	attack.attackCoolTime = -1.0f;
 	m_attackWaitingTime = 60.0f;
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
+	m_isDead = false;
+	m_hp = 100;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
@@ -43,39 +46,48 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer)
 void NormalSkelton::End()
 {
 	MV1DeleteModel(m_modelHandle);
+	deadCount = 0;
 }
 
 void NormalSkelton::Update()
 {
-	m_enemyToPlayer = VSub(m_pos, m_pPlayer->GetPos());
-	// エネミーからプレイヤーまでの距離
-	m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
-	//printfDx(L"m_enemyToPlayer.x:%f\n",m_enemyToPlayer.x);
-	if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
+	if (!m_isDead)
 	{
-		TrackPlayer();
-	}
-	if (attack.active)
-	{
-		attack.timer--;
-		if (attack.timer <= 0)
+		m_enemyToPlayer = VSub(m_pos, m_pPlayer->GetPos());
+		// エネミーからプレイヤーまでの距離
+		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
+		//printfDx(L"m_enemyToPlayer.x:%f\n",m_enemyToPlayer.x);
+		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
 		{
-			attack.active = false;
-			attack.pos = { 0.0f,-100.0f,0.0f };
-			ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
-			attack.timer = 40.0f;
-			attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
-			m_attackWaitingTime = 20.0f;
-			attackCount = 0;
+			TrackPlayer();
 		}
+		if (attack.active)
+		{
+			attack.timer--;
+			if (attack.timer <= 0)
+			{
+				attack.active = false;
+				attack.pos = { 0.0f,-100.0f,0.0f };
+				ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+				attack.timer = 40.0f;
+				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
+				m_attackWaitingTime = 20.0f;
+				attackCount = 0;
+			}
+		}
+		else
+		{
+			// 攻撃が終わっているならクールタイムを減らす
+			attack.attackCoolTime--;
+		}
+		MV1SetPosition(m_modelHandle, m_pos);
+		UpdateAnim();
 	}
 	else
 	{
-		// 攻撃が終わっているならクールタイムを減らす
-		attack.attackCoolTime--;
+		ChangeAnim(m_modelHandle, 25, false, 0.5f);
+		End();
 	}
-	MV1SetPosition(m_modelHandle,m_pos);
-	UpdateAnim();
 }
 
 void NormalSkelton::DoAttack()
@@ -99,6 +111,16 @@ void NormalSkelton::DoAttack()
 	}
 	attack.pos.y = m_pos.y + attack.attackOffSetY;
 	attack.pos.z = m_pos.z;
+}
+
+void NormalSkelton::OnDamage()
+{
+	m_hp -= m_pPlayer->GetPower();
+	if (m_hp <= 0)
+	{
+		m_hp = 0;
+	}
+	//printfDx(L"hp:%d\n", m_hp);
 }
 
 void NormalSkelton::Draw() const

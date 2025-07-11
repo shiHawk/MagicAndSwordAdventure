@@ -45,6 +45,7 @@ void Animation::UpdateAnim()
 	}
 	if (m_playTime >= m_animTotalTime)
 	{
+		m_isEnd = true;
 		m_playTime = 0.0f;
 	}
 }
@@ -64,6 +65,7 @@ void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop, float incre
 	m_timeIncrement = increment;
 	// ‘Ä¶ŠÔ‚ğÄİ’è
 	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_nextAttachNo);
+	m_isEnd = false;
 }
 
 void Animation::UpdateBlendAnim(int modelHandle, int animNo)

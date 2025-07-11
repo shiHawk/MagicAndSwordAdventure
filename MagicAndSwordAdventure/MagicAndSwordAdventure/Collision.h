@@ -5,6 +5,7 @@
 #include "NormalSkelton.h"
 #include "WizardSkelton.h"
 #include<memory>
+#include <vector>
 class Player;
 class Enemy;
 class NormalSkelton;
@@ -15,17 +16,21 @@ public:
 	~Collision();
 
 	void Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, 
-			  std::shared_ptr<NormalSkelton> pNormalSkelton, std::shared_ptr<WizardSkelton> pWizardSkelton);
+		std::shared_ptr<NormalSkelton> pNormalSkelton,
+		std::shared_ptr<WizardSkelton> pWizardSkelton);
 	void End();
 	void Update();
 	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive);
 	void EnemyHit(float playerAttackToEnemy, float playerRadius, float enemyAttackRadius,bool playerAttackActive,bool enemyHit);
 	void Draw();
+	bool GetIsPlayerHit() { return m_isPlayerHit; }
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<NormalSkelton> m_pNormalSkelton;
 	std::shared_ptr<WizardSkelton> m_pWizardSkelton;
+	/*std::vector<std::shared_ptr<NormalSkelton>> m_normalSkeltons;
+	std::vector<std::shared_ptr<WizardSkelton>> m_wizardSkeltons;*/
 	// ƒvƒŒƒCƒ„[‚ªUŒ‚‚É“–‚½‚Á‚½‚©
 	bool m_isPlayerHit;
 	// NormalSkelton‚ªUŒ‚‚É“–‚½‚Á‚½‚©
