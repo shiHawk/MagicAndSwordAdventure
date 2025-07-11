@@ -31,8 +31,6 @@ public:
 private:
 	// ˆÚ“®
 	void DoMove();
-	// ƒWƒƒƒ“ƒv
-	void DoJump();
 	struct EvadeData
 	{
 		int evadeCount; // ‰ñ”ğ‰ñ”

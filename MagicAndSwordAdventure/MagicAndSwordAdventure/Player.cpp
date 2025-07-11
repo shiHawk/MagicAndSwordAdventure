@@ -117,7 +117,6 @@ void Player::Update()
 		m_isJump = true;
 	}
 	DoMove();
-	DoJump();
 	
 	//RBƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½‚Æ‚«
 	if (Pad::isTrigger(PAD_INPUT_6))
@@ -369,9 +368,5 @@ void Player::DoMove()
 	m_pos = VAdd(m_pos, m_vec);
 }
 
-void Player::DoJump()
-{
-	
-}
 
 
