@@ -24,7 +24,9 @@ namespace
 
 NormalSkelton::NormalSkelton():
 	m_toPlayerDir({0.0f,0.f,0.0f}),
-	m_attackWaitingTime(0.0f)
+	m_attackWaitingTime(0.0f),
+	m_isMove(false),
+	m_moveCount(0)
 {
 }
 
@@ -70,7 +72,7 @@ void NormalSkelton::Update()
 			{
 				attack.active = false;
 				attack.pos = { 0.0f,-100.0f,0.0f };
-				ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+				ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
 				attack.timer = 40.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_attackWaitingTime = 20.0f;
@@ -82,9 +84,9 @@ void NormalSkelton::Update()
 			// 攻撃が終わっているならクールタイムを減らす
 			attack.attackCoolTime--;
 		}
-		if (GetIsAnimEnd())
+		if (GetIsAnimEnd() && !m_isMove)
 		{
-			ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+			ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
 		}
 		MV1SetPosition(m_modelHandle, m_pos);
 		UpdateAnim();
@@ -148,6 +150,7 @@ void NormalSkelton::TrackPlayer()
 {
 	if (m_enemyToPlayerDistance < kAttackRange)
 	{
+		m_isMove = false;
 		// 攻撃を始めるまでの待機時間を減らす
 		m_attackWaitingTime--;
 		if (m_attackWaitingTime < 0)
@@ -157,6 +160,12 @@ void NormalSkelton::TrackPlayer()
 	}
 	else
 	{
+		if (!m_isMove)
+		{
+			ChangeAnim(m_modelHandle, kWalkAnimNo,true,0.5f);
+			m_isMove = true;
+		}
+		m_moveCount++;
 		// プレイヤーに向かうベクトル
 		m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
 		// プレイヤーの位置に向かう

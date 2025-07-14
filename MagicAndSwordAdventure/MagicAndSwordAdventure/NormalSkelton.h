@@ -22,5 +22,7 @@ private:
 	VECTOR m_toPlayerDir;
 	// UŒ‚‚ÉˆÚs‚·‚é‚Ü‚Å‚ÌŠÔ
 	float m_attackWaitingTime;
+	bool m_isMove;
+	int m_moveCount;
 };
 

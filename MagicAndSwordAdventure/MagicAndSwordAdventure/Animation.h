@@ -13,6 +13,7 @@ public:
 	void StartBlending();
 	bool isNowPlaying() { return m_isNowPlaying; }
 	bool GetIsAnimEnd() { return m_isEnd; }
+	int GetAttachAnimNo() { return m_currentAttachNo; }
 private:
 	// ‘Ä¶ŠÔ
 	float m_animTotalTime;

@@ -101,7 +101,7 @@ void Player::Update()
 		if (attack.timer <= 0)
 		{
 			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
-			attack.pos = { 0.0f,0.0f,0.0f };
+			attack.pos = { 0.0f,-1000.0f,0.0f };
 			attack.active = false;
 		}
 	}
