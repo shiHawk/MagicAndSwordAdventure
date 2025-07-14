@@ -15,6 +15,8 @@ namespace
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
 	constexpr int kAttackAnimNo = 5;
+	// ç≈ëÂHP
+	constexpr int kMaxHp = 60;
 	int attackCount = 0;
 }
 
@@ -35,7 +37,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	attack.timer = 60.0f;
 	m_isDying = false;
 	m_isDead = false;
-	m_hp = 60;
+	m_hp = kMaxHp;
 	m_power = 30;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);

@@ -12,7 +12,7 @@ namespace
 	// “–‚½‚è”»’è‚Ì”ÍˆÍ
 	constexpr float kColRadius = 40.0f;
 	// Å‘åHP
-	constexpr int kMaxHp = 50;
+	constexpr int kMaxHp = 300;
 	// Œ¸‘¬
 	constexpr float kMoveDecRate = 0.80f;
 

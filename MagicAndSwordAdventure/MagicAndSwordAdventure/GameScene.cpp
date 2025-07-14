@@ -16,7 +16,6 @@ void GameScene::Init()
 	m_pPlayer = std::make_shared<Player>();
 	m_pCollision = std::make_shared<Collision>();
 	// NormalSkelton を複数生成
-	
 	for (int i = 0; i < 2; ++i)
 	{
 		auto normalSkelton = std::make_shared<NormalSkelton>();
@@ -24,7 +23,6 @@ void GameScene::Init()
 		m_NormalSkeltons.push_back(normalSkelton);
 	}
 	// WizardSkelton を複数生成
-	
 	for (int i = 0; i < 2; ++i)
 	{
 		auto wizard = std::make_shared<WizardSkelton>();
@@ -90,25 +88,23 @@ void GameScene::Draw()
 	}
 	/*m_pNormalSkelton->Draw();
 	m_pWizardSkelton->Draw();*/
-	//m_pCollision->Draw();
 	DrawGrid();
-	DrawSphere3D(VGet(1800.0f,0.0f,0.0f), 25.0f, 8, 0x0000ff, 0xffffff, true);
-	DrawSphere3D(VGet(1800.0f, 0.0f, 0.0f), 300, 8, 0xffff00, 0xffffff, false);
+	/*DrawSphere3D(VGet(1800.0f,0.0f,0.0f), 25.0f, 8, 0x0000ff, 0xffffff, true);
+	DrawSphere3D(VGet(1800.0f, 0.0f, 0.0f), 300, 8, 0xffff00, 0xffffff, false);*/
 }
 
 void GameScene::DrawGrid() const
 {
 	VECTOR start = VGet(-2700.0f,0.0f,0.0f); // 始点
-	VECTOR end = VGet(2700.0f, 0.0f, 0.0f);   // 終点
+	VECTOR end = VGet(2700.0f, 0.0f, 0.0f);  // 終点
 
 	// 横方向のグリッドをfor文を使って描画する
 	// 始点終点のXY座標は変わらない
 	// Z座標のfor文を使って変化させる
-	for (int z = -300; z <= 300; z += 100)
+	for (float z = -300.0f; z <= 300.0f; z += 100.0f)
 	{
 		start.z = z;
 		end.z = z;
-
 		DrawLine3D(start, end, 0xffffff);
 	}
 
@@ -116,11 +112,10 @@ void GameScene::DrawGrid() const
 	start = VGet(0.0f, 0.0f, -300.0f); // 始点
 	end = VGet(0.0f, 0.0f, 300.0f);   // 終点
 
-	for (int x = -900; x <= 900; x += 100)
+	for (float x = -900.0f; x <= 900.0f; x += 100.0f)
 	{
 		start.x = x;
 		end.x = x;
-
 		DrawLine3D(start, end, 0xffffff);
 	}
 }

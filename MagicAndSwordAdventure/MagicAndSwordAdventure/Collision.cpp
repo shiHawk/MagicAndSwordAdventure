@@ -23,7 +23,7 @@ void Collision::Init(std::shared_ptr<Player> pPlayer,std::vector<std::shared_ptr
 	m_normalSkeltons = normalSkeltons;
 	m_wizardSkeltons = wizardSkeltons;
 	m_isPlayerHit = false;
-	m_invincibilityTime = 120.0f;
+	m_invincibilityTime = 160.0f;
 	m_playerToNormalSkeltonAttack = VGet(200.0f,0.0f,0.0f);
 }
 
@@ -64,7 +64,7 @@ void Collision::Update()
 			if (m_invincibilityTime < 0)
 			{
 				m_normalSkeltonHit = false;
-				m_invincibilityTime = 60.0f;
+				m_invincibilityTime = 160.0f;
 			}
 		}
 	}
@@ -100,7 +100,7 @@ void Collision::Update()
 			if (m_invincibilityTime < 0)
 			{
 				m_wizardSkeltonHit = false;
-				m_invincibilityTime = 60.0f;
+				m_invincibilityTime = 160.0f;
 			}
 		}
 	}

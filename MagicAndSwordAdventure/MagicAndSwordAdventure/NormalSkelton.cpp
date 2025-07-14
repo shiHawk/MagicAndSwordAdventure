@@ -18,6 +18,8 @@ namespace
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
 	constexpr int kAttackAnimNo = 5;
+	// ç≈ëÂHP
+	constexpr int kMaxHp = 100;
 	int attackCount = 0;
 	int idleCount = 0;
 }
@@ -42,7 +44,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
 	m_isDead = false;
 	m_isDying = false;
-	m_hp = 100;
+	m_hp = kMaxHp;
 	m_power = 20;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
