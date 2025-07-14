@@ -9,6 +9,7 @@ public:
 	void End();
 	void Update() override;
 	void DoAttack();
+	void OnDamage();
 	void Draw()const;
 	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }

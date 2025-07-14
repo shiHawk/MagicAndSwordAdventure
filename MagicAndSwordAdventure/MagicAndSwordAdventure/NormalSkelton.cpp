@@ -39,6 +39,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer)
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
 	m_isDead = false;
 	m_hp = 100;
+	m_power = 20;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
@@ -81,6 +82,10 @@ void NormalSkelton::Update()
 			// 攻撃が終わっているならクールタイムを減らす
 			attack.attackCoolTime--;
 		}
+		if (GetIsAnimEnd())
+		{
+			ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+		}
 		MV1SetPosition(m_modelHandle, m_pos);
 		UpdateAnim();
 	}
@@ -116,12 +121,13 @@ void NormalSkelton::DoAttack()
 
 void NormalSkelton::OnDamage()
 {
+	ChangeAnim(m_modelHandle, 40, false, 0.5f);
 	m_hp -= m_pPlayer->GetPower();
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
 	}
-	//printfDx(L"hp:%d\n", m_hp);
+	printfDx(L"hp:%d\n", m_hp);
 }
 
 void NormalSkelton::Draw() const

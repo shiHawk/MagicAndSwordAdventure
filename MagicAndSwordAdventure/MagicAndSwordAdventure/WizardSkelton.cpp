@@ -11,6 +11,10 @@ namespace
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kMoveAccRate = 1.1f;// 加速
 	constexpr float kDefaultAttackCoolTime = 60.0f;
+	// アニメーションの番号
+	constexpr int kIdleAnimNo = 41;
+	constexpr int kWalkAnimNo = 54;
+	constexpr int kAttackAnimNo = 5;
 	int attackCount = 0;
 }
 
@@ -24,10 +28,12 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer)
 {
 	m_pPlayer = pPlayer;
 	m_pos = { 300.0f,0.0f,0.0f };
-	attack.pos.x = m_pos.x - attack.attackOffSetX;
+	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Mage.mv1");
 	attack.attackCoolTime = -1.0f;
 	attack.timer = 60.0f;
+	m_hp = 60;
+	m_power = 30;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, 41);
@@ -73,6 +79,10 @@ void WizardSkelton::Update()
 		// 攻撃が終わっているならクールタイムを減らす
 		attack.attackCoolTime--;
 	}
+	if (GetIsAnimEnd())
+	{
+		ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+	}
 	MV1SetPosition(m_modelHandle, m_pos);
 	UpdateAnim();
 }
@@ -99,6 +109,17 @@ void WizardSkelton::DoAttack()
 	attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
 	attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
 	attack.pos.y = m_pos.y + attack.attackOffSetY;
+}
+
+void WizardSkelton::OnDamage()
+{
+	ChangeAnim(m_modelHandle, 40, false, 0.5f);
+	m_hp -= m_pPlayer->GetPower();
+	if (m_hp <= 0)
+	{
+		m_hp = 0;
+	}
+	printfDx(L"hp:%d\n", m_hp);
 }
 
 void WizardSkelton::Draw() const

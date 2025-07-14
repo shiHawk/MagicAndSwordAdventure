@@ -73,6 +73,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	m_pAnimation->AttachAnim(m_modelHandle, 1);
 	m_prevPos = m_pos;
+	m_power = 20;
 }
 
 void Player::End()
@@ -185,7 +186,7 @@ float Player::GetColRadius() const
 void Player::OnDamage()
 {
 	m_hp -= 10;
-	printfDx(L"hp:%d\n", m_hp);
+	//printfDx(L"hp:%d\n", m_hp);
 }
 
 void Player::DoAttack()

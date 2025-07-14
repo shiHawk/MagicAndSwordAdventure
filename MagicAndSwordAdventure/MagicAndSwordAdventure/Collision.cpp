@@ -63,7 +63,7 @@ void Collision::Update()
 		if (m_pPlayer->GetAttackActive())
 		{
 			m_pNormalSkelton->OnDamage();
-			printfDx(L"Hit\n");
+			//printfDx(L"Hit\n");
 			m_normalSkeltonHit = true;
 		}
 	}
@@ -73,7 +73,7 @@ void Collision::Update()
 		if (m_pPlayer->GetAttackActive())
 		{
 			//printfDx(L"Hit\n");
-			m_pWizardSkelton->OnDamage(m_pWizardSkelton->GetHp(), m_pPlayer->GetPower());
+			m_pWizardSkelton->OnDamage();
 			m_wizardSkeltonHit = true;
 		}
 	}
