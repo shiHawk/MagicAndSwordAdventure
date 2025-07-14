@@ -16,8 +16,8 @@ public:
 	~Collision();
 
 	void Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, 
-		std::shared_ptr<NormalSkelton> pNormalSkelton,
-		std::shared_ptr<WizardSkelton> pWizardSkelton);
+		std::vector<std::shared_ptr<NormalSkelton>> normalSkeltons,
+		std::vector<std::shared_ptr<WizardSkelton>> wizardSkeltons);
 	void End();
 	void Update();
 	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive);
@@ -27,10 +27,10 @@ public:
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
-	std::shared_ptr<NormalSkelton> m_pNormalSkelton;
-	std::shared_ptr<WizardSkelton> m_pWizardSkelton;
-	/*std::vector<std::shared_ptr<NormalSkelton>> m_normalSkeltons;
-	std::vector<std::shared_ptr<WizardSkelton>> m_wizardSkeltons;*/
+	/*std::shared_ptr<NormalSkelton> m_pNormalSkelton;
+	std::shared_ptr<WizardSkelton> m_pWizardSkelton;*/
+	std::vector<std::shared_ptr<NormalSkelton>> m_normalSkeltons;
+	std::vector<std::shared_ptr<WizardSkelton>> m_wizardSkeltons;
 	// ƒvƒŒƒCƒ„[‚ªUŒ‚‚É“–‚½‚Á‚½‚©
 	bool m_isPlayerHit;
 	// NormalSkelton‚ªUŒ‚‚É“–‚½‚Á‚½‚©
