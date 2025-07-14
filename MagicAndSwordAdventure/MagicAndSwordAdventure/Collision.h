@@ -15,7 +15,7 @@ public:
 	Collision();
 	~Collision();
 
-	void Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, 
+	void Init(std::shared_ptr<Player> pPlayer, 
 		std::vector<std::shared_ptr<NormalSkelton>> normalSkeltons,
 		std::vector<std::shared_ptr<WizardSkelton>> wizardSkeltons);
 	void End();
@@ -26,7 +26,7 @@ public:
 	bool GetIsPlayerHit() { return m_isPlayerHit; }
 private:
 	std::shared_ptr<Player> m_pPlayer;
-	std::shared_ptr<Enemy> m_pEnemy;
+	//std::shared_ptr<Enemy> m_pEnemy;
 	/*std::shared_ptr<NormalSkelton> m_pNormalSkelton;
 	std::shared_ptr<WizardSkelton> m_pWizardSkelton;*/
 	std::vector<std::shared_ptr<NormalSkelton>> m_normalSkeltons;

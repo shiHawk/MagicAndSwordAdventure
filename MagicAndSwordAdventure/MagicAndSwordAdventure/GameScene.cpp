@@ -20,7 +20,7 @@ void GameScene::Init()
 	for (int i = 0; i < 2; ++i)
 	{
 		auto normalSkelton = std::make_shared<NormalSkelton>();
-		normalSkelton->Init(m_pPlayer);
+		normalSkelton->Init(m_pPlayer,VGet(50.0f*i,0.0f,0.0f));
 		m_NormalSkeltons.push_back(normalSkelton);
 	}
 	// WizardSkelton を複数生成
@@ -28,7 +28,7 @@ void GameScene::Init()
 	for (int i = 0; i < 2; ++i)
 	{
 		auto wizard = std::make_shared<WizardSkelton>();
-		wizard->Init(m_pPlayer);
+		wizard->Init(m_pPlayer,VGet(0.0f,0.0f,i*200.0f));
 		m_WizardSkeltons.push_back(wizard);
 	}
 	m_pAnimation = std::make_shared<Animation>();
@@ -39,14 +39,14 @@ void GameScene::Init()
 	m_pPlayer->Init(m_pAnimation);
 	/*m_NormalSkeltons->Init(m_pPlayer);
 	m_WizardSkeltons->Init(m_pPlayer);*/
-	m_pCollision->Init(m_pPlayer, m_pEnemy, m_NormalSkeltons, m_WizardSkeltons);
+	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
 }
 
 void GameScene::End()
 {
 	m_pPlayer->End();
-	//m_pCollision->End();
+	m_pCollision->End();
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
 		normalSkelton->End();
@@ -92,13 +92,12 @@ void GameScene::Draw()
 	m_pWizardSkelton->Draw();*/
 	//m_pCollision->Draw();
 	DrawGrid();
+	DrawSphere3D(VGet(1800.0f,0.0f,0.0f), 25.0f, 8, 0x0000ff, 0xffffff, true);
+	DrawSphere3D(VGet(1800.0f, 0.0f, 0.0f), 300, 8, 0xffff00, 0xffffff, false);
 }
 
 void GameScene::DrawGrid() const
 {
-	// VECTOR構造体
-	// 3D座標を表示するのに必要なx,y,zの3つをメンバーとして持つ構造体
-
 	VECTOR start = VGet(-2700.0f,0.0f,0.0f); // 始点
 	VECTOR end = VGet(2700.0f, 0.0f, 0.0f);   // 終点
 

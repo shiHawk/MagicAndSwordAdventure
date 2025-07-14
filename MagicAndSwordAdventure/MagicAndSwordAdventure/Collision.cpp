@@ -16,15 +16,14 @@ Collision::~Collision()
 {
 }
 
-void Collision::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Enemy> pEnemy, std::vector<std::shared_ptr<NormalSkelton>> normalSkeltons,
+void Collision::Init(std::shared_ptr<Player> pPlayer,std::vector<std::shared_ptr<NormalSkelton>> normalSkeltons,
 	std::vector<std::shared_ptr<WizardSkelton>> wizardSkeltons)
 {
 	m_pPlayer = pPlayer;
-	m_pEnemy = pEnemy;
 	m_normalSkeltons = normalSkeltons;
 	m_wizardSkeltons = wizardSkeltons;
 	m_isPlayerHit = false;
-	m_invincibilityTime = 60.0f;
+	m_invincibilityTime = 120.0f;
 	m_playerToNormalSkeltonAttack = VGet(200.0f,0.0f,0.0f);
 }
 
@@ -53,7 +52,7 @@ void Collision::Update()
 			if (m_pPlayer->GetAttackActive())
 			{
 				normalSkelton->OnDamage();
-				printfDx(L"Hit\n");
+				//printfDx(L"Hit\n");
 				m_normalSkeltonHit = true;
 			}
 		}
@@ -61,6 +60,7 @@ void Collision::Update()
 		if (m_normalSkeltonHit && normalSkelton->GetHp() >= 0)
 		{
 			m_invincibilityTime--;
+			//printfDx(L"m_invincibilityTime:%f\n", m_invincibilityTime);
 			if (m_invincibilityTime < 0)
 			{
 				m_normalSkeltonHit = false;
@@ -74,20 +74,15 @@ void Collision::Update()
 		// プレイヤーの位置からWizardSkeltonの攻撃位置までの距離
 		m_playerToWizardSkeltonAttack = VSub(m_pPlayer->GetPos(), wizardSkelton->GetAttackPos());
 
-
 		// プレイヤーの攻撃位置からWizardSkeltonまでの距離
 		m_playerAttackToWizardSkelton = VSub(m_pPlayer->GetAttackPos(), wizardSkelton->GetPos());
-
-
 
 		m_WizardSkeltonAttackToPlayerDistance = VSize(m_playerToWizardSkeltonAttack);
 		m_playerAttackToWizardSkeltonDistance = VSize(m_playerAttackToWizardSkelton);
 
-
 		// プレイヤーにWizardSkeltonの攻撃が当たったか
 		PlayerHit(m_WizardSkeltonAttackToPlayerDistance, m_pPlayer->GetColRadius(),
 			wizardSkelton->GetAttackRadius(), wizardSkelton->GetAttackActive());
-
 
 		// プレイヤーの攻撃がWizardSkeltonに当たったか
 		if (m_playerAttackToWizardSkeltonDistance < m_pPlayer->GetAttackRadius() + wizardSkelton->GetColRadius() && !m_wizardSkeltonHit)
@@ -97,6 +92,15 @@ void Collision::Update()
 				//printfDx(L"Hit\n");
 				wizardSkelton->OnDamage();
 				m_wizardSkeltonHit = true;
+			}
+		}
+		if (m_wizardSkeltonHit && wizardSkelton->GetHp() >= 0)
+		{
+			m_invincibilityTime--;
+			if (m_invincibilityTime < 0)
+			{
+				m_wizardSkeltonHit = false;
+				m_invincibilityTime = 60.0f;
 			}
 		}
 	}
@@ -112,15 +116,7 @@ void Collision::Update()
 		}
 	}
 	
-	if (m_wizardSkeltonHit)
-	{
-		m_invincibilityTime--;
-		if (m_invincibilityTime < 0)
-		{
-			m_wizardSkeltonHit = false;
-			m_invincibilityTime = 60.0f;
-		}
-	}
+	
 }
 
 void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float enemyAttackRadius, bool enemyAttackActive)

@@ -5,11 +5,12 @@ class WizardSkelton :public Enemy
 {
 public:
 	WizardSkelton();
-	void Init(std::shared_ptr<Player> pPlayer);
+	void Init(std::shared_ptr<Player> pPlayer,VECTOR pos);
 	void End();
 	void Update() override;
 	void DoAttack();
 	void OnDamage();
+	void OnDeath();
 	void Draw()const;
 	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }

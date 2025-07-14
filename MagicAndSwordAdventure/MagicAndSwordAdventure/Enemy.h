@@ -21,6 +21,7 @@ public:
 	bool m_isDirRight;
 	float m_moveSpeed;
 protected:
+	bool m_isDying;
 	float m_enemyToPlayerDistance;
 	VECTOR m_enemyToPlayer;
 private:
