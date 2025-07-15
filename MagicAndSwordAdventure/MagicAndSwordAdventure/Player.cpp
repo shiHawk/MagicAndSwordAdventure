@@ -32,6 +32,7 @@ namespace
 	constexpr int kAttack1AnimNo = 31;
 	constexpr int kAttack2AnimNo = 40;
 	constexpr int kAttack3AnimNo = 42;
+	constexpr int kDamageAnimNo = 24;
 
 	bool isStartGravity = false;
 	bool isMove = false;
@@ -186,15 +187,16 @@ float Player::GetColRadius() const
 void Player::OnDamage(int enemyPower)
 {
 	m_hp -= enemyPower;
+	m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
 	printfDx(L"hp:%d\n", m_hp);
 }
 
 void Player::DoAttack()
 {
 	attack.active = true;
-	// ƒWƒƒƒ“ƒvUŒ‚
 	if (m_vec.y > 0)
 	{
+		// ƒWƒƒƒ“ƒvUŒ‚
 		m_pAnimation->ChangeAnim(m_modelHandle, 39, true, 0.7f);
 	}
 	else
@@ -204,6 +206,7 @@ void Player::DoAttack()
 	attack.timer = 50.0f;
 	attack.comboDuration = 20.0f;
 	attack.count++;
+	// ŽO‰ñUŒ‚‚µ‚½‚ç‚Ü‚½ˆê‰ñ–Ú‚É–ß‚é
 	if (attack.count > 3)
 	{
 		attack.count = 1;
@@ -211,14 +214,17 @@ void Player::DoAttack()
 	//printfDx(L"attack.count:%d\n", attack.count);
 	if (m_isAttackDirRight)
 	{
+		// UŒ‚‚ÌŽž‚É­‚µ‘Oi‚·‚é
 		m_vec.x = +kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x + attack.attackOffSetX;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
+			m_power = 30;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 		}
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
+			m_power = 40;
 			m_vec.x = +kMoveSpeed;
 			attack.pos.x = m_pos.x + attack.attackOffSetX;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
@@ -226,14 +232,17 @@ void Player::DoAttack()
 	}
 	else 
 	{
+		// UŒ‚‚ÌŽž‚É­‚µ‘Oi‚·‚é
 		m_vec.x = -kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x - attack.attackOffSetX;
 		if (attack.count == 2 && !m_vec.y > 0)
 		{
+			m_power = 30;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 		}
 		if (attack.count == 3 && !m_vec.y > 0)
 		{
+			m_power = 40;
 			m_vec.x = -kMoveSpeed;
 			attack.pos.x = m_pos.x - attack.attackOffSetX;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
@@ -360,7 +369,7 @@ void Player::DoMove()
 		moveCount = 0;
 		if (idleCount < 1)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, 1, true, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
 		}
 		idleCount++;
 	}
@@ -369,6 +378,3 @@ void Player::DoMove()
 	MV1SetPosition(m_modelHandle, m_pos);
 	m_pos = VAdd(m_pos, m_vec);
 }
-
-
-

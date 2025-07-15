@@ -7,6 +7,7 @@
 #include "NormalSkelton.h"
 #include "WizardSkelton.h"
 #include "Camera.h"
+#include "SceneManager.h"
 #include <memory>
 #include <vector>
 #include <fstream>
@@ -23,7 +24,7 @@ public:
 	GameScene();
 	virtual ~GameScene() {}
 	void LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
-		std::vector<std::shared_ptr<NormalSkelton>>& wizardSkeltons, std::shared_ptr<Player> player);
+		std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons, std::shared_ptr<Player> pPlayer);
 	virtual void Init() override;
 	virtual void End() override;
 

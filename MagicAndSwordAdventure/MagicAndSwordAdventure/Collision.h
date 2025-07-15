@@ -39,6 +39,8 @@ private:
 	bool m_wizardSkeltonHit;
 	// 無敵時間
 	float m_invincibilityTime;
+	// プレイヤーの無敵時間
+	float m_playerInvincibilityTime;
 	float m_playerAttackToNormalSkeltonDistance; // プレイヤーの攻撃からNormalSkeltonまでの距離の大きさ
 	float m_NormalSkeltonAttackToPlayerDistance; // NormalSkeltonの攻撃からプレイヤーまでの距離の大きさ
 	float m_playerAttackToWizardSkeltonDistance; // プレイヤーの攻撃からWizardSkeltonまでの距離の大きさ

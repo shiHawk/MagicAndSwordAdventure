@@ -18,6 +18,8 @@ namespace
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
 	constexpr int kAttackAnimNo = 5;
+	constexpr int kDamageAnimNo = 40;
+	constexpr int kDeathAnimNo = 25;
 	// 最大HP
 	constexpr int kMaxHp = 100;
 	int attackCount = 0;
@@ -35,7 +37,7 @@ NormalSkelton::NormalSkelton():
 void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 {
 	m_pPlayer = pPlayer;
-	m_pos = { 200,0,0 };
+	m_pos = { 0,0,0 };
 	m_pos = VAdd(m_pos, pos);
 	attack.timer = 40.0f;
 	attack.attackCoolTime = -1.0f;
@@ -47,7 +49,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	m_hp = kMaxHp;
 	m_power = 20;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
-	m_knockbackSpeed = 2.5f;
+	m_knockbackSpeed = 5.0f;
 	m_knockbackDuration = 0.5f;
 	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
@@ -157,23 +159,25 @@ void NormalSkelton::OnDamage()
 	{
 		m_pos.x -= 1.0f;
 	}
-	ChangeAnim(m_modelHandle, 40, false, 0.5f);
+	ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
 	m_hp -= m_pPlayer->GetPower();
 	if (m_hp <= 0 && !m_isDying)
 	{
 		m_hp = 0;
 		m_isDying = true;
+		attack.active = false;
 		// 吹き飛ぶ方向を決める
 		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
 		// タイマーをセット
 		m_knockbackTimer = m_knockbackDuration;
-		ChangeAnim(m_modelHandle, 25, false, 0.4f);
+		ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.4f);
 	}
 	//printfDx(L"hp:%d\n", m_hp);
 }
 
 void NormalSkelton::OnDeath()
 {
+	attack.active = false;
 	if (m_knockbackTimer > 0.0f)
 	{
 		m_pos = VAdd(m_pos, VScale(m_knockbackDir, m_knockbackSpeed));

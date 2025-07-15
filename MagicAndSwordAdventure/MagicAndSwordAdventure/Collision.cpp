@@ -5,6 +5,7 @@ Collision::Collision():
 	m_normalSkeltonHit(false),
 	m_wizardSkeltonHit(false),
 	m_invincibilityTime(0.0f),
+	m_playerInvincibilityTime(0.0f),
 	m_playerAttackToNormalSkeltonDistance(0.0f),
 	m_NormalSkeltonAttackToPlayerDistance(0.0f),
 	m_playerToNormalSkeltonAttack({0.0f,0.0f,0.0f}),
@@ -24,6 +25,7 @@ void Collision::Init(std::shared_ptr<Player> pPlayer,std::vector<std::shared_ptr
 	m_wizardSkeltons = wizardSkeltons;
 	m_isPlayerHit = false;
 	m_invincibilityTime = 160.0f;
+	m_playerInvincibilityTime = 100.0f;
 	m_playerToNormalSkeltonAttack = VGet(200.0f,0.0f,0.0f);
 }
 
@@ -52,7 +54,7 @@ void Collision::Update()
 			if (m_pPlayer->GetAttackActive())
 			{
 				normalSkelton->OnDamage();
-				//printfDx(L"Hit\n");
+				printfDx(L"Hit\n");
 				m_normalSkeltonHit = true;
 			}
 		}
@@ -64,7 +66,7 @@ void Collision::Update()
 			if (m_invincibilityTime < 0)
 			{
 				m_normalSkeltonHit = false;
-				m_invincibilityTime = 160.0f;
+				m_invincibilityTime = 1000.0f;
 			}
 		}
 	}
@@ -89,7 +91,7 @@ void Collision::Update()
 		{
 			if (m_pPlayer->GetAttackActive())
 			{
-				//printfDx(L"Hit\n");
+				printfDx(L"Hit\n");
 				wizardSkelton->OnDamage();
 				m_wizardSkeltonHit = true;
 			}
@@ -100,35 +102,29 @@ void Collision::Update()
 			if (m_invincibilityTime < 0)
 			{
 				m_wizardSkeltonHit = false;
-				m_invincibilityTime = 160.0f;
+				m_invincibilityTime = 1000.0f;
 			}
 		}
 	}
 	
-
 	if (m_isPlayerHit)
 	{
-		m_invincibilityTime--;
-		if (m_invincibilityTime < 0)
+		m_playerInvincibilityTime--;
+		if (m_playerInvincibilityTime < 0)
 		{
 			m_isPlayerHit = false;
-			m_invincibilityTime = 60.0f;
 		}
 	}
-	
-	
 }
 
 void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float enemyAttackRadius, bool enemyAttackActive, int enemyPower)
 {
 	// ƒvƒŒƒCƒ„[‚Éenemy‚ÌUŒ‚‚ª“–‚½‚Á‚½‚©
-	if (enemyAttackToPlayer < playerRadius + enemyAttackRadius && !m_isPlayerHit)
+	if (enemyAttackToPlayer < playerRadius + enemyAttackRadius && !m_isPlayerHit && enemyAttackActive)
 	{
 		m_isPlayerHit = true;
-		if (m_isPlayerHit && enemyAttackActive)
-		{
-			m_pPlayer->OnDamage(enemyPower);
-		}
+		m_pPlayer->OnDamage(enemyPower);
+		m_playerInvincibilityTime = 100.0f;
 	}
 }
 
@@ -141,6 +137,7 @@ void Collision::EnemyHit(float playerAttackToEnemy, float playerRadius, float en
 		{
 			printfDx(L"Hit\n");
 			enemyHit = true;
+			m_invincibilityTime = 1000.0f;
 		}
 	}
 }

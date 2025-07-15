@@ -6,7 +6,7 @@ GameScene::GameScene()
 {
 }
 
-void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons, std::vector<std::shared_ptr<NormalSkelton>>& wizardSkeltons, std::shared_ptr<Player> player)
+void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons, std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons, std::shared_ptr<Player> pPlayer)
 {
 	std::ifstream file(fileName);
 	if (!file.is_open())
@@ -33,7 +33,18 @@ void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::share
 		VECTOR enemyPos = VGet(x, y, z); // VECTORå^Ç…ïœä∑Ç∑ÇÈ
 
 		// ìGÇÃéÌóﬁÇ…âûÇ∂Çƒê∂ê¨ÇµÅAÉäÉXÉgÇ…í«â¡
-
+		if (type == "normalSkelton")
+		{
+			auto normalSkelton = std::make_shared<NormalSkelton>();
+			normalSkelton->Init(pPlayer, enemyPos);
+			normalSkeltons.push_back(normalSkelton);
+		}
+		if (type == "wizardSkelton")
+		{
+			auto wizardSkelton = std::make_shared<WizardSkelton>();
+			wizardSkelton->Init(pPlayer, enemyPos);
+			wizardSkeltons.push_back(wizardSkelton);
+		}
 	}
 }
 
@@ -42,28 +53,24 @@ void GameScene::Init()
 	m_pCamera = std::make_shared<Camera>();
 	m_pPlayer = std::make_shared<Player>();
 	m_pCollision = std::make_shared<Collision>();
-	// NormalSkelton Çï°êîê∂ê¨
-	for (int i = 0; i < 2; ++i)
-	{
-		auto normalSkelton = std::make_shared<NormalSkelton>();
-		normalSkelton->Init(m_pPlayer,VGet(50.0f*i,0.0f,0.0f));
-		m_NormalSkeltons.push_back(normalSkelton);
-	}
-	// WizardSkelton Çï°êîê∂ê¨
-	for (int i = 0; i < 2; ++i)
-	{
-		auto wizard = std::make_shared<WizardSkelton>();
-		wizard->Init(m_pPlayer,VGet(0.0f,0.0f,i*200.0f));
-		m_WizardSkeltons.push_back(wizard);
-	}
+	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer);
+	//// NormalSkelton Çï°êîê∂ê¨
+	//for (int i = 0; i < 2; ++i)
+	//{
+	//	auto normalSkelton = std::make_shared<NormalSkelton>();
+	//	normalSkelton->Init(m_pPlayer,VGet(50.0f*i,0.0f,0.0f));
+	//	m_NormalSkeltons.push_back(normalSkelton);
+	//}
+	//// WizardSkelton Çï°êîê∂ê¨
+	//for (int i = 0; i < 2; ++i)
+	//{
+	//	auto wizard = std::make_shared<WizardSkelton>();
+	//	wizard->Init(m_pPlayer,VGet(0.0f,0.0f,i*200.0f));
+	//	m_WizardSkeltons.push_back(wizard);
+	//}
 	m_pAnimation = std::make_shared<Animation>();
-	/*m_pNormalSkelton = std::make_shared<NormalSkelton>();
-	m_pWizardSkelton = std::make_shared<WizardSkelton>();*/
-
 	m_pCamera->Init(m_pPlayer);
 	m_pPlayer->Init(m_pAnimation);
-	/*m_NormalSkeltons->Init(m_pPlayer);
-	m_WizardSkeltons->Init(m_pPlayer);*/
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
 }
@@ -76,12 +83,10 @@ void GameScene::End()
 	{
 		normalSkelton->End();
 	}
-	for (auto& wizard : m_WizardSkeltons)
+	for (auto& wizardSkelton : m_WizardSkeltons)
 	{
-		wizard->End();
+		wizardSkelton->End();
 	}
-	/*m_pNormalSkelton->End();
-	m_pWizardSkelton->End();*/
 }
 
 SceneBase* GameScene::Update()
@@ -92,12 +97,10 @@ SceneBase* GameScene::Update()
 	{
 		normalSkelton->Update();
 	}
-	for (auto& wizard : m_WizardSkeltons)
+	for (auto& wizardSkelton : m_WizardSkeltons)
 	{
-		wizard->Update();
+		wizardSkelton->Update();
 	}
-	/*m_pNormalSkelton->Update();
-	m_pWizardSkelton->Update();*/
 	m_pCollision->Update();
 	return this;
 }
@@ -109,15 +112,11 @@ void GameScene::Draw()
 	{
 		normalSkelton->Draw();
 	}
-	for (auto& wizard : m_WizardSkeltons)
+	for (auto& wizardSkelton : m_WizardSkeltons)
 	{
-		wizard->Draw();
+		wizardSkelton->Draw();
 	}
-	/*m_pNormalSkelton->Draw();
-	m_pWizardSkelton->Draw();*/
 	DrawGrid();
-	/*DrawSphere3D(VGet(1800.0f,0.0f,0.0f), 25.0f, 8, 0x0000ff, 0xffffff, true);
-	DrawSphere3D(VGet(1800.0f, 0.0f, 0.0f), 300, 8, 0xffff00, 0xffffff, false);*/
 }
 
 void GameScene::DrawGrid() const

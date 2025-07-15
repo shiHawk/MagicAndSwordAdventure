@@ -5,7 +5,6 @@ class CharacterBase:public Animation
 {
 public:
 	void Draw() const;
-	void UpdateMove();
 	virtual void Update() = 0;
 	VECTOR GetPos() { return m_pos; };
 	int GetHp() const { return m_hp; }
@@ -16,6 +15,7 @@ public:
 	int m_modelHandle;
 	bool m_isDirRight;
 	bool m_isDead;
+
 	int m_hp;
 	int m_power;
 	float m_moveSpeed;

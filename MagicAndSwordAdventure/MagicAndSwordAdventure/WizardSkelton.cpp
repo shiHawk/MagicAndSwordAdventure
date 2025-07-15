@@ -15,6 +15,8 @@ namespace
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
 	constexpr int kAttackAnimNo = 5;
+	constexpr int kDamageAnimNo = 40;
+	constexpr int kDeathAnimNo = 25;
 	// 最大HP
 	constexpr int kMaxHp = 60;
 	int attackCount = 0;
@@ -29,9 +31,9 @@ m_isAttackEnd(false)
 void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 {
 	m_pPlayer = pPlayer;
-	m_pos = { 300.0f,0.0f,0.0f };
+	m_pos = { 0.0f,0.0f,0.0f };
 	m_pos = VAdd(m_pos, pos);
-	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
+	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, m_pos.z);
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Mage.mv1");
 	attack.attackCoolTime = -1.0f;
 	attack.timer = 60.0f;
@@ -40,7 +42,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	m_hp = kMaxHp;
 	m_power = 30;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
-	m_knockbackSpeed = 2.5f;
+	m_knockbackSpeed = 5.0f;
 	m_knockbackDuration = 0.5f;
 	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
@@ -147,7 +149,7 @@ void WizardSkelton::OnDamage()
 	{
 		m_pos.x -= 1.0f;
 	}
-	ChangeAnim(m_modelHandle, 40, false, 0.5f);
+	ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
 	m_hp -= m_pPlayer->GetPower();
 	if (m_hp <= 0 && !m_isDying)
 	{
@@ -157,7 +159,7 @@ void WizardSkelton::OnDamage()
 		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
 		// タイマーをセット
 		m_knockbackTimer = m_knockbackDuration;
-		ChangeAnim(m_modelHandle, 25, false, 0.4f);
+		ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.4f);
 	}
 	if (m_hp <= 0)
 	{
