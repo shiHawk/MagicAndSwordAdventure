@@ -46,6 +46,10 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	m_isDying = false;
 	m_hp = kMaxHp;
 	m_power = 20;
+	m_knockbackDir = { 0.0f,0.0f,0.0f };
+	m_knockbackSpeed = 2.5f;
+	m_knockbackDuration = 0.5f;
+	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
@@ -63,6 +67,7 @@ void NormalSkelton::Update()
 	if (m_isDying)
 	{
 		OnDeath();
+		return;
 	}
 	if (!m_isDead)
 	{
@@ -158,17 +163,29 @@ void NormalSkelton::OnDamage()
 	{
 		m_hp = 0;
 		m_isDying = true;
+		// 吹き飛ぶ方向を決める
+		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
+		// タイマーをセット
+		m_knockbackTimer = m_knockbackDuration;
 		ChangeAnim(m_modelHandle, 25, false, 0.4f);
 	}
-	printfDx(L"hp:%d\n", m_hp);
+	//printfDx(L"hp:%d\n", m_hp);
 }
 
 void NormalSkelton::OnDeath()
 {
+	if (m_knockbackTimer > 0.0f)
+	{
+		m_pos = VAdd(m_pos, VScale(m_knockbackDir, m_knockbackSpeed));
+		m_knockbackTimer -= 1.0f / 60.0f; // m_knockbackTimerを減少
+	}
 	if (GetIsAnimEnd())
 	{
 		m_isDead = true;
+		m_isDying = false;
 	}
+	MV1SetPosition(m_modelHandle,m_pos);
+	UpdateAnim();
 }
 
 void NormalSkelton::Draw() const
@@ -189,7 +206,12 @@ void NormalSkelton::TrackPlayer()
 {
 	if (m_enemyToPlayerDistance < kAttackRange)
 	{
-		m_isMove = false;
+		// 移動アニメーションを停止し、待機状態に切り替える
+		if (m_isMove)
+		{
+			ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+			m_isMove = false;
+		}
 		// 攻撃を始めるまでの待機時間を減らす
 		m_attackWaitingTime--;
 		if (m_attackWaitingTime < 0)

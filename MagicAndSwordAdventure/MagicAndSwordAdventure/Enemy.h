@@ -20,7 +20,15 @@ public:
 	
 	bool m_isDirRight;
 	float m_moveSpeed;
+	
 protected:
+	// €–S‚Ì‚«”ò‚Ô•ûŒü
+	VECTOR m_knockbackDir;
+	// ‚«”ò‚Ô‘¬“x
+	float m_knockbackSpeed;
+	// ‚«”ò‚ñ‚Å‚¢‚éŠÔ
+	float m_knockbackDuration;
+	float m_knockbackTimer;
 	bool m_isDying;
 	float m_enemyToPlayerDistance;
 	VECTOR m_enemyToPlayer;

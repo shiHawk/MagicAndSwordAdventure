@@ -12,7 +12,7 @@ public:
 	void UpdateBlendAnim(int modelHandle, int animNo);
 	void StartBlending();
 	bool isNowPlaying() { return m_isNowPlaying; }
-	bool GetIsAnimEnd() { return m_isEnd; }
+	bool GetIsAnimEnd();
 	int GetAttachAnimNo() { return m_currentAttachNo; }
 private:
 	// ‘Ä¶ŠÔ

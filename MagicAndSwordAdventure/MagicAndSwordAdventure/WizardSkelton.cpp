@@ -39,6 +39,10 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	m_isDead = false;
 	m_hp = kMaxHp;
 	m_power = 30;
+	m_knockbackDir = { 0.0f,0.0f,0.0f };
+	m_knockbackSpeed = 2.5f;
+	m_knockbackDuration = 0.5f;
+	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, 41);
@@ -56,6 +60,7 @@ void WizardSkelton::Update()
 	if(m_isDying)
 	{
 		OnDeath();
+		return;
 	}
 	if (!m_isDead)
 	{
@@ -148,21 +153,33 @@ void WizardSkelton::OnDamage()
 	{
 		m_hp = 0;
 		m_isDying = true;
+		// 吹き飛ぶ方向を決める
+		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
+		// タイマーをセット
+		m_knockbackTimer = m_knockbackDuration;
 		ChangeAnim(m_modelHandle, 25, false, 0.4f);
 	}
 	if (m_hp <= 0)
 	{
 		m_hp = 0;
 	}
-	printfDx(L"hp:%d\n", m_hp);
+	//printfDx(L"hp:%d\n", m_hp);
 }
 
 void WizardSkelton::OnDeath()
 {
+	if (m_knockbackTimer > 0.0f)
+	{
+		m_pos = VAdd(m_pos, VScale(m_knockbackDir, m_knockbackSpeed));
+		m_knockbackTimer -= 1.0f / 60.0f; // m_knockbackTimerを減少
+	}
 	if (GetIsAnimEnd())
 	{
 		m_isDead = true;
+		m_isDying = false;
 	}
+	MV1SetPosition(m_modelHandle, m_pos);
+	UpdateAnim();
 }
 
 void WizardSkelton::Draw() const

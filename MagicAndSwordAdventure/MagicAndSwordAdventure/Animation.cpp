@@ -45,8 +45,16 @@ void Animation::UpdateAnim()
 	}
 	if (m_playTime >= m_animTotalTime)
 	{
-		m_isEnd = true;
-		m_playTime = 0.0f;
+		if (m_isLoop)
+		{
+			m_playTime = 0.0f;
+			m_isEnd = false;
+		}
+		else
+		{
+			m_playTime = m_animTotalTime; // ÅŒã‚ÌƒtƒŒ[ƒ€‚ÅŽ~‚ß‚é
+			m_isEnd = true;
+		}
 	}
 }
 
@@ -85,4 +93,10 @@ void Animation::StartBlending()
 {
 	m_isBlending = true;
 	m_blendRate = 0.0f;
+}
+
+bool Animation::GetIsAnimEnd()
+{
+	if (m_currentAttachNo == -1) return false;
+	return m_playTime >= m_animTotalTime;
 }

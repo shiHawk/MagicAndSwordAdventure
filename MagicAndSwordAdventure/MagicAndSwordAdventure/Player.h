@@ -17,7 +17,7 @@ public:
 	VECTOR GetScreenPos();
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const ;
-	void OnDamage();
+	void OnDamage(int enemyPower);
 	
 	// 攻撃
 	void DoAttack();

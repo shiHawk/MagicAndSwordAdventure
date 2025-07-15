@@ -45,7 +45,7 @@ void Collision::Update()
 
 		// プレイヤーにNormalSkeltonの攻撃が当たったか
 		PlayerHit(m_NormalSkeltonAttackToPlayerDistance, m_pPlayer->GetColRadius(),
-			normalSkelton->GetAttackRadius(), normalSkelton->GetAttackActive());
+			normalSkelton->GetAttackRadius(), normalSkelton->GetAttackActive(),normalSkelton->GetPower());
 		// プレイヤーの攻撃がNormalSkeltonに当たったか
 		if (m_playerAttackToNormalSkeltonDistance < m_pPlayer->GetAttackRadius() + normalSkelton->GetColRadius() && !m_normalSkeltonHit)
 		{
@@ -82,7 +82,7 @@ void Collision::Update()
 
 		// プレイヤーにWizardSkeltonの攻撃が当たったか
 		PlayerHit(m_WizardSkeltonAttackToPlayerDistance, m_pPlayer->GetColRadius(),
-			wizardSkelton->GetAttackRadius(), wizardSkelton->GetAttackActive());
+			wizardSkelton->GetAttackRadius(), wizardSkelton->GetAttackActive(),wizardSkelton->GetPower());
 
 		// プレイヤーの攻撃がWizardSkeltonに当たったか
 		if (m_playerAttackToWizardSkeltonDistance < m_pPlayer->GetAttackRadius() + wizardSkelton->GetColRadius() && !m_wizardSkeltonHit)
@@ -119,7 +119,7 @@ void Collision::Update()
 	
 }
 
-void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float enemyAttackRadius, bool enemyAttackActive)
+void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float enemyAttackRadius, bool enemyAttackActive, int enemyPower)
 {
 	// プレイヤーにenemyの攻撃が当たったか
 	if (enemyAttackToPlayer < playerRadius + enemyAttackRadius && !m_isPlayerHit)
@@ -127,7 +127,7 @@ void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float e
 		m_isPlayerHit = true;
 		if (m_isPlayerHit && enemyAttackActive)
 		{
-			m_pPlayer->OnDamage();
+			m_pPlayer->OnDamage(enemyPower);
 		}
 	}
 }

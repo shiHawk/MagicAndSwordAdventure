@@ -183,18 +183,19 @@ float Player::GetColRadius() const
 	return kColRadius;
 }
 
-void Player::OnDamage()
+void Player::OnDamage(int enemyPower)
 {
-	m_hp -= 10;
-	//printfDx(L"hp:%d\n", m_hp);
+	m_hp -= enemyPower;
+	printfDx(L"hp:%d\n", m_hp);
 }
 
 void Player::DoAttack()
 {
 	attack.active = true;
+	// ƒWƒƒƒ“ƒvUŒ‚
 	if (m_vec.y > 0)
 	{
-		m_pAnimation->ChangeAnim(m_modelHandle, 39, false, 0.7f);
+		m_pAnimation->ChangeAnim(m_modelHandle, 39, true, 0.7f);
 	}
 	else
 	{

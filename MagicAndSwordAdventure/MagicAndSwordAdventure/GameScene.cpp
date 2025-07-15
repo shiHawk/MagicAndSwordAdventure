@@ -2,12 +2,39 @@
 #include "DxLib.h"
 #include <cmath>
 #include "game.h"
-namespace
-{
-	constexpr float kLerpSpeed = 0.01f;
-}
 GameScene::GameScene()
 {
+}
+
+void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons, std::vector<std::shared_ptr<NormalSkelton>>& wizardSkeltons, std::shared_ptr<Player> player)
+{
+	std::ifstream file(fileName);
+	if (!file.is_open())
+	{
+		printfDx(L"CSVファイルを開けませんでした: %s\n", fileName.c_str());
+		return;
+	}
+	std::string line;
+	std::getline(file, line); // 最初の行を読み飛ばす
+	while (std::getline(file, line))
+	{
+		std::istringstream stream(line); // 一行分をストリームに変換する
+		std::string type, strX, strY, strZ;
+
+		if (!std::getline(stream, type, ',')) continue; // 敵の種類
+		if (!std::getline(stream, strX, ',')) continue;	// x座標
+		if (!std::getline(stream, strY, ',')) continue;	// y座標
+		if (!std::getline(stream, strZ, ',')) continue;	// z座標
+
+		// 文字列をfloatに変換する
+		float x = std::stof(strX);
+		float y = std::stof(strY);
+		float z = std::stof(strZ);
+		VECTOR enemyPos = VGet(x, y, z); // VECTOR型に変換する
+
+		// 敵の種類に応じて生成し、リストに追加
+
+	}
 }
 
 void GameScene::Init()

@@ -9,6 +9,9 @@
 #include "Camera.h"
 #include <memory>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "DxLib.h"
 
 class Player;
@@ -19,6 +22,8 @@ class GameScene :public SceneBase
 public:
 	GameScene();
 	virtual ~GameScene() {}
+	void LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
+		std::vector<std::shared_ptr<NormalSkelton>>& wizardSkeltons, std::shared_ptr<Player> player);
 	virtual void Init() override;
 	virtual void End() override;
 
@@ -31,10 +36,8 @@ private:
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;
 	std::shared_ptr<Animation> m_pAnimation;
-	std::shared_ptr<NormalSkelton> m_pNormalSkelton;
 	std::vector<std::shared_ptr<NormalSkelton>> m_NormalSkeltons;
 	std::vector<std::shared_ptr<WizardSkelton>> m_WizardSkeltons;
-	std::shared_ptr<WizardSkelton> m_pWizardSkelton;
 	std::shared_ptr<Camera> m_pCamera;
 };
 

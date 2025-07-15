@@ -20,7 +20,7 @@ public:
 		std::vector<std::shared_ptr<WizardSkelton>> wizardSkeltons);
 	void End();
 	void Update();
-	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive);
+	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive,int enemyPower);
 	void EnemyHit(float playerAttackToEnemy, float playerRadius, float enemyAttackRadius,bool playerAttackActive,bool enemyHit);
 	void Draw();
 	bool GetIsPlayerHit() { return m_isPlayerHit; }
