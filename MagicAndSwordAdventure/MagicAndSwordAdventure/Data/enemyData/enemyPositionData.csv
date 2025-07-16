@@ -1,7 +1,7 @@
 type,x,y,z
 normalSkelton,200,0,0
 normalSkelton,250,0,290
-normalSkelton,300,0,-60
+normalSkelton,300,0,-100
 wizardSkelton,300,0,40
 wizardSkelton,280,0,200
 normalSkelton,1000,0,20
