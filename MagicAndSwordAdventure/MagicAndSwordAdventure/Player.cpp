@@ -8,6 +8,7 @@ namespace
 	constexpr float kDashSpeed = 10.0f;
 	constexpr float kJumpPower = 9.0f;
 	constexpr float kJumpGravity = -0.4f;
+	constexpr float kZLimit = 240.0f;
 
 	// “–‚½‚è”»’è‚Ì”ÍˆÍ
 	constexpr float kColRadius = 40.0f;
@@ -164,7 +165,7 @@ void Player::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
 #if _DEBUG
-	DrawCapsule3D(VGet(m_pos.x, m_pos.y + playerHeadOffSet, m_pos.z), VGet(m_pos.x, m_pos.y+ playerFootOffSet, m_pos.z), 30, 8, 0x00ff00, 0xffffff, false);
+	//DrawCapsule3D(VGet(m_pos.x, m_pos.y + playerHeadOffSet, m_pos.z), VGet(m_pos.x, m_pos.y+ playerFootOffSet, m_pos.z), 30, 8, 0x00ff00, 0xffffff, false);
 	if (attack.active && !m_vec.y > 0)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
@@ -376,5 +377,10 @@ void Player::DoMove()
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
 	MV1SetPosition(m_modelHandle, m_pos);
+	if (m_pos.z >= kZLimit)
+	{
+		m_vec.z = 0.0f;
+		m_pos.z = kZLimit-0.001f;
+	}
 	m_pos = VAdd(m_pos, m_vec);
 }

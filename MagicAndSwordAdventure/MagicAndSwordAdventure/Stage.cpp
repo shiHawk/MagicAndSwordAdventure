@@ -1,10 +1,6 @@
 #include "Stage.h"
 
 Stage::Stage():
-	m_stageTileNum(0),
-	m_stageTileModelHandles(0),
-	m_stageGrateNum(0),
-	m_stageGrateModelHandle(0),
 	m_tileTotal(0),
 	m_stageStart(0),
 	m_stageEnd(0)
@@ -18,14 +14,13 @@ Stage::~Stage()
 void Stage::Init()
 {
 	m_tilePos = { 0.0f,-10.0f,100.0f };
-	m_stageTileNum = 40;
-	m_stageGrateNum = 40;
 	m_tileTotal = 40;
 	m_stageStart = -2500;
 	m_stageEnd = 5500;
 	m_tileSize = 400.0f;
 	m_tileModelBase = MV1LoadModel(L"Data/model/floor_tile_large.mv1");
 	m_tileGrateModelBase = MV1LoadModel(L"Data/model/floor_tile_grate_open.mv1");
+
 	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
 	{
 		printfDx(L"ì«Ç›çûÇ›é∏îs\n");
@@ -35,7 +30,7 @@ void Stage::Init()
 	m_tileModelHandles.resize(m_tileTotal, -1);
 	m_tileGrateModelHandles.resize(m_tileTotal, -1);
 	
-	for (int i = 1; i < m_tileTotal;i++)
+	for (int i = 0; i < m_tileTotal;i++)
 	{
 		if (i % 3 == 0)
 		{

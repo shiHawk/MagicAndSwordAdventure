@@ -122,7 +122,7 @@ void GameScene::Draw()
 		wizardSkelton->Draw();
 	}
 	m_pStage->Draw();
-	DrawGrid();
+	//DrawGrid();
 }
 
 void GameScene::DrawGrid() const

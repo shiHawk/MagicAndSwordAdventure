@@ -11,6 +11,7 @@ namespace
 	constexpr float kAttackRange = 90.0f; // 攻撃範囲
 	constexpr float kMoveSpeed = 2.0f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
+	constexpr float kZLimit = 270.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
 	constexpr float kDefaultAttackCoolTime = 200.0f; // クールタイム
@@ -235,6 +236,10 @@ void NormalSkelton::TrackPlayer()
 		m_moveCount++;
 		// プレイヤーに向かうベクトル
 		m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
+		if (m_pos.z >= kZLimit)
+		{
+			m_pos.z = kZLimit - 0.001f;
+		}
 		// プレイヤーの位置に向かう
 		m_pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;
 		m_pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveDecRate;
