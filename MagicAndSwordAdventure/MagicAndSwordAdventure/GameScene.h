@@ -7,6 +7,7 @@
 #include "NormalSkelton.h"
 #include "WizardSkelton.h"
 #include "Camera.h"
+#include "Stage.h"
 #include "SceneManager.h"
 #include <memory>
 #include <vector>
@@ -40,5 +41,6 @@ private:
 	std::vector<std::shared_ptr<NormalSkelton>> m_NormalSkeltons;
 	std::vector<std::shared_ptr<WizardSkelton>> m_WizardSkeltons;
 	std::shared_ptr<Camera> m_pCamera;
+	std::shared_ptr<Stage> m_pStage;
 };
 

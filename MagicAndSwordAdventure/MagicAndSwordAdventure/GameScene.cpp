@@ -51,6 +51,7 @@ void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::share
 void GameScene::Init()
 {
 	m_pCamera = std::make_shared<Camera>();
+	m_pStage = std::make_shared<Stage>();
 	m_pPlayer = std::make_shared<Player>();
 	m_pCollision = std::make_shared<Collision>();
 	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer);
@@ -69,7 +70,9 @@ void GameScene::Init()
 	//	m_WizardSkeltons.push_back(wizard);
 	//}
 	m_pAnimation = std::make_shared<Animation>();
+
 	m_pCamera->Init(m_pPlayer);
+	m_pStage->Init();
 	m_pPlayer->Init(m_pAnimation);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
@@ -79,6 +82,7 @@ void GameScene::End()
 {
 	m_pPlayer->End();
 	m_pCollision->End();
+	m_pStage->End();
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
 		normalSkelton->End();
@@ -92,6 +96,7 @@ void GameScene::End()
 SceneBase* GameScene::Update()
 {
 	m_pCamera->Update();
+	m_pStage->Updata();
 	m_pPlayer->Update();
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
@@ -116,6 +121,7 @@ void GameScene::Draw()
 	{
 		wizardSkelton->Draw();
 	}
+	m_pStage->Draw();
 	DrawGrid();
 }
 

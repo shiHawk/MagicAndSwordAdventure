@@ -40,7 +40,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 
 	// カメラがどこを見ているか(注視点)
 	m_cameraTarget.x = 0.0f;
-	m_cameraTarget.y = 90.0f;
+	m_cameraTarget.y = 50.0f;
 	m_cameraTarget.z = 0.0f;
 
 	// カメラの位置と注視点を指定する
