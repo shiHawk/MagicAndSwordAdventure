@@ -7,6 +7,7 @@ public:
 	void Draw() const;
 	virtual void Update() = 0;
 	VECTOR GetPos() { return m_pos; };
+	void SetPos(VECTOR nextPos) { m_pos = nextPos; }
 	int GetHp() const { return m_hp; }
 	int GetPower() const { return m_power; }
 	bool GetAttackActive() { return attack.active; }

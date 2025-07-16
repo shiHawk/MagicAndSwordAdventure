@@ -20,7 +20,7 @@ public:
 	
 	bool m_isDirRight;
 	float m_moveSpeed;
-	
+	bool IsDead() { return m_isDead; }
 protected:
 	// €–S‚Ì‚«”ò‚Ô•ûŒü
 	VECTOR m_knockbackDir;
