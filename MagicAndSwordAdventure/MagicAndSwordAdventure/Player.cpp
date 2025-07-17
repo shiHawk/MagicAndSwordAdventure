@@ -67,7 +67,7 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
-	m_pos = { -200.0f, 0.0f, 0.0f };
+	m_pos = { -400.0f, 0.0f, 0.0f };
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");

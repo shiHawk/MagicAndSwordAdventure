@@ -11,10 +11,10 @@ namespace
 Camera::Camera():
 	m_cameraMoveAngle(0.0f),
 	m_viewAngle(DX_PI_F / 3.0f),
-	m_cameraPos({ 0.0f,0.0f,0.0f }),
-	m_cameraTarget({ 0.0f,0.0f,0.0f }),
+	m_cameraPos({ -400.0f,0.0f,0.0f }),
+	m_cameraTarget({ -400.0f,0.0f,0.0f }),
 	m_CountDownFrame(220),
-	m_cameraMoveTargetPos({ 0.0f,0.0f,0.0f }),
+	m_cameraMoveTargetPos({ -400.0f,0.0f,0.0f }),
 	m_isBattleCamera(false)
 {
 }
@@ -36,12 +36,12 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// カメラの位置の初期化を行う
 
 	// カメラ(始点)の位置
-	m_cameraPos.x = 0.0f;
+	m_cameraPos.x = -400.0f;
 	m_cameraPos.y = 200.0f;
 	m_cameraPos.z = -840.0f;
 
 	// カメラがどこを見ているか(注視点)
-	m_cameraTarget.x = 0.0f;
+	m_cameraTarget.x = -400.0f;
 	m_cameraTarget.y = 50.0f;
 	m_cameraTarget.z = 0.0f;
 
@@ -99,13 +99,17 @@ void Camera::Update()
 	}
 	
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
-	printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
+	//printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
 }
 
 void Camera::ChangeBattleCamera(VECTOR cameraTarget)
 {
-	m_cameraPos = VGet(cameraTarget.x, m_cameraPos.y,m_cameraPos.z);
-	m_cameraMoveTargetPos = cameraTarget;
+	m_cameraMoveTargetPos.x = cameraTarget.x;
+	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+	//printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
+	/*m_cameraPos = VGet(cameraTarget.x, m_cameraPos.y,m_cameraPos.z);
+	m_cameraMoveTargetPos = cameraTarget;*/
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	m_isBattleCamera = true; 
 }

@@ -1,4 +1,5 @@
 #include "BattleAreaManager.h"
+#include "game.h"
 
 BattleAreaManager::BattleAreaManager():
 	m_battleAreaCenterPos({0.0f,0.0f,0.0f}),
@@ -6,10 +7,10 @@ BattleAreaManager::BattleAreaManager():
 	m_battleState(State::None),
 	m_playerToNormalSkeltonDistance(0.0f),
 	m_playerToWizardSkeltonDistance(0.0f),
-	m_playerToBattleAreaCenterPosDistance(0.0f),
+	m_battleAreaCenterPosToPlayerDistance(0.0f),
 	m_afterCorrectionPos({ 0.0f,0.0f,0.0f }),
-	m_playerToBattleAreaCenterPos({ 0.0f,0.0f,0.0f }),
-	m_playerToBattleAreaCenterPosDir({ 0.0f,0.0f,0.0f })
+	m_battleAreaCenterPosToPlayer({ 0.0f,0.0f,0.0f }),
+	battleAreaCenterPosToPlayerDir({ 0.0f,0.0f,0.0f })
 {
 }
 
@@ -22,8 +23,15 @@ void BattleAreaManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Ca
 	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;
 	m_battleAreaCenterPos = { 0.0f,0.0f,0.0f };
-	m_battleAreaRadius = 150.0f;
+	m_battleAreaRadius = 400.0f;
+	m_battleTriggerDistance = 200.0f;
 	m_battleState = State::None;
+}
+
+void BattleAreaManager::SetEnemys(const std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons, std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons)
+{
+	m_normalSkeltons = normalSkeltons;
+	m_wizardSkeltons = wizardSkeltons;
 }
 
 void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
@@ -31,26 +39,26 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 {
 	if (m_battleState == State::Finish)
 	{
-		for (auto& normalSkelton : m_NormalSkeltons)
+		for (auto& normalSkelton : m_normalSkeltons)
 		{
 			// すでに敵が死亡しているなら別のNormalSkeltonをチェック
 			if (normalSkelton->IsDead()) continue;
 			m_playerToNormalSkeltonDistance = VSize(VSub(normalSkelton->GetPos(), m_pPlayer->GetPos()));
 			// 敵とプレイヤーまでの距離が一定以下になったら
-			if (m_playerToNormalSkeltonDistance < m_battleAreaRadius)
+			if (m_playerToNormalSkeltonDistance < m_battleTriggerDistance)
 			{
 				m_battleState = State::None;
 				break;
 			}
 		}
 
-		for (auto& wizardSkelton : m_WizardSkeltons)
+		for (auto& wizardSkelton : m_wizardSkeltons)
 		{
 			// すでに敵が死亡しているなら別のNormalSkeltonをチェック
 			if (wizardSkelton->IsDead()) continue;
 			m_playerToWizardSkeltonDistance = VSize(VSub(wizardSkelton->GetPos(), m_pPlayer->GetPos()));
 			// 敵とプレイヤーまでの距離が一定以下になったら
-			if (m_playerToNormalSkeltonDistance < m_battleAreaRadius)
+			if (m_playerToNormalSkeltonDistance < m_battleTriggerDistance)
 			{
 				m_battleState = State::None;
 				break;
@@ -60,26 +68,26 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 	// まだ戦闘状態になっていない場合
 	if (m_battleState == State::None)
 	{
-		for (auto& normalSkelton : m_NormalSkeltons)
+		for (auto& normalSkelton : m_normalSkeltons)
 		{
 			// すでに敵が死亡しているなら別のNormalSkeltonをチェック
 			if (normalSkelton->IsDead()) continue;
 			m_playerToNormalSkeltonDistance = VSize(VSub(normalSkelton->GetPos(), m_pPlayer->GetPos()));
 			// 敵とプレイヤーまでの距離が一定以下になったら
-			if (m_playerToNormalSkeltonDistance < m_battleAreaRadius)
+			if (m_playerToNormalSkeltonDistance < m_battleTriggerDistance)
 			{
 				EnterBattle(m_pPlayer->GetPos());
 				break;
 			}
 		}
 
-		for (auto& wizardSkelton : m_WizardSkeltons)
+		for (auto& wizardSkelton : m_wizardSkeltons)
 		{
 			// すでに敵が死亡しているなら別のNormalSkeltonをチェック
 			if (wizardSkelton->IsDead()) continue;
 			m_playerToWizardSkeltonDistance = VSize(VSub(wizardSkelton->GetPos(), m_pPlayer->GetPos()));
 			// 敵とプレイヤーまでの距離が一定以下になったら
-			if (m_playerToNormalSkeltonDistance < m_battleAreaRadius)
+			if (m_playerToWizardSkeltonDistance < m_battleTriggerDistance)
 			{
 				EnterBattle(m_pPlayer->GetPos());
 				break;
@@ -91,7 +99,15 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 		// プレイヤーの移動を制限
 		ConstraintPlayerMovement();
 		// バトルが終わっているかをチェック
-		CheckBattleEnd(m_NormalSkeltons,m_WizardSkeltons);
+		CheckBattleEnd(m_normalSkeltons,m_wizardSkeltons);
+	}
+}
+
+void BattleAreaManager::DebugDraw()
+{
+	if (m_battleState == State::InBattle)
+	{
+		DrawSphere3D(m_battleAreaCenterPos, m_battleAreaRadius, 16, 0xff00ff, 0xffffff,false);
 	}
 }
 
@@ -108,19 +124,42 @@ bool BattleAreaManager::IsFinished()
 void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 {
 	m_battleState = State::InBattle;
-	m_battleAreaCenterPos = VAdd(centerPos,VGet(50.0f,0.0f,0.0f));
+	VECTOR screenCenter = ConvScreenPosToWorldPos(VGet(Game::kScreenWidth*0.5f,0.0f,0.0f));
+	m_battleAreaCenterPos = VGet(screenCenter.x,0.0f,0.0f);
+	DrawSphere3D(m_battleAreaCenterPos, 20, 16, 0xfff000, 0xffffff, true);
 	m_pCamera->ChangeBattleCamera(m_battleAreaCenterPos);
+
+	// バトルエリア内の敵だけアクティブに入れる
+	// 以前のアクティブリストを空にする
+	m_activeNormalSkeltons.clear();
+	m_activeWizardSkeltons.clear();
+
+	for (auto& normalSkelton : m_normalSkeltons)
+	{
+		if (!normalSkelton->IsDead() && VSize(VSub(normalSkelton->GetPos(), m_battleAreaCenterPos)) < m_battleAreaRadius)
+		{
+			m_activeNormalSkeltons.push_back(normalSkelton);
+		}
+	}
+	for (auto& wizardSkelton : m_wizardSkeltons)
+	{
+		if (!wizardSkelton->IsDead() && VSize(VSub(wizardSkelton->GetPos(), m_battleAreaCenterPos)) < m_battleAreaRadius)
+		{
+			m_activeWizardSkeltons.push_back(wizardSkelton);
+		}
+	}
 }
 
 void BattleAreaManager::ConstraintPlayerMovement()
 {
-	m_playerToBattleAreaCenterPos = VSub(m_battleAreaCenterPos, m_pPlayer->GetPos());
-	m_playerToBattleAreaCenterPosDistance = VSize(m_playerToBattleAreaCenterPos);
-	if (m_playerToBattleAreaCenterPosDistance > m_battleAreaRadius)
+	m_battleAreaCenterPosToPlayer = VSub(m_pPlayer->GetPos(),m_battleAreaCenterPos);
+	m_battleAreaCenterPosToPlayerDistance = VSize(m_battleAreaCenterPosToPlayer);
+	// バトルエリアから出ようとしたら
+	if (m_battleAreaCenterPosToPlayerDistance > m_battleAreaRadius)
 	{
-		m_playerToBattleAreaCenterPosDir = VNorm(m_playerToBattleAreaCenterPos); // 中心までの距離を正規化
+		battleAreaCenterPosToPlayerDir = VNorm(m_battleAreaCenterPosToPlayer); // 中心までの距離を正規化
 		// バトルエリアの縁に戻す
-		m_afterCorrectionPos = VAdd(m_battleAreaCenterPos,VScale(m_playerToBattleAreaCenterPosDir,m_battleAreaRadius));
+		m_afterCorrectionPos = VAdd(m_battleAreaCenterPos,VScale(battleAreaCenterPosToPlayerDir,m_battleAreaRadius));
 		m_pPlayer->SetPos(m_afterCorrectionPos);
 	}
 }
@@ -128,22 +167,16 @@ void BattleAreaManager::ConstraintPlayerMovement()
 void BattleAreaManager::CheckBattleEnd(std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
 	std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons)
 {
-	for (auto& normalSkelton : m_NormalSkeltons)
+	for (auto& normalSkelton : m_activeNormalSkeltons)
 	{
 		// 生きている敵がいるなら
-		if (!normalSkelton->IsDead())
-		{
-			return; // 処理を続ける
-		}
+		if (!normalSkelton->IsDead()) return; // 処理を続ける
 	}
 
-	for (auto& wizardSkelton : m_WizardSkeltons)
+	for (auto& wizardSkelton : m_activeWizardSkeltons)
 	{
 		// 生きている敵がいるなら
-		if (!wizardSkelton->IsDead())
-		{
-			return; // 処理を続ける
-		}
+		if (!wizardSkelton->IsDead()) return; // 処理を続ける
 	}
 
 	// 生きている敵がいないならFinishに切り替える

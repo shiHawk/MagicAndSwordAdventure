@@ -52,8 +52,9 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 
 void WizardSkelton::End()
 {
-	attack.active = false;
 	MV1DeleteModel(m_modelHandle);
+	attack.pos = { attack.pos.x,attack.pos.y - 1000.0f,attack.pos.z };
+	attack.active = false;
 	m_pos = { m_pos.x,m_pos.y - 1000.0f,m_pos.z };
 }
 
@@ -86,7 +87,7 @@ void WizardSkelton::Update()
 			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
 			{
 				attack.active = false;
-				attack.pos = { m_pos.x,-100.0f,m_pos.z };
+				attack.pos = { m_pos.x,-1000.0f,m_pos.z };
 				ChangeAnim(m_modelHandle, 41, false, 0.5f);
 				attack.timer = 60.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定

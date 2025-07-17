@@ -61,8 +61,9 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 void NormalSkelton::End()
 {
 	MV1DeleteModel(m_modelHandle);
-	attack.active = false;
 	m_pos = { m_pos.x,m_pos.y - 1000.0f,m_pos.z };
+	attack.pos = { attack.pos.x,attack.pos.y - 1000.0f,attack.pos.z };
+	attack.active = false;
 }
 
 void NormalSkelton::Update()

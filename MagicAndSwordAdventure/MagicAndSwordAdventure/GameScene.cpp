@@ -54,6 +54,7 @@ void GameScene::Init()
 	m_pStage = std::make_shared<Stage>();
 	m_pPlayer = std::make_shared<Player>();
 	m_pCollision = std::make_shared<Collision>();
+	m_pBattleArea = std::make_unique<BattleAreaManager>();
 	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer);
 	//// NormalSkelton Çï°êîê∂ê¨
 	//for (int i = 0; i < 2; ++i)
@@ -74,6 +75,8 @@ void GameScene::Init()
 	m_pCamera->Init(m_pPlayer);
 	m_pStage->Init();
 	m_pPlayer->Init(m_pAnimation);
+	m_pBattleArea->Init(m_pPlayer, m_pCamera);
+	m_pBattleArea->SetEnemys(m_NormalSkeltons,m_WizardSkeltons);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
 }
@@ -106,6 +109,7 @@ SceneBase* GameScene::Update()
 	{
 		wizardSkelton->Update();
 	}
+	m_pBattleArea->Updata(m_NormalSkeltons, m_WizardSkeltons);
 	m_pCollision->Update();
 	return this;
 }
@@ -122,6 +126,7 @@ void GameScene::Draw()
 		wizardSkelton->Draw();
 	}
 	m_pStage->Draw();
+	m_pBattleArea->DebugDraw();
 	//DrawGrid();
 }
 

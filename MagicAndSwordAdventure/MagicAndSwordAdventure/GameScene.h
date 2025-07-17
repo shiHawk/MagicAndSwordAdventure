@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Stage.h"
 #include "SceneManager.h"
+#include "BattleAreaManager.h"
 #include <memory>
 #include <vector>
 #include <fstream>
@@ -39,5 +40,6 @@ private:
 	std::vector<std::shared_ptr<WizardSkelton>> m_WizardSkeltons;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
+	std::unique_ptr<BattleAreaManager> m_pBattleArea;
 };
 
