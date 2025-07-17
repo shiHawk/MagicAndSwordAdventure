@@ -14,7 +14,8 @@ Camera::Camera():
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
 	m_cameraTarget({ 0.0f,0.0f,0.0f }),
 	m_CountDownFrame(220),
-	m_cameraMoveTargetPos({ 0.0f,0.0f,0.0f })
+	m_cameraMoveTargetPos({ 0.0f,0.0f,0.0f }),
+	m_isBattleCamera(false)
 {
 }
 
@@ -25,6 +26,7 @@ Camera::~Camera()
 void Camera::Init(std::shared_ptr<Player> pPlayer)
 {
 	m_pPlayer = pPlayer;
+	m_isBattleCamera = false;
 	// 3D表示の設定
 	SetUseZBuffer3D(true);	  // Zバッファを指定する
 	SetWriteZBuffer3D(true);  // Zバッファへの書き込みを行う
@@ -80,17 +82,30 @@ void Camera::Update()
 	}
 	SetupCamera_Perspective(m_viewAngle);
 	//printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
-	// 右を向いているとき
-	if (m_pPlayer->GetDirRight() && m_pPlayer->GetIsMoving())
+	if (!m_isBattleCamera)
 	{
-		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;
+		// 右を向いているとき
+		if (m_pPlayer->GetDirRight() && m_pPlayer->GetIsMoving())
+		{
+			m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;
+		}
+		// 左を向いているとき
+		else if (!m_pPlayer->GetDirRight() && m_pPlayer->GetIsMoving())
+		{
+			m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x - kOffSetPos;
+		}
+		m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+		m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	}
-	// 左を向いているとき
-	else if(!m_pPlayer->GetDirRight() && m_pPlayer->GetIsMoving())
-	{
-		m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x - kOffSetPos;
-	}
-	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
-	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+	
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
+	printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
+}
+
+void Camera::ChangeBattleCamera(VECTOR cameraTarget)
+{
+	m_cameraPos = VGet(cameraTarget.x, m_cameraPos.y,m_cameraPos.z);
+	m_cameraMoveTargetPos = cameraTarget;
+	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
+	m_isBattleCamera = true; 
 }

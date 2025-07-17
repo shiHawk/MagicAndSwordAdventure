@@ -16,9 +16,6 @@
 #include <string>
 #include "DxLib.h"
 
-class Player;
-class Enemy;
-class Collision;
 class GameScene :public SceneBase
 {
 public:

@@ -1,4 +1,5 @@
 #pragma once
+#include "Camera.h"
 #include "Player.h"
 #include "NormalSkelton.h"
 #include "WizardSkelton.h"
@@ -10,7 +11,7 @@ class BattleAreaManager
 public:
 	BattleAreaManager();
 	~BattleAreaManager();
-	void Init(std::shared_ptr<Player> pPlayer);
+	void Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Camera> pCamera);
 	void Updata(std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
 		std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons);
 	bool IsInBattle(); // êÌì¨íÜÇ©
@@ -36,6 +37,7 @@ private:
 	VECTOR m_afterCorrectionPos; // ï‚ê≥ÇµÇΩå„ÇÃà íu
 
 	std::shared_ptr<Player> m_pPlayer;
+	std::shared_ptr<Camera> m_pCamera;
 	std::vector<std::shared_ptr<NormalSkelton>> m_NormalSkeltons;
 	std::vector<std::shared_ptr<WizardSkelton>> m_WizardSkeltons;
 	/// <summary>

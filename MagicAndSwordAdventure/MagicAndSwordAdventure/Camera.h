@@ -9,6 +9,8 @@ public:
 	~Camera();
 	void Init(std::shared_ptr<Player> pPlayer);
 	void Update();
+	void ChangeBattleCamera(VECTOR cameraTarget);
+	void ChangeNormalCamera() { m_isBattleCamera = false; }
 private:
 	// カメラの位置
 	VECTOR m_cameraPos;
@@ -21,6 +23,8 @@ private:
 	// カメラ移動演出
 	float m_cameraMoveAngle;
 	int m_CountDownFrame;
+
+	bool m_isBattleCamera;
 
 	std::shared_ptr<Player> m_pPlayer;
 };

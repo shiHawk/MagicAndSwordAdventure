@@ -17,9 +17,10 @@ BattleAreaManager::~BattleAreaManager()
 {
 }
 
-void BattleAreaManager::Init(std::shared_ptr<Player> pPlayer)
+void BattleAreaManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Camera> pCamera)
 {
 	m_pPlayer = pPlayer;
+	m_pCamera = pCamera;
 	m_battleAreaCenterPos = { 0.0f,0.0f,0.0f };
 	m_battleAreaRadius = 150.0f;
 	m_battleState = State::None;
@@ -108,6 +109,7 @@ void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 {
 	m_battleState = State::InBattle;
 	m_battleAreaCenterPos = VAdd(centerPos,VGet(50.0f,0.0f,0.0f));
+	m_pCamera->ChangeBattleCamera(m_battleAreaCenterPos);
 }
 
 void BattleAreaManager::ConstraintPlayerMovement()
@@ -146,4 +148,5 @@ void BattleAreaManager::CheckBattleEnd(std::vector<std::shared_ptr<NormalSkelton
 
 	// ¶‚«‚Ä‚¢‚é“G‚ª‚¢‚È‚¢‚È‚çFinish‚ÉØ‚è‘Ö‚¦‚é
 	m_battleState = State::Finish;
+	m_pCamera->ChangeNormalCamera();
 }
