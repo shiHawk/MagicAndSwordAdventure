@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include <cmath>
 #include "game.h"
+#include "ResultScene.h"
 GameScene::GameScene()
 {
 }

@@ -16,6 +16,7 @@ public:
 	int m_modelHandle;
 	bool m_isDirRight;
 	bool m_isDead;
+	bool m_isDying;
 
 	int m_hp;
 	int m_power;

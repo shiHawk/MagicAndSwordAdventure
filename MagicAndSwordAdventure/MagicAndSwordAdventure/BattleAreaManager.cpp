@@ -10,7 +10,8 @@ BattleAreaManager::BattleAreaManager():
 	m_battleAreaCenterPosToPlayerDistance(0.0f),
 	m_afterCorrectionPos({ 0.0f,0.0f,0.0f }),
 	m_battleAreaCenterPosToPlayer({ 0.0f,0.0f,0.0f }),
-	battleAreaCenterPosToPlayerDir({ 0.0f,0.0f,0.0f })
+	battleAreaCenterPosToPlayerDir({ 0.0f,0.0f,0.0f }),
+	m_battleTriggerDistance(0.0f)
 {
 }
 
@@ -58,7 +59,7 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 			if (wizardSkelton->IsDead()) continue;
 			m_playerToWizardSkeltonDistance = VSize(VSub(wizardSkelton->GetPos(), m_pPlayer->GetPos()));
 			// 敵とプレイヤーまでの距離が一定以下になったら
-			if (m_playerToNormalSkeltonDistance < m_battleTriggerDistance)
+			if (m_playerToWizardSkeltonDistance < m_battleTriggerDistance)
 			{
 				m_battleState = State::None;
 				break;
@@ -126,7 +127,6 @@ void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 	m_battleState = State::InBattle;
 	VECTOR screenCenter = ConvScreenPosToWorldPos(VGet(Game::kScreenWidth*0.5f,0.0f,0.0f));
 	m_battleAreaCenterPos = VGet(screenCenter.x,0.0f,0.0f);
-	DrawSphere3D(m_battleAreaCenterPos, 20, 16, 0xfff000, 0xffffff, true);
 	m_pCamera->ChangeBattleCamera(m_battleAreaCenterPos);
 
 	// バトルエリア内の敵だけアクティブに入れる
@@ -136,14 +136,14 @@ void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 
 	for (auto& normalSkelton : m_normalSkeltons)
 	{
-		if (!normalSkelton->IsDead() && VSize(VSub(normalSkelton->GetPos(), m_battleAreaCenterPos)) < m_battleAreaRadius)
+		if (!normalSkelton->IsDead() && VSize(VSub(normalSkelton->GetPos(), m_battleAreaCenterPos)) < m_battleTriggerDistance)
 		{
 			m_activeNormalSkeltons.push_back(normalSkelton);
 		}
 	}
 	for (auto& wizardSkelton : m_wizardSkeltons)
 	{
-		if (!wizardSkelton->IsDead() && VSize(VSub(wizardSkelton->GetPos(), m_battleAreaCenterPos)) < m_battleAreaRadius)
+		if (!wizardSkelton->IsDead() && VSize(VSub(wizardSkelton->GetPos(), m_battleAreaCenterPos)) < m_battleTriggerDistance)
 		{
 			m_activeWizardSkeltons.push_back(wizardSkelton);
 		}

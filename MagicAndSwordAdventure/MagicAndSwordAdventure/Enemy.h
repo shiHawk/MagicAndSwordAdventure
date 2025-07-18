@@ -29,7 +29,6 @@ protected:
 	// ‚«”ò‚ñ‚Å‚¢‚éŠÔ
 	float m_knockbackDuration;
 	float m_knockbackTimer;
-	bool m_isDying;
 	float m_enemyToPlayerDistance;
 	VECTOR m_enemyToPlayer;
 private:
