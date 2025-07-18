@@ -71,6 +71,7 @@ void WizardSkelton::Update()
 		// エネミーからプレイヤーまでの距離の大きさ
 		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 		//printfDx(L"m_enemyToPlayerDistance:%f\n",m_enemyToPlayerDistance);
+		// 索敵範囲内に入ったら攻撃する
 		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
 		{
 			attack.active = true;

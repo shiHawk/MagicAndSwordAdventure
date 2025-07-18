@@ -14,16 +14,17 @@ public:
 	virtual void Draw() {}
 
 	// フェード関連
-	void updateFade();
-	void drawFade() const;
+	void UpdateFade();
+	void DrawFade() const;
 
-	bool isFadingIn() const;	// フェードイン中
-	bool isFadingOut() const;	// フェードアウト中
-	bool isFading() const { return isFadingIn() || isFadingOut(); }	// フェードインorアウト中
+	bool IsFadingIn() const;	// フェードイン中
+	bool IsFadingOut() const;	// フェードアウト中
+	bool IsFading() const { return IsFadingIn() || IsFadingOut(); }	// フェードインorアウト中
 
-	void startFadeOut();	// フェードアウト開始
+	void StartFadeOut();	// フェードアウト開始
+	bool IsFadeComplete()const;
 
-private:
+protected:
 	// フェード関連処理
 	int m_fadeColor;
 	int m_fadeBright;

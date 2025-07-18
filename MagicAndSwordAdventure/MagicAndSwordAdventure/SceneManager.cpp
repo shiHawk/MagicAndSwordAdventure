@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "GameScene.h"
+#include "TitleScene.h"
 #include "Pad.h"
 
 SceneManager::SceneManager()

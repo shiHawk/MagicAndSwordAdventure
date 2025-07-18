@@ -7,7 +7,7 @@ namespace
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
-	constexpr float kSerchRange = 200.0f; // 索敵範囲
+	constexpr float kSerchRange = 300.0f; // 索敵範囲
 	constexpr float kAttackRange = 90.0f; // 攻撃範囲
 	constexpr float kMoveSpeed = 2.0f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
@@ -29,7 +29,6 @@ namespace
 
 NormalSkelton::NormalSkelton():
 	m_toPlayerDir({0.0f,0.f,0.0f}),
-	m_attackWaitingTime(0.0f),
 	m_isMove(false),
 	m_moveCount(0)
 {
@@ -79,7 +78,7 @@ void NormalSkelton::Update()
 		// エネミーからプレイヤーまでの距離
 		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 		//printfDx(L"m_enemyToPlayer.x:%f\n",m_enemyToPlayer.x);
-
+		// 索敵範囲内に入ったらプレイヤーを追う
 		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
 		{
 			TrackPlayer();

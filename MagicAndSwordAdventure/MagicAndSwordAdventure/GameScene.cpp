@@ -2,7 +2,6 @@
 #include "DxLib.h"
 #include <cmath>
 #include "game.h"
-#include "ResultScene.h"
 GameScene::GameScene()
 {
 }
@@ -57,22 +56,7 @@ void GameScene::Init()
 	m_pCollision = std::make_shared<Collision>();
 	m_pBattleArea = std::make_unique<BattleAreaManager>();
 	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer);
-	//// NormalSkelton Çï°êîê∂ê¨
-	//for (int i = 0; i < 2; ++i)
-	//{
-	//	auto normalSkelton = std::make_shared<NormalSkelton>();
-	//	normalSkelton->Init(m_pPlayer,VGet(50.0f*i,0.0f,0.0f));
-	//	m_NormalSkeltons.push_back(normalSkelton);
-	//}
-	//// WizardSkelton Çï°êîê∂ê¨
-	//for (int i = 0; i < 2; ++i)
-	//{
-	//	auto wizard = std::make_shared<WizardSkelton>();
-	//	wizard->Init(m_pPlayer,VGet(0.0f,0.0f,i*200.0f));
-	//	m_WizardSkeltons.push_back(wizard);
-	//}
 	m_pAnimation = std::make_shared<Animation>();
-
 	m_pCamera->Init(m_pPlayer);
 	m_pStage->Init();
 	m_pPlayer->Init(m_pAnimation);
@@ -127,7 +111,7 @@ void GameScene::Draw()
 		wizardSkelton->Draw();
 	}
 	m_pStage->Draw();
-	m_pBattleArea->DebugDraw();
+	//m_pBattleArea->DebugDraw();
 	//DrawGrid();
 }
 
