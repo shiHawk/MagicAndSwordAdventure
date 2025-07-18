@@ -8,10 +8,12 @@ public:
 	Camera();
 	~Camera();
 	void Init(std::shared_ptr<Player> pPlayer);
+	void End();
 	void Update();
 	void ChangeBattleCamera(VECTOR cameraTarget);
 	void ChangeNormalCamera() { m_isBattleCamera = false; }
 private:
+	int m_lightHandle;
 	// カメラの位置
 	VECTOR m_cameraPos;
 	// カメラの注視点(見ている場所)

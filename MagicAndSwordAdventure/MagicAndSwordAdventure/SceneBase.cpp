@@ -13,7 +13,7 @@ SceneBase::SceneBase()
 {
 	// 初期設定はフェードアウト状態
 	m_fadeColor = GetColor(0, 0, 0);
-	m_fadeBright = 255;
+	m_fadeBright = 0;
 	m_fadeSpeed = 0;
 }
 

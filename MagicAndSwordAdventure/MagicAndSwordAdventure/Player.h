@@ -18,7 +18,6 @@ public:
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const ;
 	void OnDamage(int enemyPower);
-	
 	// 攻撃
 	void DoAttack();
 	// 回避
@@ -27,6 +26,7 @@ public:
 	float GetAttackRadius() { return attack.radius; }
 	bool GetDirRight() { return m_isDirRight; }
 	bool GetIsMoving();
+	int GetMaxHp();
 	AttackSphere attack = { 30,{-500,0,0},false,0,0,30,60.0,40.0};
 private:
 	// 移動

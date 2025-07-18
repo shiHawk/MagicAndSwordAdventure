@@ -300,6 +300,11 @@ bool Player::GetIsMoving()
 	return m_isMovingFlag;
 }
 
+int Player::GetMaxHp()
+{
+	return kMaxHp;
+}
+
 
 void Player::DoMove()
 {

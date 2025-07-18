@@ -1,11 +1,11 @@
 #pragma once
 #include "SceneBase.h"
 #include "DxLib.h"
-class TitleScene : public SceneBase
+class ResultScene : public SceneBase
 {
 public:
-	TitleScene();
-	virtual ~TitleScene() {}
+	ResultScene();
+	virtual ~ResultScene(){}
 	virtual void Init() override;
 	virtual void End() override;
 

@@ -2,7 +2,10 @@
 #include "DxLib.h"
 #include <cmath>
 #include "game.h"
-GameScene::GameScene()
+#include "Pad.h"
+#include "ResultScene.h"
+GameScene::GameScene():
+	m_isNextScene(false)
 {
 }
 
@@ -71,6 +74,7 @@ void GameScene::End()
 	m_pPlayer->End();
 	m_pCollision->End();
 	m_pStage->End();
+	m_pCamera->End();
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
 		normalSkelton->End();
@@ -96,6 +100,16 @@ SceneBase* GameScene::Update()
 	}
 	m_pBattleArea->Updata(m_NormalSkeltons, m_WizardSkeltons);
 	m_pCollision->Update();
+	UpdateFade();
+	if (!m_isNextScene && !IsFadingOut() && CheckHitKey(KEY_INPUT_RETURN))
+	{
+		StartFadeOut();
+		m_isNextScene = true;
+	}
+	if (m_isNextScene && IsFadeComplete())
+	{
+		return new ResultScene();
+	}
 	return this;
 }
 
@@ -111,6 +125,7 @@ void GameScene::Draw()
 		wizardSkelton->Draw();
 	}
 	m_pStage->Draw();
+	DrawFade();
 	//m_pBattleArea->DebugDraw();
 	//DrawGrid();
 }

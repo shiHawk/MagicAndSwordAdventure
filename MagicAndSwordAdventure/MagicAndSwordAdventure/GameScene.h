@@ -41,5 +41,6 @@ private:
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
 	std::unique_ptr<BattleAreaManager> m_pBattleArea;
+	bool m_isNextScene;
 };
 

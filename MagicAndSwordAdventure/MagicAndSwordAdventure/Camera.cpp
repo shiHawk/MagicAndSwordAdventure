@@ -59,7 +59,12 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
 	SetCameraNearFar(10.0f, 3000.0f);
 
-	CreateDirLightHandle(kSecondLight);
+	m_lightHandle = CreateDirLightHandle(kSecondLight);
+}
+
+void Camera::End()
+{
+	DeleteLightHandle(m_lightHandle);
 }
 
 void Camera::Update()

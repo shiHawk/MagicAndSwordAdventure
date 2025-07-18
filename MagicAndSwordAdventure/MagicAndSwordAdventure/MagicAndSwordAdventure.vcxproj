@@ -154,10 +154,12 @@
     <ClCompile Include="NormalSkelton.cpp" />
     <ClCompile Include="Pad.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="SceneBase.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="WizardSkelton.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,10 +174,12 @@
     <ClInclude Include="NormalSkelton.h" />
     <ClInclude Include="Pad.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ResultScene.h" />
     <ClInclude Include="SceneBase.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="WizardSkelton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

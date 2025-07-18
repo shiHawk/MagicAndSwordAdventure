@@ -1,28 +1,17 @@
+#include "ResultScene.h"
 #include "TitleScene.h"
-#include "DxLib.h"
-#include "GameScene.h"
 #include "Pad.h"
 #include "game.h"
 
-namespace
-{
-	constexpr int kMaxFadeBright = 255;
-	// フェード速度
-	constexpr int kFadeSpeed = 8;
-	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
-}
-
-TitleScene::TitleScene():
-	m_cameraPos({0.0f,0.0f,0.0f}),
-	m_cameraTarget({0.0f,0.0f,0.0f}),
+ResultScene::ResultScene() :
+	m_cameraPos({ 0.0f,0.0f,0.0f }),
+	m_cameraTarget({ 0.0f,0.0f,0.0f }),
 	m_viewAngle(0.0f)
 {
 }
 
-void TitleScene::Init()
+void ResultScene::Init()
 {
-	m_fadeBright = 0;
-	m_fadeSpeed = -kFadeSpeed;
 	// 3D表示の設定
 	SetUseZBuffer3D(true);	  // Zバッファを指定する
 	SetWriteZBuffer3D(true);  // Zバッファへの書き込みを行う
@@ -52,27 +41,27 @@ void TitleScene::Init()
 	SetCameraNearFar(10.0f, 3000.0f);
 }
 
-void TitleScene::End()
+void ResultScene::End()
 {
 }
 
-SceneBase* TitleScene::Update()
+SceneBase* ResultScene::Update()
 {
 	UpdateFade();
-	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
+	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
 	}
 	if (m_isNextScene && IsFadeComplete())
 	{
-		return new GameScene();
+		return new TitleScene();
 	}
 	return this;
 }
 
-void TitleScene::Draw()
-{	
-	DrawSphere3D(VGet(0,0,500), 40, 16, 0xff00ff, 0xffffff, true);
+void ResultScene::Draw()
+{
+	DrawSphere3D(VGet(0, 0, 500), 40, 16, 0xffff00, 0xffffff, true);
 	DrawFade();
 }
