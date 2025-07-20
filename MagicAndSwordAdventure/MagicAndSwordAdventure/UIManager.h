@@ -8,7 +8,7 @@ public:
 	~UIManager();
 	void Init(std::shared_ptr<Player> pPlayer);
 	void End();
-	void Updata();
+	void Update();
 	void Draw();
 private:
 	std::shared_ptr<Player> m_pPlayer;

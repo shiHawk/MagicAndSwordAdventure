@@ -60,11 +60,13 @@ void GameScene::Init()
 	m_pBattleArea = std::make_unique<BattleAreaManager>();
 	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer);
 	m_pAnimation = std::make_shared<Animation>();
+	m_pUIManager = std::make_unique<UIManager>();
 	m_pCamera->Init(m_pPlayer);
 	m_pStage->Init();
 	m_pPlayer->Init(m_pAnimation);
 	m_pBattleArea->Init(m_pPlayer, m_pCamera);
 	m_pBattleArea->SetEnemys(m_NormalSkeltons,m_WizardSkeltons);
+	m_pUIManager->Init(m_pPlayer);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
 }
@@ -100,8 +102,9 @@ SceneBase* GameScene::Update()
 	}
 	m_pBattleArea->Updata(m_NormalSkeltons, m_WizardSkeltons);
 	m_pCollision->Update();
+	m_pUIManager->Update();
 	UpdateFade();
-	if (!m_isNextScene && !IsFadingOut() && CheckHitKey(KEY_INPUT_RETURN))
+	if (!m_isNextScene && !IsFadingOut() && m_pPlayer->IsDead())
 	{
 		StartFadeOut();
 		m_isNextScene = true;
@@ -125,6 +128,7 @@ void GameScene::Draw()
 		wizardSkelton->Draw();
 	}
 	m_pStage->Draw();
+	m_pUIManager->Draw();
 	DrawFade();
 	//m_pBattleArea->DebugDraw();
 	//DrawGrid();

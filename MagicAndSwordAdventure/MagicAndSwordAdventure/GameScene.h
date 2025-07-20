@@ -10,6 +10,7 @@
 #include "Stage.h"
 #include "SceneManager.h"
 #include "BattleAreaManager.h"
+#include "UIManager.h"
 #include <memory>
 #include <vector>
 #include <fstream>
@@ -41,6 +42,7 @@ private:
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
 	std::unique_ptr<BattleAreaManager> m_pBattleArea;
+	std::unique_ptr<UIManager> m_pUIManager;
 	bool m_isNextScene;
 };
 

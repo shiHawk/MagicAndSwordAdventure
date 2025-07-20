@@ -18,14 +18,17 @@ public:
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const ;
 	void OnDamage(int enemyPower);
+	void OnDeath();
 	// 攻撃
 	void DoAttack();
 	// 回避
 	void DoEvade();
 	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }
-	bool GetDirRight() { return m_isDirRight; }
-	bool GetIsMoving();
+	bool IsDirRight() { return m_isDirRight; }
+	bool IsMoving();
+	bool IsDead() { return m_isDead; }
+	int GetHp() { return m_hp; }
 	int GetMaxHp();
 	AttackSphere attack = { 30,{-500,0,0},false,0,0,30,60.0,40.0};
 private:

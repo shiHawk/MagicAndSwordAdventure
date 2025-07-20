@@ -90,12 +90,12 @@ void Camera::Update()
 	if (!m_isBattleCamera)
 	{
 		// ‰E‚ðŒü‚¢‚Ä‚¢‚é‚Æ‚«
-		if (m_pPlayer->GetDirRight() && m_pPlayer->GetIsMoving())
+		if (m_pPlayer->IsDirRight() && m_pPlayer->IsMoving())
 		{
 			m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x + kOffSetPos;
 		}
 		// ¶‚ðŒü‚¢‚Ä‚¢‚é‚Æ‚«
-		else if (!m_pPlayer->GetDirRight() && m_pPlayer->GetIsMoving())
+		else if (!m_pPlayer->IsDirRight() && m_pPlayer->IsMoving())
 		{
 			m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x - kOffSetPos;
 		}

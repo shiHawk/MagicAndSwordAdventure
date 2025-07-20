@@ -34,6 +34,7 @@ namespace
 	constexpr int kAttack2AnimNo = 40;
 	constexpr int kAttack3AnimNo = 42;
 	constexpr int kDamageAnimNo = 24;
+	constexpr int kDeathAnimNo = 26;
 
 	bool isStartGravity = false;
 	bool isMove = false;
@@ -76,6 +77,8 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	m_pAnimation->AttachAnim(m_modelHandle, 1);
 	m_prevPos = m_pos;
 	m_power = 20;
+	m_hp = kMaxHp;
+	m_isDead = false;
 }
 
 void Player::End()
@@ -85,80 +88,92 @@ void Player::End()
 
 void Player::Update()
 {
-	if (m_vec.y > 0)
+	if (m_isDying)
 	{
-		isStartGravity = true;
+		OnDeath();
 	}
-	// Bボタンを押したとき
-	m_isNowButton = Pad::isPress(PAD_INPUT_2);
-	// Bボタンが押されっぱなしでない
-	if (m_isNowButton && !m_isPrevButton && !m_isJump && !isMove)
+	if (!m_isDead)
 	{
-		DoAttack();
-	}
-	if (attack.active)
-	{
-		attack.timer--;
-		attack.comboDuration--;
-		if (attack.timer <= 0)
+		if (m_vec.y > 0)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
-			attack.pos = { 0.0f,-1000.0f,0.0f };
-			attack.active = false;
+			isStartGravity = true;
 		}
-	}
-	m_isPrevButton = m_isNowButton;
-	// Aボタンを押したときジャンプ
-	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)
-	{
-		m_vec.y = kJumpPower;
-		m_jumpCount++;
-	}
-	// ジャンプは2回まで
-	if (m_jumpCount > 1)
-	{
-		m_isJump = true;
-	}
-	DoMove();
-	
-	//RBボタンを押したとき
-	if (Pad::isTrigger(PAD_INPUT_6))
-	{
-		DoEvade();
-	}
-	if (evadeData.active)
-	{
-		evadeData.timer--;
-		// 回避時間が終わったら
-		if (evadeData.timer <= 0)
+		// Bボタンを押したとき
+		m_isNowButton = Pad::isPress(PAD_INPUT_2);
+		// Bボタンが押されっぱなしでない
+		if (m_isNowButton && !m_isPrevButton && !m_isJump && !isMove)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
-			evadeData.active = false;
-			evadeData.evadeCount = 0;
+			DoAttack();
 		}
-	}
+		if (attack.active)
+		{
+			attack.timer--;
+			attack.comboDuration--;
+			if (attack.timer <= 0)
+			{
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+				attack.pos = { 0.0f,-1000.0f,0.0f };
+				attack.active = false;
+			}
+		}
+		m_isPrevButton = m_isNowButton;
+		// Aボタンを押したときジャンプ
+		if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)
+		{
+			m_vec.y = kJumpPower;
+			m_jumpCount++;
+		}
+		// ジャンプは2回まで
+		if (m_jumpCount > 1)
+		{
+			m_isJump = true;
+		}
+		DoMove();
 
-	if (isMove)
-	{
-		idleCount = 0;
-		if (moveCount < 1)
+		//RBボタンを押したとき
+		if (Pad::isTrigger(PAD_INPUT_6))
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kWalkAnimNo, true, 0.5f);
+			DoEvade();
 		}
-		moveCount++;
-	}
-	
-	if (m_pos.y < 0.0f)
-	{
-		m_pos.y = 0.0f;
-		m_vec.y = 0;
-		m_isJump = false;
-		m_jumpCount = 0;
-	}
+		if (evadeData.active)
+		{
+			evadeData.timer--;
+			// 回避時間が終わったら
+			if (evadeData.timer <= 0)
+			{
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+				evadeData.active = false;
+				evadeData.evadeCount = 0;
+			}
+		}
 
-	//printfDx(L"%f\n", m_screenPos.x);
-	//printfDx(L"m_pos.x:%f\n", m_pos.x);
-	m_pAnimation->UpdateAnim();
+		if (isMove)
+		{
+			idleCount = 0;
+			if (moveCount < 1)
+			{
+				m_pAnimation->ChangeAnim(m_modelHandle, kWalkAnimNo, true, 0.5f);
+			}
+			moveCount++;
+		}
+
+		if (m_pos.y < 0.0f)
+		{
+			m_pos.y = 0.0f;
+			m_vec.y = 0;
+			m_isJump = false;
+			m_jumpCount = 0;
+		}
+
+		//printfDx(L"%f\n", m_screenPos.x);
+		//printfDx(L"m_pos.x:%f\n", m_pos.x);
+		m_pAnimation->UpdateAnim();
+	}
+	else
+	{
+		End();
+		return;
+	}
 }
 
 void Player::Draw() const
@@ -188,8 +203,27 @@ float Player::GetColRadius() const
 void Player::OnDamage(int enemyPower)
 {
 	m_hp -= enemyPower;
-	m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
+	if (m_hp > 0 )
+	{
+		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
+	}
+	else
+	{
+		m_hp = 0;
+		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.5f);
+		m_isDying = true;
+	}
+	
 	printfDx(L"hp:%d\n", m_hp);
+}
+
+void Player::OnDeath()
+{
+	if (m_pAnimation->GetIsAnimEnd())
+	{
+		m_isDead = true;
+		m_isDying = false;
+	}
 }
 
 void Player::DoAttack()
@@ -282,7 +316,7 @@ void Player::DoEvade()
 	m_pos = VAdd(m_pos, m_vec);
 }
 
-bool Player::GetIsMoving()
+bool Player::IsMoving()
 {
 	// 振り向いたら距離をリセット
 	if (m_isPrevDirRight != m_isNowDirRight)

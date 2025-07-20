@@ -18,12 +18,12 @@ void UIManager::End()
 {
 }
 
-void UIManager::Updata()
+void UIManager::Update()
 {
 	m_hpGaugeRate = static_cast<float>(m_pPlayer->GetHp()) / m_pPlayer->GetMaxHp();
 }
 
 void UIManager::Draw()
 {
-	//DrawBox(100,50,100+100*m_hpGaugeRate)
+	DrawBox(80, 50, 80 + 100 * m_hpGaugeRate, 80, 0x00ff00, true);
 }
