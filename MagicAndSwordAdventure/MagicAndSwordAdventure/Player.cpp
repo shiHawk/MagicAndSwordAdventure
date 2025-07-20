@@ -13,7 +13,7 @@ namespace
 	// “–‚½‚è”»’è‚Ì”ÍˆÍ
 	constexpr float kColRadius = 40.0f;
 	// Å‘åHP
-	constexpr int kMaxHp = 300;
+	constexpr int kMaxHp = 3000;
 	// Œ¸‘¬
 	constexpr float kMoveDecRate = 0.80f;
 
@@ -203,18 +203,19 @@ float Player::GetColRadius() const
 void Player::OnDamage(int enemyPower)
 {
 	m_hp -= enemyPower;
-	if (m_hp > 0 )
-	{
-		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
-	}
-	else
+	if (m_hp <= 0 )
 	{
 		m_hp = 0;
 		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.5f);
+		printfDx(L"Ž€–Sƒtƒ‰ƒO‚ª—§‚¿‚Ü‚µ‚½\n");
 		m_isDying = true;
 	}
+	else
+	{
+		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
+	}
 	
-	printfDx(L"hp:%d\n", m_hp);
+	printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
 }
 
 void Player::OnDeath()

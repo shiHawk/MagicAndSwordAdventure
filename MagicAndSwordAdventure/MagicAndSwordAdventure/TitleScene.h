@@ -12,6 +12,9 @@ public:
 	virtual SceneBase* Update() override;
 	virtual void Draw() override;
 private:
+	int m_titleHandle;
+	float m_time;
+	int m_offsetY;
 	bool m_isNextScene = false;
 	// ƒJƒƒ‰‚ÌˆÊ’u
 	VECTOR m_cameraPos;

@@ -33,6 +33,7 @@ public:
 private:
 	void DrawGrid() const;
 private:
+	bool IsAreAllEnemiesDefeated() const;
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;

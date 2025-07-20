@@ -4,7 +4,7 @@
 class CharacterBase:public Animation
 {
 public:
-	void Draw() const;
+	CharacterBase();
 	virtual void Update() = 0;
 	VECTOR GetPos() { return m_pos; };
 	void SetPos(VECTOR nextPos) { m_pos = nextPos; }

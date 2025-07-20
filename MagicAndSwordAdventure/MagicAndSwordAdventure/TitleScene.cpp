@@ -3,19 +3,30 @@
 #include "GameScene.h"
 #include "Pad.h"
 #include "game.h"
+#include <cmath>
 
 namespace
 {
 	constexpr int kMaxFadeBright = 255;
 	// フェード速度
 	constexpr int kFadeSpeed = 8;
-	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
+	// タイトルの座標
+	constexpr int kTitlePosX = 400;
+	constexpr int kTitlePosY = 75;
+	constexpr int kTitleSize = 512;
+
+	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期（Hz）
+	constexpr float kTitleBobAmplitude = 5.0f; // タイトルロゴの上下揺れ振幅（px）
+	constexpr int   kMillisecondsPerSecond = 1000; // ミリ秒→秒換算用
 }
 
 TitleScene::TitleScene():
 	m_cameraPos({0.0f,0.0f,0.0f}),
 	m_cameraTarget({0.0f,0.0f,0.0f}),
-	m_viewAngle(0.0f)
+	m_viewAngle(0.0f),
+	m_titleHandle(-1),
+	m_time(0.0f),
+	m_offsetY(0)
 {
 }
 
@@ -50,6 +61,8 @@ void TitleScene::Init()
 
 	// カメラのnear,farを設定する
 	SetCameraNearFar(10.0f, 3000.0f);
+
+	m_titleHandle = LoadGraph(L"Data/title/WarriorAdventureTitle.png");
 }
 
 void TitleScene::End()
@@ -59,6 +72,8 @@ void TitleScene::End()
 SceneBase* TitleScene::Update()
 {
 	UpdateFade();
+	m_time = GetNowCount() / kMillisecondsPerSecond;
+	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
 	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
 	{
 		StartFadeOut();
@@ -73,6 +88,6 @@ SceneBase* TitleScene::Update()
 
 void TitleScene::Draw()
 {	
-	DrawSphere3D(VGet(0,0,500), 40, 16, 0xff00ff, 0xffffff, true);
+	DrawExtendGraph(kTitlePosX, kTitlePosY + m_offsetY, kTitlePosX+ kTitleSize, kTitlePosY+ +m_offsetY+kTitleSize, m_titleHandle, true);
 	DrawFade();
 }
