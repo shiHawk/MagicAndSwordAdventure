@@ -13,16 +13,15 @@ namespace
 	// 当たり判定の範囲
 	constexpr float kColRadius = 40.0f;
 	// 最大HP
-	constexpr int kMaxHp = 300;
+	constexpr int kMaxHp = 3000;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
 
 	// カメラ移動用のしきい値
 	constexpr float kMoveCameraThreshold = 60.0f;
 
-	// カプセル用の位置
-	constexpr float playerHeadOffSet = 90.0f;
-	constexpr float playerFootOffSet = 20.0f;
+	// 連続攻撃の受付時間
+	constexpr float kMaxComboDuration = 90.0f;
 
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
@@ -37,7 +36,9 @@ namespace
 	constexpr int kDeathAnimNo = 26;
 
 	bool isStartGravity = false;
+	// 振り返るだけで移動したと判定させないために
 	bool isMove = false;
+	// 連続で移動アニメーションを呼ばないようにする
 	int moveCount = 0;
 	int idleCount = 0;
 }
@@ -58,7 +59,8 @@ m_isMovingFlag(false),
 m_isNowDirRight(true),
 m_isPrevDirRight(true),
 m_prevPos({0,0,0}),
-m_distanceAfterMoving(0.0f)
+m_distanceAfterMoving(0.0f),
+attack({ 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f })
 {
 }
 
@@ -79,6 +81,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	m_power = 20;
 	m_hp = kMaxHp;
 	m_isDead = false;
+	attack = { 30, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
 }
 
 void Player::End()
@@ -91,9 +94,18 @@ void Player::Update()
 	if (m_isDying)
 	{
 		OnDeath();
+		return;
 	}
 	if (!m_isDead)
 	{
+		if (attack.comboDuration > 0.0f)
+		{
+			attack.comboDuration--;
+			if (attack.comboDuration <= 0.0f)
+			{
+				attack.count = 0;
+			}
+		}
 		if (m_vec.y > 0)
 		{
 			isStartGravity = true;
@@ -108,17 +120,15 @@ void Player::Update()
 		if (attack.active)
 		{
 			attack.timer--;
-			attack.comboDuration--;
-			if (attack.timer <= 0)
+			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
 				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
 				attack.pos = { 0.0f,-1000.0f,0.0f };
 				attack.active = false;
 			}
 		}
-		m_isPrevButton = m_isNowButton;
-		// Aボタンを押したときジャンプ
-		if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)
+		m_isPrevButton = m_isNowButton; // ボタンの更新
+		if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)// Aボタンを押したときジャンプ
 		{
 			m_vec.y = kJumpPower;
 			m_jumpCount++;
@@ -164,9 +174,6 @@ void Player::Update()
 			m_isJump = false;
 			m_jumpCount = 0;
 		}
-
-		//printfDx(L"%f\n", m_screenPos.x);
-		//printfDx(L"m_pos.x:%f\n", m_pos.x);
 		m_pAnimation->UpdateAnim();
 	}
 	else
@@ -174,6 +181,7 @@ void Player::Update()
 		End();
 		return;
 	}
+	
 }
 
 void Player::Draw() const
@@ -220,6 +228,8 @@ void Player::OnDamage(int enemyPower)
 
 void Player::OnDeath()
 {
+	m_pAnimation->UpdateAnim();
+	MV1SetPosition(m_modelHandle, m_pos);
 	if (m_pAnimation->GetIsAnimEnd())
 	{
 		m_isDead = true;
@@ -229,6 +239,14 @@ void Player::OnDeath()
 
 void Player::DoAttack()
 {
+	if (attack.active) return; // 攻撃中なら次の攻撃を受け付けない
+	attack.count++;
+	// 三回攻撃したらまた一回目に戻る
+	if (attack.count > 3)
+	{
+		attack.count = 1;
+	}
+	attack.comboDuration = kMaxComboDuration;
 	attack.active = true;
 	if (m_vec.y > 0)
 	{
@@ -237,15 +255,20 @@ void Player::DoAttack()
 	}
 	else
 	{
-		m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, 0.5f);
-	}
-	attack.timer = 50.0f;
-	attack.comboDuration = 20.0f;
-	attack.count++;
-	// 三回攻撃したらまた一回目に戻る
-	if (attack.count > 3)
-	{
-		attack.count = 1;
+		switch (attack.count) {
+		case 1:
+			m_power = 20;
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, 0.5f);
+			break;
+		case 2:
+			m_power = 30;
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
+			break;
+		case 3:
+			m_power = 40;
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
+			break;
+		}
 	}
 	//printfDx(L"attack.count:%d\n", attack.count);
 	if (m_isAttackDirRight)
@@ -284,7 +307,7 @@ void Player::DoAttack()
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
 		}
 	}
-
+	attack.timer = 50.0f;
 	attack.pos.y = m_pos.y+attack.attackOffSetY;
 	attack.pos.z = m_pos.z;
 }
@@ -338,6 +361,11 @@ bool Player::IsMoving()
 int Player::GetMaxHp()
 {
 	return kMaxHp;
+}
+
+void Player::AddPos(VECTOR offset)
+{
+	m_pos = VAdd(m_pos, offset);
 }
 
 

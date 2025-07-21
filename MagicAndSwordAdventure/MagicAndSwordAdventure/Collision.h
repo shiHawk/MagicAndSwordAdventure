@@ -26,21 +26,34 @@ public:
 	bool GetIsPlayerHit() { return m_isPlayerHit; }
 private:
 	std::shared_ptr<Player> m_pPlayer;
-	//std::shared_ptr<Enemy> m_pEnemy;
-	/*std::shared_ptr<NormalSkelton> m_pNormalSkelton;
-	std::shared_ptr<WizardSkelton> m_pWizardSkelton;*/
 	std::vector<std::shared_ptr<NormalSkelton>> m_normalSkeltons;
 	std::vector<std::shared_ptr<WizardSkelton>> m_wizardSkeltons;
+
 	// プレイヤーが攻撃に当たったか
 	bool m_isPlayerHit;
 	// NormalSkeltonが攻撃に当たったか
-	bool m_normalSkeltonHit;
+	std::vector<bool> m_normalSkeltonHit;
+	std::vector<float> m_normalSkeltonInvincibilityTime;
 	// WizardSkeltonが攻撃に当たったか
-	bool m_wizardSkeltonHit;
+	std::vector<bool> m_wizardSkeltonHit;
+	std::vector<float> m_wizardSkeltonInvincibilityTime;
+
 	// 無敵時間
 	float m_invincibilityTime;
 	// プレイヤーの無敵時間
 	float m_playerInvincibilityTime;
+
+	// 敵とプレイヤーが重なっている部分
+	VECTOR m_differencePushedBack;
+	// 敵とプレイヤーが重なっている部分の大きさ
+	float m_differencePushedBackSize;
+	// 重なったかどうかを判断する大きさ
+	float m_overlapSize;
+	// 押し戻す方向
+	VECTOR m_pushDir;
+	// 実際に押し戻される距離
+	VECTOR m_pushBack;
+
 	float m_playerAttackToNormalSkeltonDistance; // プレイヤーの攻撃からNormalSkeltonまでの距離の大きさ
 	float m_NormalSkeltonAttackToPlayerDistance; // NormalSkeltonの攻撃からプレイヤーまでの距離の大きさ
 	float m_playerAttackToWizardSkeltonDistance; // プレイヤーの攻撃からWizardSkeltonまでの距離の大きさ

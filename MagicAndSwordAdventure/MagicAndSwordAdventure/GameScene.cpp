@@ -5,7 +5,8 @@
 #include "Pad.h"
 #include "ResultScene.h"
 GameScene::GameScene():
-	m_isNextScene(false)
+	m_isNextScene(false),
+	m_remainingEnemysCount(30)
 {
 }
 
@@ -72,6 +73,7 @@ void GameScene::Init()
 	m_pUIManager->Init(m_pPlayer, m_pScoreManager);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
+	m_remainingEnemysCount = 0;
 }
 
 void GameScene::End()
@@ -135,6 +137,7 @@ void GameScene::Draw()
 	m_pUIManager->DrawHp();
 	m_pUIManager->DrawDestroyScore();
 	m_pUIManager->DrawmElapsedTimeSeconds();
+	m_pUIManager->DrawNumberOfEnemiesRemaining(GetRemainingEnemies());
 	if (!m_pBattleArea->IsInBattle())
 	{
 		m_pUIManager->DrawNavigation();
@@ -142,6 +145,20 @@ void GameScene::Draw()
 	DrawFade();
 	//m_pBattleArea->DebugDraw();
 	//DrawGrid();
+}
+
+int GameScene::GetRemainingEnemies()
+{
+	m_remainingEnemysCount = 0;
+	for (auto& normalSkelton : m_NormalSkeltons)
+	{
+		if (!normalSkelton->IsDead()) ++m_remainingEnemysCount;
+	}
+	for (auto& wizardSkelton : m_WizardSkeltons)
+	{
+		if (!wizardSkelton->IsDead()) ++m_remainingEnemysCount;
+	}
+	return m_remainingEnemysCount;
 }
 
 void GameScene::DrawGrid() const
@@ -171,7 +188,7 @@ void GameScene::DrawGrid() const
 	}
 }
 
-bool GameScene::IsAreAllEnemiesDefeated() const
+bool GameScene::IsAreAllEnemiesDefeated()
 {
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{

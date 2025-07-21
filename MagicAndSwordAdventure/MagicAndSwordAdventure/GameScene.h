@@ -32,9 +32,10 @@ public:
 
 	virtual SceneBase* Update() override;
 	virtual void Draw() override;
+	int GetRemainingEnemies();
 private:
 	void DrawGrid() const;
-	bool IsAreAllEnemiesDefeated() const;
+	bool IsAreAllEnemiesDefeated(); // ‘S–Å‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;
@@ -47,5 +48,6 @@ private:
 	std::unique_ptr<BattleAreaManager> m_pBattleArea;
 	std::unique_ptr<UIManager> m_pUIManager;
 	bool m_isNextScene;
+	int m_remainingEnemysCount;
 };
 

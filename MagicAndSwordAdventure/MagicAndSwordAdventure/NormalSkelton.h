@@ -16,6 +16,7 @@ public:
 	void Draw()const;
 	VECTOR GetAttackPos() { return attack.pos; };
 	float GetAttackRadius() { return attack.radius; }
+	bool IsAttackActive() const { return attack.active; }
 	AttackSphere attack = { 30,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f };
 private:
 	void TrackPlayer();
@@ -25,5 +26,7 @@ private:
 	VECTOR m_toPlayerDir;
 	bool m_isMove;
 	int m_moveCount;
+	int m_attackCount = 0;
+	int m_idleCount = 0;
 };
 

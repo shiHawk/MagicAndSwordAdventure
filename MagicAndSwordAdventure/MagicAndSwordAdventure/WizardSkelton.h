@@ -15,6 +15,7 @@ public:
 	void Draw()const;
 	VECTOR GetAttackPos() { return attack.pos; }
 	float GetAttackRadius() { return attack.radius; }
+	bool IsAttackActive() const;
 	AttackSphere attack = { 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f };
 private:
 	std::shared_ptr<Player> m_pPlayer;
@@ -22,5 +23,6 @@ private:
 	// プレイヤーに向かうベクトル
 	VECTOR m_toPlayerDir;
 	bool m_isAttackEnd = false;
+	int m_attackCount = 0;
 };
 

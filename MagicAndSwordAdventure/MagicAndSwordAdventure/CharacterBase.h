@@ -29,7 +29,7 @@ public:
 		bool active; // 攻撃状態
 		float timer; // 攻撃時間
 		int count; // 攻撃回数
-		int comboDuration; // 持続時間
+		float comboDuration; // 持続時間
 		float attackOffSetX; // 攻撃のX座標のオフセット
 		float attackOffSetY; // 攻撃のY座標のオフセット
 		float attackCoolTime; // 攻撃のクールタイム

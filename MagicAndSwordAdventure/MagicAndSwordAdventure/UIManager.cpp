@@ -45,3 +45,8 @@ void UIManager::DrawmElapsedTimeSeconds()
 {
 	DrawFormatString(780,40,0x008b8b,L"Time\n%d",m_pScoreManager->GetTime());
 }
+
+void UIManager::DrawNumberOfEnemiesRemaining(int remainingCount)
+{
+	DrawFormatString(960, 40, 0xee82ee, L"‚ ‚Æ%d‘Ì", remainingCount);
+}

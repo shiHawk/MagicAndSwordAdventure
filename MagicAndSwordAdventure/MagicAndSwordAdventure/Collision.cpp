@@ -9,7 +9,12 @@ Collision::Collision():
 	m_playerAttackToNormalSkeltonDistance(0.0f),
 	m_NormalSkeltonAttackToPlayerDistance(0.0f),
 	m_playerToNormalSkeltonAttack({0.0f,0.0f,0.0f}),
-	m_playerAttackToNormalSkelton({ 0.0f,0.0f,0.0f })
+	m_playerAttackToNormalSkelton({ 0.0f,0.0f,0.0f }),
+	m_differencePushedBack({0.0f,0.0f,0.0f}),
+	m_differencePushedBackSize(0.0f),
+	m_overlapSize(0.0f),
+	m_pushDir({ 0.0f,0.0f,0.0f }),
+	m_pushBack({ 0.0f,0.0f,0.0f })
 {
 }
 
@@ -24,6 +29,10 @@ void Collision::Init(std::shared_ptr<Player> pPlayer,std::vector<std::shared_ptr
 	m_normalSkeltons = normalSkeltons;
 	m_wizardSkeltons = wizardSkeltons;
 	m_isPlayerHit = false;
+	m_normalSkeltonHit.resize(m_normalSkeltons.size(), false);
+	m_normalSkeltonInvincibilityTime.resize(m_normalSkeltons.size(), 0.0f);
+	m_wizardSkeltonHit.resize(m_wizardSkeltons.size(), false);
+	m_wizardSkeltonInvincibilityTime.resize(m_wizardSkeltons.size(), 0.0f);
 	m_invincibilityTime = 160.0f;
 	m_playerInvincibilityTime = 100.0f;
 	m_playerToNormalSkeltonAttack = VGet(200.0f,0.0f,0.0f);
@@ -35,8 +44,19 @@ void Collision::End()
 
 void Collision::Update()
 {
-	for (auto& normalSkelton : m_normalSkeltons)
+	for (size_t i = 0; i < m_normalSkeltons.size(); ++i)
 	{
+		auto& normalSkelton = m_normalSkeltons[i];
+		m_differencePushedBackSize = VSize(VSub(m_pPlayer->GetPos(), normalSkelton->GetPos()));
+		m_overlapSize = m_pPlayer->GetColRadius() + normalSkelton->GetColRadius() - m_differencePushedBackSize;
+
+		if (m_overlapSize > 0.0f)
+		{
+			m_pushDir = VNorm(m_differencePushedBack); // 敵→プレイヤー方向
+			m_pushBack = VScale(m_pushDir, m_overlapSize);
+			m_pPlayer->AddPos(m_pushBack);
+		}
+
 		// プレイヤーの位置からNormalSkeltonの攻撃位置までの距離
 		m_playerToNormalSkeltonAttack = VSub(m_pPlayer->GetPos(), normalSkelton->GetAttackPos());
 		// プレイヤーの攻撃位置からNormalSkeltonまでの距離
@@ -47,32 +67,32 @@ void Collision::Update()
 
 		// プレイヤーにNormalSkeltonの攻撃が当たったか
 		PlayerHit(m_NormalSkeltonAttackToPlayerDistance, m_pPlayer->GetColRadius(),
-			normalSkelton->GetAttackRadius(), normalSkelton->GetAttackActive(),normalSkelton->GetPower());
+			normalSkelton->GetAttackRadius(), normalSkelton->IsAttackActive(), normalSkelton->GetPower());
 		// プレイヤーの攻撃がNormalSkeltonに当たったか
-		if (m_playerAttackToNormalSkeltonDistance < m_pPlayer->GetAttackRadius() + normalSkelton->GetColRadius() && !m_normalSkeltonHit)
+		if (m_playerAttackToNormalSkeltonDistance < m_pPlayer->GetAttackRadius() + normalSkelton->GetColRadius() && !m_normalSkeltonHit[i])
 		{
-			if (m_pPlayer->GetAttackActive())
+			if (m_pPlayer->IsAttackActive())
 			{
 				normalSkelton->OnDamage();
-				printfDx(L"Hit\n");
-				m_normalSkeltonHit = true;
+				m_normalSkeltonHit[i] = true;
+				m_normalSkeltonInvincibilityTime[i] = 60.0f;
 			}
 		}
-
-		if (m_normalSkeltonHit && normalSkelton->GetHp() >= 0)
+		if (m_normalSkeltonHit[i] && normalSkelton->GetHp() >= 0)
+            m_differencePushedBack = VSub(m_pPlayer->GetPos(), normalSkelton->GetPos());
 		{
-			m_invincibilityTime--;
-			//printfDx(L"m_invincibilityTime:%f\n", m_invincibilityTime);
-			if (m_invincibilityTime < 0)
+			m_normalSkeltonInvincibilityTime[i]--;
+			if (m_normalSkeltonInvincibilityTime[i] < 0)
 			{
-				m_normalSkeltonHit = false;
-				m_invincibilityTime = 1000.0f;
+				m_normalSkeltonHit[i] = false;
 			}
 		}
 	}
 	
-	for (auto& wizardSkelton : m_wizardSkeltons)
+	
+	for (size_t i = 0; i < m_wizardSkeltons.size(); ++i)
 	{
+		auto& wizardSkelton = m_wizardSkeltons[i];
 		// プレイヤーの位置からWizardSkeltonの攻撃位置までの距離
 		m_playerToWizardSkeltonAttack = VSub(m_pPlayer->GetPos(), wizardSkelton->GetAttackPos());
 
@@ -84,25 +104,25 @@ void Collision::Update()
 
 		// プレイヤーにWizardSkeltonの攻撃が当たったか
 		PlayerHit(m_WizardSkeltonAttackToPlayerDistance, m_pPlayer->GetColRadius(),
-			wizardSkelton->GetAttackRadius(), wizardSkelton->GetAttackActive(),wizardSkelton->GetPower());
+			wizardSkelton->GetAttackRadius(), wizardSkelton->IsAttackActive(), wizardSkelton->GetPower());
 
 		// プレイヤーの攻撃がWizardSkeltonに当たったか
-		if (m_playerAttackToWizardSkeltonDistance < m_pPlayer->GetAttackRadius() + wizardSkelton->GetColRadius() && !m_wizardSkeltonHit)
+		if (m_playerAttackToWizardSkeltonDistance < m_pPlayer->GetAttackRadius() + wizardSkelton->GetColRadius() && !m_wizardSkeltonHit[i])
 		{
-			if (m_pPlayer->GetAttackActive())
+			if (m_pPlayer->IsAttackActive())
 			{
 				printfDx(L"Hit\n");
 				wizardSkelton->OnDamage();
-				m_wizardSkeltonHit = true;
+				m_wizardSkeltonHit[i] = true;
+				m_wizardSkeltonInvincibilityTime[i] = 60.0f;
 			}
 		}
-		if (m_wizardSkeltonHit && wizardSkelton->GetHp() >= 0)
+		if (m_wizardSkeltonHit[i] && wizardSkelton->GetHp() >= 0)
 		{
-			m_invincibilityTime--;
-			if (m_invincibilityTime < 0)
+			m_wizardSkeltonInvincibilityTime[i]--;
+			if (m_wizardSkeltonInvincibilityTime[i] < 0)
 			{
-				m_wizardSkeltonHit = false;
-				m_invincibilityTime = 1000.0f;
+				m_wizardSkeltonHit[i] = false;
 			}
 		}
 	}

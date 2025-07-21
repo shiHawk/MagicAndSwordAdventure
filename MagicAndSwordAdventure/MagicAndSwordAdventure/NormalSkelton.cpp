@@ -23,14 +23,15 @@ namespace
 	constexpr int kDeathAnimNo = 25;
 	// 最大HP
 	constexpr int kMaxHp = 100;
-	int attackCount = 0;
-	int idleCount = 0;
+	//int attackCount = 0;
+	//int idleCount = 0;
 }
 
 NormalSkelton::NormalSkelton():
 	m_toPlayerDir({0.0f,0.f,0.0f}),
 	m_isMove(false),
-	m_moveCount(0)
+	m_moveCount(0),
+	attack({ 30,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f })
 {
 }
 
@@ -57,6 +58,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
 	m_destroyScore = 500;
+	attack = { 30,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f };
 }
 
 void NormalSkelton::End()
@@ -105,7 +107,7 @@ void NormalSkelton::Update()
 				attack.timer = 40.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_attackWaitingTime = 20.0f;
-				attackCount = 0;
+				m_attackCount = 0;
 			}
 		}
 		else
@@ -132,12 +134,12 @@ void NormalSkelton::OnAttack()
 {
 	if (m_isDying || m_isDead) return;
 	attack.active = true;
-	if (attackCount < 1)
+	if (m_attackCount < 1)
 	{
 		// 攻撃アニメーションに変更
 		ChangeAnim(m_modelHandle, kAttackAnimNo, false, 1.0f);
 	}
-	attackCount++;
+	m_attackCount++;
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
@@ -232,7 +234,7 @@ void NormalSkelton::TrackPlayer()
 	{
 		if (!m_isMove)
 		{
-			idleCount = 0;
+			m_idleCount = 0;
 			// 移動アニメーション
 			ChangeAnim(m_modelHandle, kWalkAnimNo,true,0.5f);
 			m_isMove = true;

@@ -40,13 +40,13 @@ void Enemy::Update()
 	m_enemyToPlayerDistance = VSize(VSub(m_pos, m_pPlayer->GetPos()));
 }
 
-void Enemy::OnDamage(int hp, int power)
+void Enemy::OnDamage(int power)
 {
-	hp -= power;
-	if (hp < 0)
+	m_hp -= power;
+	if (m_hp < 0)
 	{
 		m_isDead = true;
-		hp = 0;
+		m_hp = 0;
 	}
 }
 

@@ -19,12 +19,13 @@ namespace
 	constexpr int kDeathAnimNo = 25;
 	// 最大HP
 	constexpr int kMaxHp = 60;
-	int attackCount = 0;
+	//int attackCount = 0;
 }
 
 WizardSkelton::WizardSkelton():
 m_toPlayerDir({0.0f,0.0f,0.0f}),
-m_isAttackEnd(false)
+m_isAttackEnd(false),
+attack({ 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f })
 {
 }
 
@@ -50,6 +51,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, 41);
 	m_destroyScore = 800;
+	attack = { 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f };
 }
 
 void WizardSkelton::End()
@@ -94,7 +96,7 @@ void WizardSkelton::Update()
 				ChangeAnim(m_modelHandle, 41, false, 0.5f);
 				attack.timer = 60.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
-				attackCount = 0;
+				m_attackCount = 0;
 				m_isAttackEnd = false;
 			}
 		}
@@ -124,11 +126,11 @@ void WizardSkelton::DoAttack()
 	attack.active = true;
 	// プレイヤーに向かうベクトル
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
-	if (attackCount < 1)
+	if (m_attackCount < 1)
 	{
 		ChangeAnim(m_modelHandle, 77, false, 0.4f);
 	}
-	attackCount++;
+	m_attackCount++;
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
@@ -201,4 +203,9 @@ void WizardSkelton::Draw() const
 		DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, true);
 	}
 #endif
+}
+
+bool WizardSkelton::IsAttackActive() const
+{
+	return attack.active; 
 }
