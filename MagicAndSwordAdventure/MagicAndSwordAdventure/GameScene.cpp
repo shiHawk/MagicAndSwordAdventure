@@ -104,12 +104,12 @@ SceneBase* GameScene::Update()
 	m_pCollision->Update();
 	m_pUIManager->Update();
 	UpdateFade();
-	if (!m_isNextScene && !IsFadingOut() && m_pPlayer->IsDead() || IsAreAllEnemiesDefeated())
+	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
 	}
-	if (m_isNextScene && IsFadeComplete() || IsAreAllEnemiesDefeated() && IsFadeComplete())
+	if (m_isNextScene && IsFadeComplete())
 	{
 		return new ResultScene();
 	}
@@ -128,7 +128,11 @@ void GameScene::Draw()
 		wizardSkelton->Draw();
 	}
 	m_pStage->Draw();
-	m_pUIManager->Draw();
+	m_pUIManager->DrawHp();
+	if (m_pBattleArea->IsFinished())
+	{
+
+	}
 	DrawFade();
 	//m_pBattleArea->DebugDraw();
 	//DrawGrid();

@@ -9,9 +9,11 @@ public:
 	void Init(std::shared_ptr<Player> pPlayer);
 	void End();
 	void Update();
-	void Draw();
+	void DrawHp();
+	void DrawNavigation();
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	float m_hpGaugeRate;
+	int m_drawNavigationHandle;
 };
 
