@@ -17,9 +17,10 @@ namespace
 Enemy::Enemy()
 {
 	m_pos = { 0,0,0 };
-	m_vec = VGet(0, 0, 0);
+	m_vec = { 0,0,0 };
 	m_moveSpeed = 0.0f;
 	m_enemyToPlayerDistance = 0.0f;
+	m_destroyScore = 0;
 }
 
 Enemy::~Enemy()

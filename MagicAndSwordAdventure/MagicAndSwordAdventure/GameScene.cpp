@@ -9,7 +9,8 @@ GameScene::GameScene():
 {
 }
 
-void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons, std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons, std::shared_ptr<Player> pPlayer)
+void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons, std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons, 
+							  std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManager> pScoreManager)
 {
 	std::ifstream file(fileName);
 	if (!file.is_open())
@@ -39,13 +40,13 @@ void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::share
 		if (type == "normalSkelton")
 		{
 			auto normalSkelton = std::make_shared<NormalSkelton>();
-			normalSkelton->Init(pPlayer, enemyPos);
+			normalSkelton->Init(pPlayer, enemyPos, pScoreManager);
 			normalSkeltons.push_back(normalSkelton);
 		}
 		if (type == "wizardSkelton")
 		{
 			auto wizardSkelton = std::make_shared<WizardSkelton>();
-			wizardSkelton->Init(pPlayer, enemyPos);
+			wizardSkelton->Init(pPlayer, enemyPos,pScoreManager);
 			wizardSkeltons.push_back(wizardSkelton);
 		}
 	}
@@ -54,19 +55,21 @@ void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::share
 void GameScene::Init()
 {
 	m_pCamera = std::make_shared<Camera>();
+	m_pScoreManager = std::make_shared<ScoreManager>();
 	m_pStage = std::make_shared<Stage>();
 	m_pPlayer = std::make_shared<Player>();
 	m_pCollision = std::make_shared<Collision>();
 	m_pBattleArea = std::make_unique<BattleAreaManager>();
-	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer);
+	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer,m_pScoreManager);
 	m_pAnimation = std::make_shared<Animation>();
 	m_pUIManager = std::make_unique<UIManager>();
 	m_pCamera->Init(m_pPlayer);
+	m_pScoreManager->Init();
 	m_pStage->Init();
 	m_pPlayer->Init(m_pAnimation);
 	m_pBattleArea->Init(m_pPlayer, m_pCamera);
 	m_pBattleArea->SetEnemys(m_NormalSkeltons,m_WizardSkeltons);
-	m_pUIManager->Init(m_pPlayer);
+	m_pUIManager->Init(m_pPlayer, m_pScoreManager);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
 }
@@ -90,6 +93,7 @@ void GameScene::End()
 SceneBase* GameScene::Update()
 {
 	m_pCamera->Update();
+	m_pScoreManager->Update();
 	m_pStage->Updata();
 	m_pPlayer->Update();
 	for (auto& normalSkelton : m_NormalSkeltons)
@@ -111,7 +115,7 @@ SceneBase* GameScene::Update()
 	}
 	if (m_isNextScene && IsFadeComplete())
 	{
-		return new ResultScene();
+		return new ResultScene(m_pScoreManager);
 	}
 	return this;
 }
@@ -129,9 +133,11 @@ void GameScene::Draw()
 	}
 	m_pStage->Draw();
 	m_pUIManager->DrawHp();
-	if (m_pBattleArea->IsFinished())
+	m_pUIManager->DrawDestroyScore();
+	m_pUIManager->DrawmElapsedTimeSeconds();
+	if (!m_pBattleArea->IsInBattle())
 	{
-
+		m_pUIManager->DrawNavigation();
 	}
 	DrawFade();
 	//m_pBattleArea->DebugDraw();

@@ -10,10 +10,11 @@ UIManager::~UIManager()
 {
 }
 
-void UIManager::Init(std::shared_ptr<Player> pPlayer)
+void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManager> pScoreManager)
 {
 	m_pPlayer = pPlayer;
-
+	m_pScoreManager = pScoreManager;
+	m_drawNavigationHandle = LoadGraph(L"Data/UI/Navigation.png");
 }
 
 void UIManager::End()
@@ -27,9 +28,20 @@ void UIManager::Update()
 
 void UIManager::DrawHp()
 {
-	DrawBox(80, 50, 80 + 100 * m_hpGaugeRate, 80, 0x00ff00, true);
+	DrawBox(80, 50, 80 + 400 * m_hpGaugeRate, 80, 0x00ff00, true);
 }
 
 void UIManager::DrawNavigation()
 {
+	DrawGraph(1100, 0, m_drawNavigationHandle, true);
+}
+
+void UIManager::DrawDestroyScore()
+{
+	DrawFormatString(600,40,0xffdead,L"Score\n%d",m_pScoreManager->GetDestroyScore());
+}
+
+void UIManager::DrawmElapsedTimeSeconds()
+{
+	DrawFormatString(780,40,0x008b8b,L"Time\n%d",m_pScoreManager->GetTime());
 }

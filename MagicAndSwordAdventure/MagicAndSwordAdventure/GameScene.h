@@ -11,6 +11,7 @@
 #include "SceneManager.h"
 #include "BattleAreaManager.h"
 #include "UIManager.h"
+#include "ScoreManager.h"
 #include <memory>
 #include <vector>
 #include <fstream>
@@ -24,7 +25,8 @@ public:
 	GameScene();
 	virtual ~GameScene() {}
 	void LoadEnemyData(const std::string fileName, std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
-		std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons, std::shared_ptr<Player> pPlayer);
+		std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons, std::shared_ptr<Player> pPlayer,
+		std::shared_ptr<ScoreManager> pScoreManager);
 	virtual void Init() override;
 	virtual void End() override;
 
@@ -32,7 +34,6 @@ public:
 	virtual void Draw() override;
 private:
 	void DrawGrid() const;
-private:
 	bool IsAreAllEnemiesDefeated() const;
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
@@ -42,6 +43,7 @@ private:
 	std::vector<std::shared_ptr<WizardSkelton>> m_WizardSkeltons;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
+	std::shared_ptr<ScoreManager> m_pScoreManager;
 	std::unique_ptr<BattleAreaManager> m_pBattleArea;
 	std::unique_ptr<UIManager> m_pUIManager;
 	bool m_isNextScene;

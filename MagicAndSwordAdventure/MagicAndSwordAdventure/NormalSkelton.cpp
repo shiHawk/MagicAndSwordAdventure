@@ -34,9 +34,10 @@ NormalSkelton::NormalSkelton():
 {
 }
 
-void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
+void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::shared_ptr<ScoreManager> pScoreManager)
 {
 	m_pPlayer = pPlayer;
+	m_pScoreManager = pScoreManager;
 	m_pos = { 0,0,0 };
 	m_pos = VAdd(m_pos, pos);
 	attack.timer = 40.0f;
@@ -55,6 +56,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
+	m_destroyScore = 500;
 }
 
 void NormalSkelton::End()
@@ -120,6 +122,7 @@ void NormalSkelton::Update()
 	}
 	else
 	{
+		
 		End();
 		return;
 	}
@@ -188,6 +191,7 @@ void NormalSkelton::OnDeath()
 	{
 		m_isDead = true;
 		m_isDying = false;
+		m_pScoreManager->AddScore(m_destroyScore);
 	}
 	MV1SetPosition(m_modelHandle,m_pos);
 	UpdateAnim();

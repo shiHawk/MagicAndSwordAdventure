@@ -28,9 +28,10 @@ m_isAttackEnd(false)
 {
 }
 
-void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
+void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::shared_ptr<ScoreManager> pScoreManager)
 {
 	m_pPlayer = pPlayer;
+	m_pScoreManager = pScoreManager;
 	m_pos = { 0.0f,0.0f,0.0f };
 	m_pos = VAdd(m_pos, pos);
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, m_pos.z);
@@ -48,6 +49,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos)
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, 41);
+	m_destroyScore = 800;
 }
 
 void WizardSkelton::End()
@@ -110,6 +112,7 @@ void WizardSkelton::Update()
 	}
 	else
 	{
+		
 		End();
 		return;
 	}
@@ -181,6 +184,7 @@ void WizardSkelton::OnDeath()
 	{
 		m_isDead = true;
 		m_isDying = false;
+		m_pScoreManager->AddScore(m_destroyScore);
 	}
 	MV1SetPosition(m_modelHandle, m_pos);
 	UpdateAnim();

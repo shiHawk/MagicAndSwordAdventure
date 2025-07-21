@@ -1,10 +1,13 @@
 #pragma once
 #include "SceneBase.h"
 #include "DxLib.h"
+#include "ScoreManager.h"
+#include "DxLib.h"
+#include <memory>
 class ResultScene : public SceneBase
 {
 public:
-	ResultScene();
+	ResultScene(std::shared_ptr<ScoreManager> pScoreManager);
 	virtual ~ResultScene(){}
 	virtual void Init() override;
 	virtual void End() override;
@@ -12,6 +15,7 @@ public:
 	virtual SceneBase* Update() override;
 	virtual void Draw() override;
 private:
+	std::shared_ptr<ScoreManager> m_pScoreManager;
 	bool m_isNextScene = false;
 	// ƒJƒƒ‰‚ÌˆÊ’u
 	VECTOR m_cameraPos;

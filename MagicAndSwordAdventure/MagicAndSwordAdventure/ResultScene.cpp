@@ -3,10 +3,11 @@
 #include "Pad.h"
 #include "game.h"
 
-ResultScene::ResultScene() :
+ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
 	m_cameraTarget({ 0.0f,0.0f,0.0f }),
-	m_viewAngle(0.0f)
+	m_viewAngle(0.0f),
+	m_pScoreManager(pScoreManager)
 {
 }
 
@@ -39,10 +40,12 @@ void ResultScene::Init()
 
 	// カメラのnear,farを設定する
 	SetCameraNearFar(10.0f, 3000.0f);
+
 }
 
 void ResultScene::End()
 {
+	m_pScoreManager->End();
 }
 
 SceneBase* ResultScene::Update()
@@ -62,6 +65,9 @@ SceneBase* ResultScene::Update()
 
 void ResultScene::Draw()
 {
-	DrawSphere3D(VGet(0, 0, 500), 40, 16, 0xffff00, 0xffffff, true);
+	//DrawSphere3D(VGet(0, 0, 500), 40, 16, 0xffff00, 0xffffff, true);
+	DrawFormatString(500,100,0xffffff,L"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatString(500,130,0xffffff,L"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
+	DrawFormatString(500,160,0xffffff,L"合計スコア:%d",m_pScoreManager->GetScore());
 	DrawFade();
 }

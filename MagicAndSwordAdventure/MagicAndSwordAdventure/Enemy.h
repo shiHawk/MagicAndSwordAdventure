@@ -22,6 +22,7 @@ public:
 	float m_moveSpeed;
 	bool IsDead() { return m_isDead; }
 protected:
+	int m_destroyScore;
 	// UŒ‚‚ğŠJn‚·‚é‚Ü‚Å‚ÌŠÔ
 	float m_attackWaitingTime;
 	// €–S‚Ì‚«”ò‚Ô•ûŒü
