@@ -15,6 +15,8 @@ namespace
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
 	constexpr float kDefaultAttackCoolTime = 150.0f; // クールタイム
+	constexpr float kDefaultAttackWaitingTime = 40.0f; // 追跡から攻撃に移る時間
+
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
@@ -42,7 +44,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	attack.timer = 40.0f;
 	attack.attackCoolTime = -1.0f;
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
-	m_attackWaitingTime = 40.0f;
+	m_attackWaitingTime = kDefaultAttackWaitingTime;
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
 	m_isDead = false;
 	m_isDying = false;
@@ -104,7 +106,7 @@ void NormalSkelton::Update()
 				ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
 				attack.timer = 40.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
-				m_attackWaitingTime = 20.0f;
+				m_attackWaitingTime = kDefaultAttackWaitingTime;
 				m_attackCount = 0;
 			}
 		}

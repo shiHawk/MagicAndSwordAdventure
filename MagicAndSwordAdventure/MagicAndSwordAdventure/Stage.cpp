@@ -5,6 +5,8 @@ namespace
 	constexpr float kInFrontPosZ = -300.0f;
 	constexpr float kInFrontWallPosZ = 350.0f;
 	constexpr float kBackPosZ = 100.0f;
+	constexpr VECTOR kWallDoorPos = { -2700.0f,0.0f,0.0f };
+	constexpr VECTOR kGateFramePos = { 5300.0f,0.0f,-150.0f };
 }
 
 Stage::Stage():
@@ -156,8 +158,8 @@ void Stage::Updata()
 			MV1SetPosition(m_wallModelHandles[i], m_wallPos);
 		}
 	}
-	MV1SetPosition(m_wallDoorModelHandle, VGet(-2700.0f,0.0f,0.0f));
-	MV1SetPosition(m_gateFrameModelHandle, VGet(5300.0f,0.0f,-150.0f));
+	MV1SetPosition(m_wallDoorModelHandle, kWallDoorPos);
+	MV1SetPosition(m_gateFrameModelHandle, kGateFramePos);
 }
 
 void Stage::Draw()

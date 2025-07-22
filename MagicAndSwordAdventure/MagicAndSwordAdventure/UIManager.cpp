@@ -1,5 +1,27 @@
 #include "UIManager.h"
-
+namespace
+{
+	// HPゲージ
+	constexpr int kHpGaugeWidth = 400;
+	constexpr int kHpGaugeLeft = 80;
+	constexpr int kHpGaugeTop = 50;
+	constexpr int kHpGaugeBottom = 80;
+	constexpr int kHpTextPosY = 30;
+	constexpr unsigned int kFontColorWhite = 0xffffff;// 文字の色
+	constexpr unsigned int kHpGaugeColor = 0x00ff00;// ゲージの色
+	// ナビゲーションの位置
+	constexpr int kNavigationPosX = 1100;
+	// スコアの位置
+	constexpr int kScorePosX = 600;
+	constexpr int kCharaPosY = 40;
+	constexpr unsigned int kScoreColor = 0xffdead;
+	// 経過時間の位置
+	constexpr int kTimePosX = 780;
+	constexpr unsigned int kTimeColor = 0x008b8b;
+	// 残り敵数の位置
+	constexpr int kEnemyRemainPosX = 960;
+	constexpr unsigned int kEnemyRemainColor = 0x4b0082;
+}
 UIManager::UIManager() :
 	m_hpGaugeRate(0.0f),
 	m_drawNavigationHandle(-1)
@@ -28,26 +50,26 @@ void UIManager::Update()
 
 void UIManager::DrawHp()
 {
-	DrawFormatString(400,30,0xffffff,L"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
-	DrawBox(80, 50, 80 + 400 * m_hpGaugeRate, 80, 0x00ff00, true);
+	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,L"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
+	DrawBox(kHpGaugeLeft, kHpGaugeTop, kHpGaugeLeft + kHpGaugeWidth * m_hpGaugeRate, kHpGaugeBottom, kHpGaugeColor, true);
 }
 
 void UIManager::DrawNavigation()
 {
-	DrawGraph(1100, 0, m_drawNavigationHandle, true);
+	DrawGraph(kNavigationPosX, 0, m_drawNavigationHandle, true);
 }
 
 void UIManager::DrawDestroyScore()
 {
-	DrawFormatString(600,40,0xffdead,L"Score\n%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatString(kScorePosX, kCharaPosY,0xffdead,L"Score\n%d",m_pScoreManager->GetDestroyScore());
 }
 
 void UIManager::DrawmElapsedTimeSeconds()
 {
-	DrawFormatString(780,40,0x008b8b,L"Time\n%d",m_pScoreManager->GetTime());
+	DrawFormatString(kTimePosX, kCharaPosY, kTimeColor,L"Time\n%d",m_pScoreManager->GetTime());
 }
 
 void UIManager::DrawNumberOfEnemiesRemaining(int remainingCount)
 {
-	DrawFormatString(960, 40, 0x4b0082, L"あと%d体", remainingCount);
+	DrawFormatString(kEnemyRemainPosX, kCharaPosY, kEnemyRemainColor, L"あと%d体", remainingCount);
 }

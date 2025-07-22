@@ -27,6 +27,12 @@ namespace
 	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期(Hz)
 	constexpr float kTitleBobAmplitude = 5.0f; // タイトルロゴの上下揺れ振幅(px)
 	constexpr int   kMillisecondsPerSecond = 1000; // ミリ秒→秒換算用
+
+	// nearとfarの位置
+	constexpr float kCameraNearClip = 10.0f;
+	constexpr float kCameraFarClip = 3000.0f;
+	// 点滅周期
+	constexpr int kBlinkCycleMs = 500;
 }
 
 TitleScene::TitleScene():
@@ -66,7 +72,7 @@ void TitleScene::Init()
 	SetupCamera_Perspective(m_viewAngle);
 
 	// カメラのnear,farを設定する
-	SetCameraNearFar(10.0f, 3000.0f);
+	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 
 	m_titleHandle = LoadGraph(L"Data/title/WarriorAdventureTitle.png");
 	m_titleBGHandle = LoadGraph(L"Data/title/TitleBG.png");
@@ -105,7 +111,7 @@ void TitleScene::Draw()
 	// タイトルロゴを拡大表示
 	DrawExtendGraph(kTitlePosX, kTitlePosY + m_offsetY, kTitlePosX+ kTitleSize, kTitlePosY+ +m_offsetY+kTitleSize, m_titleHandle, true);
 	// 点滅させる
-	if ((int)(GetNowCount() / 500) % 2 == 0) 
+	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
 		DrawFormatString(kStartPos, kStartPos, 0x00ffff,L"Press B Start");
 	}

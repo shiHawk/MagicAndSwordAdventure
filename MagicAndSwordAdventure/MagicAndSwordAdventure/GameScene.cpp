@@ -148,7 +148,6 @@ void GameScene::Draw()
 	}
 	DrawFade();
 	//m_pBattleArea->DebugDraw();
-	//DrawGrid();
 }
 
 int GameScene::GetRemainingEnemies()
@@ -163,33 +162,6 @@ int GameScene::GetRemainingEnemies()
 		if (!wizardSkelton->IsDead()) ++m_remainingEnemysCount;
 	}
 	return m_remainingEnemysCount;
-}
-
-void GameScene::DrawGrid() const
-{
-	VECTOR start = VGet(-2700.0f,0.0f,0.0f); // 始点
-	VECTOR end = VGet(2700.0f, 0.0f, 0.0f);  // 終点
-
-	// 横方向のグリッドをfor文を使って描画する
-	// 始点終点のXY座標は変わらない
-	// Z座標のfor文を使って変化させる
-	for (float z = -300.0f; z <= 300.0f; z += 100.0f)
-	{
-		start.z = z;
-		end.z = z;
-		DrawLine3D(start, end, 0xffffff);
-	}
-
-	// 奥行方向のグリッドを同様に引く
-	start = VGet(0.0f, 0.0f, -300.0f); // 始点
-	end = VGet(0.0f, 0.0f, 300.0f);   // 終点
-
-	for (float x = -900.0f; x <= 900.0f; x += 100.0f)
-	{
-		start.x = x;
-		end.x = x;
-		DrawLine3D(start, end, 0xffffff);
-	}
 }
 
 bool GameScene::IsAreAllEnemiesDefeated()

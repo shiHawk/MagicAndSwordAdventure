@@ -49,7 +49,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
-	AttachAnim(m_modelHandle, 41);
+	AttachAnim(m_modelHandle, kIdleAnimNo);
 	m_destroyScore = 800;
 	attack = { 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f };
 }
@@ -87,13 +87,13 @@ void WizardSkelton::Update()
 			if (attack.timer < 0.0f && !m_isAttackEnd)
 			{
 				m_isAttackEnd = true;
-				ChangeAnim(m_modelHandle, 41, false, 0.5f);
+				ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
 			}
 			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
 			{
 				attack.active = false;
 				attack.pos = { m_pos.x,-1000.0f,m_pos.z };
-				ChangeAnim(m_modelHandle, 41, false, 0.5f);
+				ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
 				attack.timer = 60.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_attackCount = 0;

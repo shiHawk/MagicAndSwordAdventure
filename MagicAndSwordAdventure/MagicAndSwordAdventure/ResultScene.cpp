@@ -9,6 +9,22 @@ namespace
 	constexpr VECTOR kCameraTarget = { 0.0f,50.0f,0.0f };
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
+	// 文字の位置
+	constexpr int kCharaPosx = 500;
+	constexpr int kDestroyScorePosY = 100;
+	constexpr int kTimeScorePosY = 130;
+	constexpr int kScorePosY = 160;
+
+	// nearとfarの位置
+	constexpr float kCameraNearClip = 10.0f;
+	constexpr float kCameraFarClip = 3000.0f;
+	// 色
+	constexpr int kFontColorWhite = 0xffffff;
+	constexpr int kFontColorCyan = 0x00ffff;
+	// ボタンの位置
+	constexpr int kPressBPosY = 260;
+	// 点滅周期
+	constexpr int kBlinkCycleMs = 500;
 }
 ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
@@ -42,7 +58,7 @@ void ResultScene::Init()
 	SetupCamera_Perspective(m_viewAngle);
 
 	// カメラのnear,farを設定する
-	SetCameraNearFar(10.0f, 3000.0f);
+	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 
 }
 
@@ -68,12 +84,12 @@ SceneBase* ResultScene::Update()
 
 void ResultScene::Draw()
 {
-	DrawFormatString(500,100,0xffffff,L"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
-	DrawFormatString(500,130,0xffffff,L"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
-	DrawFormatString(500,160,0xffffff,L"合計スコア:%d",m_pScoreManager->GetScore());
-	if ((int)(GetNowCount() / 500) % 2 == 0)
+	DrawFormatString(kCharaPosx, kDestroyScorePosY, kFontColorWhite,L"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatString(kCharaPosx,kTimeScorePosY, kFontColorWhite,L"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
+	DrawFormatString(kCharaPosx,kScorePosY, kFontColorWhite,L"合計スコア:%d",m_pScoreManager->GetScore());
+	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatString(500, 260, 0x00ffff, L"Press B Title");
+		DrawFormatString(kCharaPosx, kPressBPosY, kFontColorCyan, L"Press B Title");
 	}
 	DrawFade();
 }

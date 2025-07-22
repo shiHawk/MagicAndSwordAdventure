@@ -20,9 +20,9 @@ SceneBase::SceneBase()
 void SceneBase::UpdateFade()
 {
 	m_fadeBright += m_fadeSpeed;
-	if (m_fadeBright >= 255)
+	if (m_fadeBright >= kMaxFadeBright)
 	{
-		m_fadeBright = 255;
+		m_fadeBright = kMaxFadeBright;
 		if (m_fadeSpeed > 0)
 		{
 			m_fadeSpeed = 0;

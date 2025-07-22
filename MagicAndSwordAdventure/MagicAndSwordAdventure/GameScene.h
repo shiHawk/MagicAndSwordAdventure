@@ -34,7 +34,6 @@ public:
 	virtual void Draw() override;
 	int GetRemainingEnemies();
 private:
-	void DrawGrid() const;
 	bool IsAreAllEnemiesDefeated(); // ‘S–Å‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;

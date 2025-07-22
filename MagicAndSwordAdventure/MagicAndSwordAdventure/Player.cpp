@@ -11,23 +11,21 @@ namespace
 	constexpr float kBackLimit = 240.0f;
 	constexpr float kFrontLimit = -350.0f;
 	constexpr float kLeftLimit = -2660.0f;
-
 	// 当たり判定の範囲
 	constexpr float kColRadius = 40.0f;
 	// 最大HP
 	constexpr int kMaxHp = 1000;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
-
 	// カメラ移動用のしきい値
 	constexpr float kMoveCameraThreshold = 60.0f;
-
 	// 連続攻撃の受付時間
 	constexpr float kMaxComboDuration = 90.0f;
 
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
-
+	constexpr float kModelScale = 50.0f; // モデルのスケール
+	constexpr VECTOR kPlayerInitPos = { -4800.0f, 0.0f, 0.0f }; // プレイヤーの初期位置
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 1;
 	constexpr int kWalkAnimNo = 3;
@@ -36,6 +34,21 @@ namespace
 	constexpr int kAttack3AnimNo = 42;
 	constexpr int kDamageAnimNo = 24;
 	constexpr int kDeathAnimNo = 26;
+	constexpr int kJumpAttackAnimNo = 39;
+	constexpr int kEvadeAnimNo = 16;
+	// 持続時間
+	constexpr float kAttackDuration = 50.0f;
+	constexpr float kEvadeDuration = 30.0f;
+	// 回避速度乗数
+	constexpr float kEvadeSpeedMultiplier = 3.0f;
+	constexpr float kEvadeJumpMultiplier = 0.5f;
+	// 各攻撃の攻撃力
+	constexpr int kFirstAttackPower = 20;
+	constexpr int kSecondAttackPower = 40;
+	constexpr int kThirdAttackPower = 60;
+
+	constexpr float kWallOffset = 0.001f; // 壁に当たった時の位置補正
+	constexpr float kAttackHideY = -1000.0f; // 死亡時の攻撃の位置
 
 	bool isStartGravity = false;
 	// 振り返るだけで移動したと判定させないために
@@ -72,15 +85,15 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
-	m_pos = { -4800.0f, 0.0f, 0.0f };
+	m_pos = kPlayerInitPos;
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
-	MV1SetScale(m_modelHandle, VGet(50, 50, 50));
+	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	m_pAnimation->AttachAnim(m_modelHandle, 1);
 	m_prevPos = m_pos;
-	m_power = 20;
+	m_power = kFirstAttackPower;
 	m_hp = kMaxHp;
 	m_isDead = false;
 	attack = { 30, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
@@ -125,7 +138,7 @@ void Player::Update()
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
 				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
-				attack.pos = { 0.0f,-1000.0f,0.0f };
+				attack.pos = { 0.0f,-kAttackHideY,0.0f };
 				attack.active = false;
 			}
 		}
@@ -253,21 +266,21 @@ void Player::DoAttack()
 	if (m_vec.y > 0)
 	{
 		// ジャンプ攻撃
-		m_pAnimation->ChangeAnim(m_modelHandle, 39, true, 0.7f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, 0.7f);
 	}
 	else
 	{
 		switch (attack.count) {
 		case 1:
-			m_power = 20;
+			m_power = kFirstAttackPower;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, 0.5f);
 			break;
 		case 2:
-			m_power = 40;
+			m_power = kSecondAttackPower;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 			break;
 		case 3:
-			m_power = 60;
+			m_power = kThirdAttackPower;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
 			break;
 		}
@@ -278,38 +291,14 @@ void Player::DoAttack()
 		// 攻撃の時に少し前進する
 		m_vec.x = +kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x + attack.attackOffSetX;
-		if (attack.count == 2 && m_vec.y <  0)
-		{
-			m_power = 30;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
-		}
-		if (attack.count == 3 && !m_vec.y < 0)
-		{
-			m_power = 40;
-			m_vec.x = +kMoveSpeed;
-			attack.pos.x = m_pos.x + attack.attackOffSetX;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
-		}
 	}
 	else 
 	{
 		// 攻撃の時に少し前進する
 		m_vec.x = -kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x - attack.attackOffSetX;
-		if (attack.count == 2 && !m_vec.y > 0)
-		{
-			m_power = 30;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
-		}
-		if (attack.count == 3 && !m_vec.y > 0)
-		{
-			m_power = 40;
-			m_vec.x = -kMoveSpeed;
-			attack.pos.x = m_pos.x - attack.attackOffSetX;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
-		}
 	}
-	attack.timer = 50.0f;
+	attack.timer = kAttackDuration;
 	attack.pos.y = m_pos.y+attack.attackOffSetY;
 	attack.pos.z = m_pos.z;
 }
@@ -320,14 +309,14 @@ void Player::DoEvade()
 	{
 		evadeData.active = true;
 		// 回避アニメーションに切り替え
-		m_pAnimation->ChangeAnim(m_modelHandle, 16, false, 0.5f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kEvadeAnimNo, false, 0.5f);
 		// 回避回数を増やす
 		evadeData.evadeCount++;
-		evadeData.timer = 30.0f;
+		evadeData.timer = kEvadeDuration;
 		if (m_isDirRight)
 		{
 			MV1SetRotationXYZ(m_modelHandle, kLeftDir); // モデルは進行方向に背を向ける
-			m_vec.x = kMoveSpeed * 3.0f;
+			m_vec.x = kMoveSpeed * kEvadeSpeedMultiplier;
 			m_isAttackDirRight = false;
 		}
 		else
@@ -336,7 +325,7 @@ void Player::DoEvade()
 			m_vec.x = -kMoveSpeed * 3.0f;
 			m_isAttackDirRight = true;
 		}
-		m_vec.y = kJumpPower * 0.50f;
+		m_vec.y = kJumpPower * kEvadeJumpMultiplier;
 	}
 	MV1SetPosition(m_modelHandle, m_pos);
 	m_pos = VAdd(m_pos, m_vec);
@@ -450,17 +439,17 @@ void Player::DoMove()
 	if (m_pos.z >= kBackLimit)
 	{
 		m_vec.z = 0.0f;
-		m_pos.z = kBackLimit -0.001f;
+		m_pos.z = kBackLimit - kWallOffset;
 	}
 	if (m_pos.z <= kFrontLimit)
 	{
 		m_vec.z = 0.0f;
-		m_pos.z = kFrontLimit + 0.001f;
+		m_pos.z = kFrontLimit + kWallOffset;
 	}
 	if (m_pos.x < kLeftLimit)
 	{
 		m_vec.x = 0.0f;
-		m_pos.x = kLeftLimit + 0.001f;
+		m_pos.x = kLeftLimit + kWallOffset;
 	}
 	m_pos = VAdd(m_pos, m_vec);
 }
