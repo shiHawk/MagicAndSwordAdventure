@@ -7,14 +7,14 @@ namespace
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
-	constexpr float kSerchRange = 300.0f; // 索敵範囲
+	constexpr float kSerchRange = 350.0f; // 索敵範囲
 	constexpr float kAttackRange = 90.0f; // 攻撃範囲
 	constexpr float kMoveSpeed = 2.0f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
-	constexpr float kZLimit = 270.0f;
+	constexpr float kBackLimit = 270.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
-	constexpr float kDefaultAttackCoolTime = 200.0f; // クールタイム
+	constexpr float kDefaultAttackCoolTime = 150.0f; // クールタイム
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
@@ -23,8 +23,6 @@ namespace
 	constexpr int kDeathAnimNo = 25;
 	// 最大HP
 	constexpr int kMaxHp = 100;
-	//int attackCount = 0;
-	//int idleCount = 0;
 }
 
 NormalSkelton::NormalSkelton():
@@ -44,7 +42,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	attack.timer = 40.0f;
 	attack.attackCoolTime = -1.0f;
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
-	m_attackWaitingTime = 60.0f;
+	m_attackWaitingTime = 40.0f;
 	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
 	m_isDead = false;
 	m_isDying = false;
@@ -242,9 +240,9 @@ void NormalSkelton::TrackPlayer()
 		m_moveCount++;
 		// プレイヤーに向かうベクトル
 		m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
-		if (m_pos.z >= kZLimit)
+		if (m_pos.z >= kBackLimit)
 		{
-			m_pos.z = kZLimit - 0.001f;
+			m_pos.z = kBackLimit - 0.001f;
 		}
 		// プレイヤーの位置に向かう
 		m_pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;

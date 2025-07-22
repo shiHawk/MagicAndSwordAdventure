@@ -56,8 +56,6 @@ private:
 	// プレイヤーの向いている方向
 	bool m_isDirRight;
 	bool m_isJump;
-	VECTOR m_playerPosHead;
-	VECTOR m_playerPosFoot;
 	// 移動前の位置
 	VECTOR m_prevPos;
 	// 移動前と移動後の距離

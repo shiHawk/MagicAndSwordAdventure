@@ -6,7 +6,8 @@ ScoreManager::ScoreManager():
 	m_startTime(0),
 	m_elapsedTimeSeconds(0.0f),
 	m_destroyScore(0),
-	m_timeBonus(0)
+	m_timeBonus(0),
+	m_isPlayerDead(false)
 {
 }
 
@@ -17,6 +18,7 @@ void ScoreManager::Init()
 	m_destroyScore = 0;
 	m_timeBonus = 0;
 	m_elapsedTimeSeconds = 0.0f;
+	m_isPlayerDead = false;
 }
 
 void ScoreManager::End()
@@ -24,6 +26,7 @@ void ScoreManager::End()
 	m_score = 0;
 	m_startTime = 0;
 	m_elapsedTimeSeconds = 0;
+	m_isPlayerDead = false;
 }
 
 void ScoreManager::Update()
@@ -48,12 +51,25 @@ int ScoreManager::GetTime()
 
 int ScoreManager::GetTimeBonus()
 {
-	m_timeBonus = 1000 - m_elapsedTimeSeconds;
+	if (m_isPlayerDead)
+	{
+		m_timeBonus = 0;
+	}
+	else
+	{
+		m_timeBonus = 1000 - m_elapsedTimeSeconds;
+		if (m_timeBonus < 0) m_timeBonus = 0; // ボーナスがマイナスにならないように
+	}
 	return m_timeBonus;
 }
 
 int ScoreManager::GetScore()
 {
-	m_score = m_destroyScore + m_timeBonus;
+	m_score = m_destroyScore + GetTimeBonus();
 	return m_score;
+}
+
+void ScoreManager::SetIsPlayerDead(bool isDead)
+{
+	m_isPlayerDead = isDead;
 }

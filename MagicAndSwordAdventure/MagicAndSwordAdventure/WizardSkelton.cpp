@@ -195,13 +195,14 @@ void WizardSkelton::OnDeath()
 void WizardSkelton::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
-#if _DEBUG
-	DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
-	DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kSerchRange, 8, 0xffff00, 0xffffff, false);
 	if (attack.active && !m_isDying)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, true);
 	}
+#if _DEBUG
+	DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
+	DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kSerchRange, 8, 0xffff00, 0xffffff, false);
+	
 #endif
 }
 

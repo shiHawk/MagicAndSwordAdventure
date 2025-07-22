@@ -47,9 +47,11 @@ void Collision::Update()
 	for (size_t i = 0; i < m_normalSkeltons.size(); ++i)
 	{
 		auto& normalSkelton = m_normalSkeltons[i];
-		m_differencePushedBackSize = VSize(VSub(m_pPlayer->GetPos(), normalSkelton->GetPos()));
+		m_differencePushedBack = VSub(m_pPlayer->GetPos(), normalSkelton->GetPos());
+		m_differencePushedBackSize = VSize(m_differencePushedBack);
 		m_overlapSize = m_pPlayer->GetColRadius() + normalSkelton->GetColRadius() - m_differencePushedBackSize;
 
+		// プレイヤーと重なっているならプレイヤーを押し戻す
 		if (m_overlapSize > 0.0f)
 		{
 			m_pushDir = VNorm(m_differencePushedBack); // 敵→プレイヤー方向

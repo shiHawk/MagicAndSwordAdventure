@@ -7,6 +7,13 @@ namespace
 	constexpr float kLerpSpeed = 0.015f;
 	constexpr float kOffSetPos = 200.0f;
 	constexpr VECTOR kSecondLight = { -0.577f, -0.577f, 0.577 };
+	constexpr float kRightLimitCamera = 4807.0f;
+	constexpr float kLeftLimitCamera = -2355.0f;
+	// カメラの位置と注視点
+	constexpr VECTOR kCameraPos = { -4800.0f,200.0f,-840.0f };
+	constexpr VECTOR kCameraTarget = { -4800.0f,50.0f,0.0f };
+	// カメラの視野角
+	constexpr float kViewAngle = 0.447f;
 }
 Camera::Camera():
 	m_cameraMoveAngle(0.0f),
@@ -15,7 +22,8 @@ Camera::Camera():
 	m_cameraTarget({ -400.0f,0.0f,0.0f }),
 	m_CountDownFrame(220),
 	m_cameraMoveTargetPos({ -400.0f,0.0f,0.0f }),
-	m_isBattleCamera(false)
+	m_isBattleCamera(false),
+	m_lightHandle(-1)
 {
 }
 
@@ -36,20 +44,16 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// カメラの位置の初期化を行う
 
 	// カメラ(始点)の位置
-	m_cameraPos.x = -400.0f;
-	m_cameraPos.y = 200.0f;
-	m_cameraPos.z = -840.0f;
+	m_cameraPos = kCameraPos;
 
 	// カメラがどこを見ているか(注視点)
-	m_cameraTarget.x = -400.0f;
-	m_cameraTarget.y = 50.0f;
-	m_cameraTarget.z = 0.0f;
+	m_cameraTarget = kCameraTarget;
 
 	// カメラの位置と注視点を指定する
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 
 	// カメラの視野角を設定する
-	m_viewAngle = 0.447f;	
+	m_viewAngle = kViewAngle;
 	SetupCamera_Perspective(m_viewAngle);
 
 	// カメラのnear,farを設定する
@@ -69,7 +73,7 @@ void Camera::End()
 
 void Camera::Update()
 {
-	if (CheckHitKey(KEY_INPUT_Q))
+	/*if (CheckHitKey(KEY_INPUT_Q))
 	{
 		m_viewAngle += 0.01;
 	}
@@ -85,7 +89,7 @@ void Camera::Update()
 	{
 		m_cameraPos.z -= 10;
 	}
-	SetupCamera_Perspective(m_viewAngle);
+	SetupCamera_Perspective(m_viewAngle);*/
 	//printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
 	if (!m_isBattleCamera)
 	{
@@ -101,6 +105,16 @@ void Camera::Update()
 		}
 		m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 		m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+	}
+	if (m_cameraPos.x < kLeftLimitCamera)
+	{
+		m_cameraPos.x = kLeftLimitCamera;
+		m_cameraTarget.x = kLeftLimitCamera;
+	}
+	if (m_cameraPos.x > kRightLimitCamera)
+	{
+		m_cameraPos.x = kRightLimitCamera;
+		m_cameraTarget.x = kRightLimitCamera;
 	}
 	
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);

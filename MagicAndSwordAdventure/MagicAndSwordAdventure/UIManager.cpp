@@ -28,6 +28,7 @@ void UIManager::Update()
 
 void UIManager::DrawHp()
 {
+	DrawFormatString(400,30,0xffffff,L"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
 	DrawBox(80, 50, 80 + 400 * m_hpGaugeRate, 80, 0x00ff00, true);
 }
 
@@ -48,5 +49,5 @@ void UIManager::DrawmElapsedTimeSeconds()
 
 void UIManager::DrawNumberOfEnemiesRemaining(int remainingCount)
 {
-	DrawFormatString(960, 40, 0xee82ee, L"‚ ‚Æ%d‘Ì", remainingCount);
+	DrawFormatString(960, 40, 0x4b0082, L"‚ ‚Æ%d‘Ì", remainingCount);
 }

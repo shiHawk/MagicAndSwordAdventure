@@ -8,12 +8,14 @@ namespace
 	constexpr float kDashSpeed = 10.0f;
 	constexpr float kJumpPower = 9.0f;
 	constexpr float kJumpGravity = -0.4f;
-	constexpr float kZLimit = 240.0f;
+	constexpr float kBackLimit = 240.0f;
+	constexpr float kFrontLimit = -350.0f;
+	constexpr float kLeftLimit = -2660.0f;
 
 	// ìñÇΩÇËîªíËÇÃîÕàÕ
 	constexpr float kColRadius = 40.0f;
 	// ç≈ëÂHP
-	constexpr int kMaxHp = 3000;
+	constexpr int kMaxHp = 1000;
 	// å∏ë¨
 	constexpr float kMoveDecRate = 0.80f;
 
@@ -70,7 +72,7 @@ Player::~Player()
 
 void Player::Init(std::shared_ptr<Animation> pAnimation)
 {
-	m_pos = { -400.0f, 0.0f, 0.0f };
+	m_pos = { -4800.0f, 0.0f, 0.0f };
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
 	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
@@ -223,7 +225,7 @@ void Player::OnDamage(int enemyPower)
 		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
 	}
 	
-	printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
+	//printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
 }
 
 void Player::OnDeath()
@@ -261,11 +263,11 @@ void Player::DoAttack()
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, 0.5f);
 			break;
 		case 2:
-			m_power = 30;
+			m_power = 40;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 			break;
 		case 3:
-			m_power = 40;
+			m_power = 60;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
 			break;
 		}
@@ -276,12 +278,12 @@ void Player::DoAttack()
 		// çUåÇÇÃéûÇ…è≠ÇµëOêiÇ∑ÇÈ
 		m_vec.x = +kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x + attack.attackOffSetX;
-		if (attack.count == 2 && !m_vec.y > 0)
+		if (attack.count == 2 && m_vec.y <  0)
 		{
 			m_power = 30;
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
 		}
-		if (attack.count == 3 && !m_vec.y > 0)
+		if (attack.count == 3 && !m_vec.y < 0)
 		{
 			m_power = 40;
 			m_vec.x = +kMoveSpeed;
@@ -445,10 +447,20 @@ void Player::DoMove()
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
 	MV1SetPosition(m_modelHandle, m_pos);
-	if (m_pos.z >= kZLimit)
+	if (m_pos.z >= kBackLimit)
 	{
 		m_vec.z = 0.0f;
-		m_pos.z = kZLimit-0.001f;
+		m_pos.z = kBackLimit -0.001f;
+	}
+	if (m_pos.z <= kFrontLimit)
+	{
+		m_vec.z = 0.0f;
+		m_pos.z = kFrontLimit + 0.001f;
+	}
+	if (m_pos.x < kLeftLimit)
+	{
+		m_vec.x = 0.0f;
+		m_pos.x = kLeftLimit + 0.001f;
 	}
 	m_pos = VAdd(m_pos, m_vec);
 }

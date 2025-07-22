@@ -23,6 +23,8 @@ private:
 	int m_tileGrateModelBase; // タイル2のコピー元
 	int m_wallModelBase; // 壁のコピー元
 	int m_wallCrackedModelBase; // 壁2のコピー元
+	int m_wallDoorModelHandle; // 開始地点付近の壁(ドア)
+	int m_gateFrameModelHandle; // 終点付近の壁(門)
 	std::vector<int> m_tileModelHandles;
 	std::vector<int> m_tileGrateModelHandles;
 	std::vector<int> m_wallModelHandles;

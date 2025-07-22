@@ -15,8 +15,17 @@ namespace
 	constexpr int kTitlePosY = 75;
 	constexpr int kTitleSize = 512;
 
-	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期（Hz）
-	constexpr float kTitleBobAmplitude = 5.0f; // タイトルロゴの上下揺れ振幅（px）
+	// カメラの位置と注視点
+	constexpr VECTOR kCameraPos = { 0.0f,200.0f,-840.0f };
+	constexpr VECTOR kCameraTarget = { 0.0f,50.0f,0.0f };
+	// カメラの視野角
+	constexpr float kViewAngle = 0.447f;
+
+	// GameStartの文字の位置のポジション
+	constexpr int kStartPos = 600;
+
+	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期(Hz)
+	constexpr float kTitleBobAmplitude = 5.0f; // タイトルロゴの上下揺れ振幅(px)
 	constexpr int   kMillisecondsPerSecond = 1000; // ミリ秒→秒換算用
 }
 
@@ -43,20 +52,16 @@ void TitleScene::Init()
 	// カメラの位置の初期化を行う
 
 	// カメラ(始点)の位置
-	m_cameraPos.x = 0.0f;
-	m_cameraPos.y = 200.0f;
-	m_cameraPos.z = -840.0f;
+	m_cameraPos = kCameraPos;
 
 	// カメラがどこを見ているか(注視点)
-	m_cameraTarget.x = 0.0f;
-	m_cameraTarget.y = 50.0f;
-	m_cameraTarget.z = 0.0f;
+	m_cameraTarget = kCameraTarget;
 
 	// カメラの位置と注視点を指定する
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 
 	// カメラの視野角を設定する
-	m_viewAngle = 0.447f;
+	m_viewAngle = kViewAngle;
 	SetupCamera_Perspective(m_viewAngle);
 
 	// カメラのnear,farを設定する
@@ -67,18 +72,22 @@ void TitleScene::Init()
 
 void TitleScene::End()
 {
+	DeleteGraph(m_titleHandle);
 }
 
 SceneBase* TitleScene::Update()
 {
 	UpdateFade();
 	m_time = GetNowCount() / kMillisecondsPerSecond;
+	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
+	// Bボタンを押したらフェードを開始
 	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
 	}
+	// フェードが終了したら遷移する
 	if (m_isNextScene && IsFadeComplete())
 	{
 		return new GameScene();
@@ -88,6 +97,11 @@ SceneBase* TitleScene::Update()
 
 void TitleScene::Draw()
 {	
+	// タイトルロゴを拡大表示
 	DrawExtendGraph(kTitlePosX, kTitlePosY + m_offsetY, kTitlePosX+ kTitleSize, kTitlePosY+ +m_offsetY+kTitleSize, m_titleHandle, true);
+	if ((int)(GetNowCount() / 500) % 2 == 0) 
+	{
+		DrawFormatString(kStartPos, kStartPos, 0xb22222,L"Press B Start");
+	}
 	DrawFade();
 }

@@ -8,9 +8,20 @@ namespace
 }
 
 Stage::Stage():
-	m_tileTotal(0),
-	m_stageStart(0),
-	m_stageEnd(0)
+	m_tileTotal(-1),
+	m_stageStart(-1),
+	m_stageEnd(-1),
+	m_tileGrateModelBase(-1),
+	m_tileModelBase(-1),
+	m_tilePos({0.0f,0.0f,0.0f}),
+	m_tileSize(400),
+	m_wallCrackedModelBase(-1),
+	m_wallDoorModelHandle(-1),
+	m_wallModelBase(-1),
+	m_wallNum(20),
+	m_wallPos({ 0.0f,0.0f,0.0f }),
+	m_wallSize(400),
+	m_gateFrameModelHandle(-1)
 {
 }
 
@@ -32,6 +43,13 @@ void Stage::Init()
 	m_tileGrateModelBase = MV1LoadModel(L"Data/model/floor_tile_grate_open.mv1");
 	m_wallModelBase = MV1LoadModel(L"Data/model/wall.mv1");
 	m_wallCrackedModelBase = MV1LoadModel(L"Data/model/wall_cracked.mv1");
+	m_wallDoorModelHandle = MV1LoadModel(L"Data/model/wall_doorway.mv1");
+	m_gateFrameModelHandle = MV1LoadModel(L"Data/model/wall_open_scaffold.mv1");
+	// ÉhÉAÇ∆ñÂÇÃï«ÇägëÂÅAâÒì]Ç≥ÇπÇÈ
+	MV1SetScale(m_wallDoorModelHandle,VGet(2.0f,1.0f,1.0f));
+	MV1SetRotationXYZ(m_wallDoorModelHandle, VGet(0.0f, -DX_PI / 2.0f, 0.0f));
+	MV1SetScale(m_gateFrameModelHandle, VGet(2.0f, 1.0f, 1.0f));
+	MV1SetRotationXYZ(m_gateFrameModelHandle, VGet(0.0f, -DX_PI / 2.0f, 0.0f));
 
 	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
 	{
@@ -96,6 +114,8 @@ void Stage::End()
 	if (m_tileGrateModelBase != -1) MV1DeleteModel(m_tileGrateModelBase);
 	if (m_wallModelBase != -1) MV1DeleteModel(m_wallModelBase);
 	if (m_wallCrackedModelBase != -1) MV1DeleteModel(m_wallCrackedModelBase);
+	MV1DeleteModel(m_wallDoorModelHandle);
+	MV1DeleteModel(m_gateFrameModelHandle);
 }
 
 void Stage::Updata()
@@ -136,6 +156,8 @@ void Stage::Updata()
 			MV1SetPosition(m_wallModelHandles[i], m_wallPos);
 		}
 	}
+	MV1SetPosition(m_wallDoorModelHandle, VGet(-2700.0f,0.0f,0.0f));
+	MV1SetPosition(m_gateFrameModelHandle, VGet(5300.0f,0.0f,-150.0f));
 }
 
 void Stage::Draw()
@@ -162,4 +184,6 @@ void Stage::Draw()
 			MV1DrawModel(m_wallModelHandles[i]);
 		}
 	}
+	MV1DrawModel(m_wallDoorModelHandle);
+	MV1DrawModel(m_gateFrameModelHandle);
 }
