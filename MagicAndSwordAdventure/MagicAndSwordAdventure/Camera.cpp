@@ -14,6 +14,10 @@ namespace
 	constexpr VECTOR kCameraTarget = { -4800.0f,50.0f,0.0f };
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
+	// ライトのカラー
+	constexpr float kRed = 1.0f;
+	constexpr float kGreen = 0.647f;
+	constexpr float kBlue = 0.0f;
 }
 Camera::Camera():
 	m_cameraMoveAngle(0.0f),
@@ -41,6 +45,9 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 
 	SetUseBackCulling(true);  // ポリゴンの裏面を表示しない
 
+	// カメラの色を変更する
+	SetLightSpcColor(GetColorF(kRed, kGreen, kBlue, 0.0f));
+
 	// カメラの位置の初期化を行う
 
 	// カメラ(始点)の位置
@@ -64,6 +71,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	SetCameraNearFar(10.0f, 3000.0f);
 
 	m_lightHandle = CreateDirLightHandle(kSecondLight);
+	SetLightDifColorHandle(m_lightHandle, GetColorF(kRed, kGreen, kBlue, 0.0f));
 }
 
 void Camera::End()

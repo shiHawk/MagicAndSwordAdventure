@@ -10,7 +10,7 @@ namespace
 	constexpr float kMoveSpeed = 2.0f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kMoveAccRate = 1.1f;// 加速
-	constexpr float kDefaultAttackCoolTime = 60.0f;
+	constexpr float kDefaultAttackCoolTime = 120.0f;
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;

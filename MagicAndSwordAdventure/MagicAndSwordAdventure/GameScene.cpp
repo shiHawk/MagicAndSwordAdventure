@@ -114,7 +114,7 @@ SceneBase* GameScene::Update()
 	{
 		m_pScoreManager->SetIsPlayerDead(true);
 	}
-	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()))
+	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()) || Pad::isTrigger(PAD_INPUT_4))
 	{
 		StartFadeOut();
 		m_isNextScene = true;

@@ -22,7 +22,6 @@ public:
 	void Update();
 	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive,int enemyPower);
 	void EnemyHit(float playerAttackToEnemy, float playerRadius, float enemyAttackRadius,bool playerAttackActive,bool enemyHit);
-	void Draw();
 	bool GetIsPlayerHit() { return m_isPlayerHit; }
 private:
 	std::shared_ptr<Player> m_pPlayer;

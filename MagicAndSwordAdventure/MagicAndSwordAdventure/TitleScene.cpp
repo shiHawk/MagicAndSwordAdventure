@@ -35,7 +35,8 @@ TitleScene::TitleScene():
 	m_viewAngle(0.0f),
 	m_titleHandle(-1),
 	m_time(0.0f),
-	m_offsetY(0)
+	m_offsetY(0),
+	m_titleBGHandle(-1)
 {
 }
 
@@ -68,11 +69,13 @@ void TitleScene::Init()
 	SetCameraNearFar(10.0f, 3000.0f);
 
 	m_titleHandle = LoadGraph(L"Data/title/WarriorAdventureTitle.png");
+	m_titleBGHandle = LoadGraph(L"Data/title/TitleBG.png");
 }
 
 void TitleScene::End()
 {
 	DeleteGraph(m_titleHandle);
+	DeleteGraph(m_titleBGHandle);
 }
 
 SceneBase* TitleScene::Update()
@@ -97,11 +100,14 @@ SceneBase* TitleScene::Update()
 
 void TitleScene::Draw()
 {	
+	// îwåiÇï`âÊ
+	DrawGraph(0,0, m_titleBGHandle,false);
 	// É^ÉCÉgÉãÉçÉSÇägëÂï\é¶
 	DrawExtendGraph(kTitlePosX, kTitlePosY + m_offsetY, kTitlePosX+ kTitleSize, kTitlePosY+ +m_offsetY+kTitleSize, m_titleHandle, true);
+	// ì_ñ≈Ç≥ÇπÇÈ
 	if ((int)(GetNowCount() / 500) % 2 == 0) 
 	{
-		DrawFormatString(kStartPos, kStartPos, 0xb22222,L"Press B Start");
+		DrawFormatString(kStartPos, kStartPos, 0x00ffff,L"Press B Start");
 	}
 	DrawFade();
 }

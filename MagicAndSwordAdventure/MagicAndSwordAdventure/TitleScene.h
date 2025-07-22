@@ -13,6 +13,7 @@ public:
 	virtual void Draw() override;
 private:
 	int m_titleHandle;
+	int m_titleBGHandle;
 	float m_time;
 	int m_offsetY;
 	bool m_isNextScene = false;

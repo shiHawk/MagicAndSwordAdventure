@@ -14,7 +14,11 @@ Collision::Collision():
 	m_differencePushedBackSize(0.0f),
 	m_overlapSize(0.0f),
 	m_pushDir({ 0.0f,0.0f,0.0f }),
-	m_pushBack({ 0.0f,0.0f,0.0f })
+	m_pushBack({ 0.0f,0.0f,0.0f }),
+	m_WizardSkeltonAttackToPlayerDistance(0.0f),
+	m_playerAttackToWizardSkelton({ 0.0f,0.0f,0.0f }),
+	m_playerAttackToWizardSkeltonDistance(0.0f),
+	m_playerToWizardSkeltonAttack({ 0.0f,0.0f,0.0f })
 {
 }
 
@@ -81,7 +85,6 @@ void Collision::Update()
 			}
 		}
 		if (m_normalSkeltonHit[i] && normalSkelton->GetHp() >= 0)
-            m_differencePushedBack = VSub(m_pPlayer->GetPos(), normalSkelton->GetPos());
 		{
 			m_normalSkeltonInvincibilityTime[i]--;
 			if (m_normalSkeltonInvincibilityTime[i] < 0)
@@ -95,6 +98,17 @@ void Collision::Update()
 	for (size_t i = 0; i < m_wizardSkeltons.size(); ++i)
 	{
 		auto& wizardSkelton = m_wizardSkeltons[i];
+		m_differencePushedBack = VSub(m_pPlayer->GetPos(), wizardSkelton->GetPos());
+		m_differencePushedBackSize = VSize(m_differencePushedBack);
+		m_overlapSize = m_pPlayer->GetColRadius() + wizardSkelton->GetColRadius() - m_differencePushedBackSize;
+
+		// プレイヤーと重なっているならプレイヤーを押し戻す
+		if (m_overlapSize > 0.0f)
+		{
+			m_pushDir = VNorm(m_differencePushedBack); // 敵→プレイヤー方向
+			m_pushBack = VScale(m_pushDir, m_overlapSize);
+			m_pPlayer->AddPos(m_pushBack);
+		}
 		// プレイヤーの位置からWizardSkeltonの攻撃位置までの距離
 		m_playerToWizardSkeltonAttack = VSub(m_pPlayer->GetPos(), wizardSkelton->GetAttackPos());
 
@@ -162,8 +176,4 @@ void Collision::EnemyHit(float playerAttackToEnemy, float playerRadius, float en
 			m_invincibilityTime = 1000.0f;
 		}
 	}
-}
-
-void Collision::Draw()
-{
 }
