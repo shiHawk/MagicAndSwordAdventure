@@ -1,6 +1,9 @@
 #include "BattleAreaManager.h"
 #include "game.h"
-
+namespace
+{
+	constexpr int kDivNum = 16;
+}
 BattleAreaManager::BattleAreaManager():
 	m_battleAreaCenterPos({0.0f,0.0f,0.0f}),
 	m_battleAreaRadius(0.0f),
@@ -108,7 +111,7 @@ void BattleAreaManager::DebugDraw()
 {
 	if (m_battleState == State::InBattle)
 	{
-		DrawSphere3D(m_battleAreaCenterPos, m_battleAreaRadius, 16, 0xff00ff, 0xffffff,false);
+		DrawSphere3D(m_battleAreaCenterPos, m_battleAreaRadius, kDivNum, 0xff00ff, 0xffffff,false);
 	}
 }
 

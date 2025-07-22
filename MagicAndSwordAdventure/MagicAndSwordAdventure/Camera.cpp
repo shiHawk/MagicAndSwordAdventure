@@ -81,23 +81,6 @@ void Camera::End()
 
 void Camera::Update()
 {
-	/*if (CheckHitKey(KEY_INPUT_Q))
-	{
-		m_viewAngle += 0.01;
-	}
-	if (CheckHitKey(KEY_INPUT_W))
-	{
-		m_viewAngle -= 0.01;
-	}
-	if (CheckHitKey(KEY_INPUT_E))
-	{
-		m_cameraPos.z += 10;
-	}
-	if (CheckHitKey(KEY_INPUT_R))
-	{
-		m_cameraPos.z -= 10;
-	}
-	SetupCamera_Perspective(m_viewAngle);*/
 	//printfDx(L"m_viewAngle:%f\nm_cameraPos.z:%f\n",m_viewAngle,m_cameraPos.z);
 	if (!m_isBattleCamera)
 	{
@@ -111,6 +94,7 @@ void Camera::Update()
 		{
 			m_cameraMoveTargetPos.x = m_pPlayer->GetPos().x - kOffSetPos;
 		}
+		// 徐々に目標位置まで近づける
 		m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 		m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	}
@@ -132,11 +116,10 @@ void Camera::Update()
 void Camera::ChangeBattleCamera(VECTOR cameraTarget)
 {
 	m_cameraMoveTargetPos.x = cameraTarget.x;
+	// 徐々に目標位置まで近づける
 	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	//printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
-	/*m_cameraPos = VGet(cameraTarget.x, m_cameraPos.y,m_cameraPos.z);
-	m_cameraMoveTargetPos = cameraTarget;*/
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	m_isBattleCamera = true; 
 }

@@ -14,7 +14,6 @@ public:
 	void Init(std::shared_ptr<Collision> pCollsion, std::shared_ptr<Player> pPlayer);
 	virtual void Update(); 
 	void OnDamage(int power);
-	void Draw();
 	// エネミーの当たり判定の半径を取得する
 	float GetColRadius() const;
 	

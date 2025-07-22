@@ -21,6 +21,13 @@ Enemy::Enemy()
 	m_moveSpeed = 0.0f;
 	m_enemyToPlayerDistance = 0.0f;
 	m_destroyScore = 0;
+	m_attackWaitingTime = 60.0f;
+	m_enemyToPlayer = { 0.0f,0.0f,0.0f };
+	m_isDirRight = false;
+	m_knockbackDir = { 0.0f,0.0f,0.0f };
+	m_knockbackDuration = 30.0f;
+	m_knockbackSpeed = 0.0f;
+	m_knockbackTimer = 0.0f;
 }
 
 Enemy::~Enemy()
@@ -29,8 +36,6 @@ Enemy::~Enemy()
 
 void Enemy::Init(std::shared_ptr<Collision> pCollsion, std::shared_ptr<Player> pPlayer)
 {
-	m_pos = VGet(680, 80, 0);
-	m_moveSpeed = 5.0f;
 	m_pCollsion = pCollsion;
 	m_pPlayer = pPlayer;
 }
@@ -48,11 +53,6 @@ void Enemy::OnDamage(int power)
 		m_isDead = true;
 		m_hp = 0;
 	}
-}
-
-void Enemy::Draw()
-{
-	DrawSphere3D(m_pos, kColRadius, 32, 0xff0000, 0xffffff, TRUE);
 }
 
 float Enemy::GetColRadius() const

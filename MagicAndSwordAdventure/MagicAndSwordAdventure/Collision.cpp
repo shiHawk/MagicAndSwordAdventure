@@ -86,6 +86,7 @@ void Collision::Update()
 		}
 		if (m_normalSkeltonHit[i] && normalSkelton->GetHp() >= 0)
 		{
+			// 無敵時間の更新
 			m_normalSkeltonInvincibilityTime[i]--;
 			if (m_normalSkeltonInvincibilityTime[i] < 0)
 			{
@@ -135,6 +136,7 @@ void Collision::Update()
 		}
 		if (m_wizardSkeltonHit[i] && wizardSkelton->GetHp() >= 0)
 		{
+			// 無敵時間の更新
 			m_wizardSkeltonInvincibilityTime[i]--;
 			if (m_wizardSkeltonInvincibilityTime[i] < 0)
 			{
