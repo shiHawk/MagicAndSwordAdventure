@@ -2,8 +2,8 @@
 
 namespace
 {
-	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
-	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
+	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f }; // 左向き
+	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f }; // 右向き
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
 	constexpr float kSerchRange = 200.0f; // 索敵範囲
 	constexpr float kAttackRange = 200.0f; // 攻撃範囲
@@ -11,12 +11,18 @@ namespace
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kMoveAccRate = 1.1f;// 加速
 	constexpr float kDefaultAttackCoolTime = 120.0f;
+	constexpr float kAttackDuration = 60.0f; // 攻撃の持続時間
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
-	constexpr int kAttackAnimNo = 5;
+	constexpr int kSpellCastAnimNo = 76;
+	constexpr int kAttackAnimNo = 77;
 	constexpr int kDamageAnimNo = 40;
 	constexpr int kDeathAnimNo = 25;
+	// アニメーションの速度
+	constexpr float kAnimSpeedFast = 0.5f; // 短めの再生の時
+	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
+	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	// 最大HP
 	constexpr int kMaxHp = 60;
 	//int attackCount = 0;
@@ -25,7 +31,9 @@ namespace
 WizardSkelton::WizardSkelton():
 m_toPlayerDir({0.0f,0.0f,0.0f}),
 m_isAttackEnd(false),
-attack({ 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f })
+attack({ 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f }),
+m_isCasting(false),
+m_isCastFinished(false)
 {
 }
 
@@ -36,9 +44,9 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_pos = { 0.0f,0.0f,0.0f };
 	m_pos = VAdd(m_pos, pos);
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, m_pos.z);
-	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Mage.mv1");
+	m_modelHandle = MV1LoadModel("Data/model/Skeleton_Mage.mv1");
 	attack.attackCoolTime = -1.0f;
-	attack.timer = 60.0f;
+	attack.timer = kAttackDuration;
 	m_isDying = false;
 	m_isDead = false;
 	m_hp = kMaxHp;
@@ -52,6 +60,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	AttachAnim(m_modelHandle, kIdleAnimNo);
 	m_destroyScore = 800;
 	attack = { 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f };
+	m_attackCount = 0;
 }
 
 void WizardSkelton::End()
@@ -76,9 +85,18 @@ void WizardSkelton::Update()
 		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 		//printfDx(L"m_enemyToPlayerDistance:%f\n",m_enemyToPlayerDistance);
 		// 索敵範囲内に入ったら攻撃する
-		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
+		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0 && !attack.active && !m_isCasting)
 		{
+			m_isCasting = true;
+			m_isCastFinished = false;
+			ChangeAnim(m_modelHandle,kSpellCastAnimNo,false, kAnimSpeedMedium);
+		}
+		if (m_isCasting && !m_isCastFinished && GetIsAnimEnd())
+		{
+			m_isCastFinished = true;
+			m_isCasting = false;
 			attack.active = true;
+			ChangeAnim(m_modelHandle, kAttackAnimNo, false, kAnimSpeedFast);
 		}
 		if (attack.active)
 		{
@@ -87,14 +105,14 @@ void WizardSkelton::Update()
 			if (attack.timer < 0.0f && !m_isAttackEnd)
 			{
 				m_isAttackEnd = true;
-				ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+				ChangeAnim(m_modelHandle, kIdleAnimNo, false, kAnimSpeedFast);
 			}
 			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
 			{
 				attack.active = false;
 				attack.pos = { m_pos.x,-1000.0f,m_pos.z };
-				ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
-				attack.timer = 60.0f;
+				ChangeAnim(m_modelHandle, kIdleAnimNo, false, kAnimSpeedFast);
+				attack.timer = kAttackDuration;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_attackCount = 0;
 				m_isAttackEnd = false;
@@ -107,14 +125,13 @@ void WizardSkelton::Update()
 		}
 		if (GetIsAnimEnd())
 		{
-			ChangeAnim(m_modelHandle, kIdleAnimNo, false, 0.5f);
+			ChangeAnim(m_modelHandle, kIdleAnimNo, false, kAnimSpeedFast);
 		}
 		MV1SetPosition(m_modelHandle, m_pos);
 		UpdateAnim();
 	}
 	else
 	{
-		
 		End();
 		return;
 	}
@@ -128,7 +145,7 @@ void WizardSkelton::DoAttack()
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
 	if (m_attackCount < 1)
 	{
-		ChangeAnim(m_modelHandle, 77, false, 0.4f);
+		//ChangeAnim(m_modelHandle, kAttackAnimNo, false, kAnimSpeedFast);
 	}
 	m_attackCount++;
 	if (m_enemyToPlayer.x > 0)
@@ -156,7 +173,7 @@ void WizardSkelton::OnDamage()
 	{
 		m_pos.x -= 1.0f;
 	}
-	ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
+	ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast);
 	m_hp -= m_pPlayer->GetPower();
 	if (m_hp <= 0 && !m_isDying)
 	{
@@ -166,7 +183,7 @@ void WizardSkelton::OnDamage()
 		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
 		// タイマーをセット
 		m_knockbackTimer = m_knockbackDuration;
-		ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.4f);
+		ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedDeath);
 	}
 	if (m_hp <= 0)
 	{

@@ -14,24 +14,36 @@ namespace
 	constexpr float kBackLimit = 270.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
-	constexpr float kDefaultAttackCoolTime = 150.0f; // クールタイム
+	constexpr float kDefaultAttackCoolTime = 100.0f; // クールタイム
 	constexpr float kDefaultAttackWaitingTime = 40.0f; // 追跡から攻撃に移る時間
+	constexpr float kAttackDuration = 40.0f; // 攻撃の持続時間
 
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 41;
 	constexpr int kWalkAnimNo = 54;
+	constexpr int kTakeAStandAnimNo = 83;
 	constexpr int kAttackAnimNo = 5;
 	constexpr int kDamageAnimNo = 40;
 	constexpr int kDeathAnimNo = 25;
+	// アニメーションの速度
+	constexpr float kAnimSpeedFast = 0.5f; // 短めの再生の時
+	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
+	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
+	constexpr float kAnimSpeedakeAStand = 0.3f; // 構えているときの再生速度
 	// 最大HP
 	constexpr int kMaxHp = 100;
+	// モデルのスケール
+	constexpr int kModelScale = 45;
 }
 
 NormalSkelton::NormalSkelton():
 	m_toPlayerDir({0.0f,0.f,0.0f}),
 	m_isMove(false),
 	m_moveCount(0),
-	attack({ 30,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f })
+	attack({ 30,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f }),
+	m_isPreparingAttack(false),
+	m_isPrepared(false),
+	m_weponModelHandel(-1)
 {
 }
 
@@ -45,7 +57,8 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	attack.attackCoolTime = -1.0f;
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
 	m_attackWaitingTime = kDefaultAttackWaitingTime;
-	m_modelHandle = MV1LoadModel(L"Data/model/Skeleton_Rogue.mv1");
+	m_modelHandle = MV1LoadModel("Data/model/Skeleton_Rogue.mv1");
+	m_weponModelHandel = MV1LoadModel("Data/model/Skeleton_Blade.mv1");
 	m_isDead = false;
 	m_isDying = false;
 	m_hp = kMaxHp;
@@ -54,7 +67,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_knockbackSpeed = 5.0f;
 	m_knockbackDuration = 0.5f;
 	m_knockbackTimer = 0.0f;
-	MV1SetScale(m_modelHandle, VGet(45, 45, 45));
+	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
 	m_destroyScore = 500;
@@ -64,6 +77,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 void NormalSkelton::End()
 {
 	MV1DeleteModel(m_modelHandle);
+	MV1DeleteModel(m_weponModelHandel);
 	m_pos = { m_pos.x,m_pos.y - 1000.0f,m_pos.z };
 	attack.pos = { attack.pos.x,attack.pos.y - 1000.0f,attack.pos.z };
 	attack.active = false;
@@ -91,7 +105,7 @@ void NormalSkelton::Update()
 		{
 			if (m_isMove)
 			{
-				ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+				ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
 				m_isMove = false;
 			}
 		}
@@ -103,11 +117,13 @@ void NormalSkelton::Update()
 			{
 				attack.active = false;
 				attack.pos = { 0.0f,-100.0f,0.0f };
-				ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
-				attack.timer = 40.0f;
+				ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+				attack.timer = kAttackDuration;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_attackWaitingTime = kDefaultAttackWaitingTime;
 				m_attackCount = 0;
+				m_isPreparingAttack = false;
+				m_isPrepared = false;
 			}
 		}
 		else
@@ -115,9 +131,9 @@ void NormalSkelton::Update()
 			// 攻撃が終わっているならクールタイムを減らす
 			attack.attackCoolTime--;
 		}
-		if (GetIsAnimEnd() && !m_isMove)
+		if (GetIsAnimEnd() && !m_isMove )
 		{
-			ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+			ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
 		}
 		MV1SetPosition(m_modelHandle, m_pos);
 		UpdateAnim();
@@ -137,7 +153,7 @@ void NormalSkelton::OnAttack()
 	if (m_attackCount < 1)
 	{
 		// 攻撃アニメーションに変更
-		ChangeAnim(m_modelHandle, kAttackAnimNo, false, 1.0f);
+		ChangeAnim(m_modelHandle, kAttackAnimNo, false, kAnimSpeedSlow);
 	}
 	m_attackCount++;
 	if (m_enemyToPlayer.x > 0)
@@ -165,7 +181,7 @@ void NormalSkelton::OnDamage()
 	{
 		m_pos.x -= 1.0f;
 	}
-	ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
+	ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast);
 	m_hp -= m_pPlayer->GetPower();
 	if (m_hp <= 0 && !m_isDying)
 	{
@@ -176,7 +192,7 @@ void NormalSkelton::OnDamage()
 		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
 		// タイマーをセット
 		m_knockbackTimer = m_knockbackDuration;
-		ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.4f);
+		ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedDeath);
 	}
 	//printfDx(L"hp:%d\n", m_hp);
 }
@@ -215,19 +231,24 @@ void NormalSkelton::Draw() const
 
 void NormalSkelton::TrackPlayer()
 {
+	if (m_isPreparingAttack)
+	{
+		if (!m_isPrepared && GetIsAnimEnd())
+		{
+			m_isPrepared = true;
+			OnAttack();
+		}
+		return;
+	}
 	if (m_enemyToPlayerDistance < kAttackRange)
 	{
-		// 移動アニメーションを停止し、待機状態に切り替える
-		if (m_isMove)
+		// 移動アニメーションを停止し、構えているアニメーションに切り替える
+		if (!m_isPreparingAttack && !attack.active)
 		{
-			ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+			ChangeAnim(m_modelHandle, kTakeAStandAnimNo, false, kAnimSpeedFast);
+			m_isPreparingAttack = true;
+			m_isPrepared = false;
 			m_isMove = false;
-		}
-		// 攻撃を始めるまでの待機時間を減らす
-		m_attackWaitingTime--;
-		if (m_attackWaitingTime < 0)
-		{
-			OnAttack();
 		}
 	}
 	else
@@ -236,7 +257,7 @@ void NormalSkelton::TrackPlayer()
 		{
 			m_idleCount = 0;
 			// 移動アニメーション
-			ChangeAnim(m_modelHandle, kWalkAnimNo,true,0.5f);
+			ChangeAnim(m_modelHandle, kWalkAnimNo,true, kAnimSpeedFast);
 			m_isMove = true;
 		}
 		m_moveCount++;

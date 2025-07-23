@@ -7,6 +7,8 @@ namespace
 	constexpr float kBackPosZ = 100.0f;
 	constexpr VECTOR kWallDoorPos = { -2700.0f,0.0f,0.0f };
 	constexpr VECTOR kGateFramePos = { 5300.0f,0.0f,-150.0f };
+	constexpr int kTileCycle = 3; // 3ÇÃî{êîÇ…Ç»ÇÈìxÉ^ÉCÉã2Çï`âÊ
+	constexpr int kWallCycle = 6; // 6ÇÃî{êîÇ…Ç»ÇÈìxï«2Çï`âÊ
 }
 
 Stage::Stage():
@@ -41,12 +43,12 @@ void Stage::Init()
 	m_stageEnd = 5500;
 	m_tileSize = 400.0f;
 	m_wallSize = 400.0f;
-	m_tileModelBase = MV1LoadModel(L"Data/model/floor_tile_large.mv1");
-	m_tileGrateModelBase = MV1LoadModel(L"Data/model/floor_tile_grate_open.mv1");
-	m_wallModelBase = MV1LoadModel(L"Data/model/wall.mv1");
-	m_wallCrackedModelBase = MV1LoadModel(L"Data/model/wall_cracked.mv1");
-	m_wallDoorModelHandle = MV1LoadModel(L"Data/model/wall_doorway.mv1");
-	m_gateFrameModelHandle = MV1LoadModel(L"Data/model/wall_open_scaffold.mv1");
+	m_tileModelBase = MV1LoadModel("Data/model/floor_tile_large.mv1");
+	m_tileGrateModelBase = MV1LoadModel("Data/model/floor_tile_grate_open.mv1");
+	m_wallModelBase = MV1LoadModel("Data/model/wall.mv1");
+	m_wallCrackedModelBase = MV1LoadModel("Data/model/wall_cracked.mv1");
+	m_wallDoorModelHandle = MV1LoadModel("Data/model/wall_doorway.mv1");
+	m_gateFrameModelHandle = MV1LoadModel("Data/model/wall_open_scaffold.mv1");
 	// ÉhÉAÇ∆ñÂÇÃï«ÇägëÂÅAâÒì]Ç≥ÇπÇÈ
 	MV1SetScale(m_wallDoorModelHandle,VGet(2.0f,1.0f,1.0f));
 	MV1SetRotationXYZ(m_wallDoorModelHandle, VGet(0.0f, -DX_PI / 2.0f, 0.0f));
@@ -55,7 +57,7 @@ void Stage::Init()
 
 	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
 	{
-		printfDx(L"ì«Ç›çûÇ›é∏îs\n");
+		printfDx("ì«Ç›çûÇ›é∏îs\n");
 		return;
 	}
 
@@ -67,7 +69,7 @@ void Stage::Init()
 	// ÉRÉsÅ[å≥Ç©ÇÁï°êª
 	for (int i = 0; i < m_tileTotal;i++)
 	{
-		if (i % 3 == 0)
+		if (i % kTileCycle == 0)
 		{
 			m_tileGrateModelHandles[i] = MV1DuplicateModel(m_tileGrateModelBase);
 		}
@@ -78,7 +80,7 @@ void Stage::Init()
 	}
 	for (int i = 0; i < m_wallNum;i++)
 	{
-		if (i % 6 == 0)
+		if (i % kWallCycle == 0)
 		{
 			m_wallCrackedModelHandles[i] = MV1DuplicateModel(m_wallCrackedModelBase);
 		}
@@ -136,7 +138,7 @@ void Stage::Updata()
 			m_tilePos.z = kInFrontPosZ;
 		}
 
-		if (i % 3 == 0 && m_tileGrateModelHandles[i] != -1)
+		if (i % kTileCycle == 0 && m_tileGrateModelHandles[i] != -1)
 		{
 			MV1SetPosition(m_tileGrateModelHandles[i], m_tilePos);
 		}
@@ -149,7 +151,7 @@ void Stage::Updata()
 	{
 		m_wallPos.x = m_stageStart + i * m_wallSize;
 		m_wallPos.z = kInFrontWallPosZ;
-		if (i % 6 == 0 && m_wallCrackedModelHandles[i] != -1)
+		if (i % kWallCycle == 0 && m_wallCrackedModelHandles[i] != -1)
 		{
 			MV1SetPosition(m_wallCrackedModelHandles[i], m_wallPos);
 		}
@@ -166,7 +168,7 @@ void Stage::Draw()
 {
 	for (int i = 0; i < m_tileTotal;i++)
 	{
-		if (i % 3 == 0 && m_tileGrateModelHandles[i] != -1)
+		if (i % kTileCycle == 0 && m_tileGrateModelHandles[i] != -1)
 		{
 			MV1DrawModel(m_tileGrateModelHandles[i]);
 		}
@@ -177,7 +179,7 @@ void Stage::Draw()
 	}
 	for (int i = 0; i < m_wallNum;i++)
 	{
-		if (i % 6 == 0 && m_wallCrackedModelHandles[i] != -1)
+		if (i % kWallCycle == 0 && m_wallCrackedModelHandles[i] != -1)
 		{
 			MV1DrawModel(m_wallCrackedModelHandles[i]);
 		}

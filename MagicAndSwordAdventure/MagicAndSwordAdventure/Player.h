@@ -14,8 +14,7 @@ public:
 	void End();
 	void Update();
 	void Draw() const;
-	VECTOR GetScreenPos();
-	// エネミーの当たり判定の半径を取得する
+	// プレイヤーの当たり判定を取得
 	float GetColRadius() const ;
 	void OnDamage(int enemyPower);
 	void OnDeath();

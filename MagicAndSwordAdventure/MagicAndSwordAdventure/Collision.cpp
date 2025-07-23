@@ -128,7 +128,6 @@ void Collision::Update()
 		{
 			if (m_pPlayer->IsAttackActive())
 			{
-				printfDx(L"Hit\n");
 				wizardSkelton->OnDamage();
 				m_wizardSkeltonHit[i] = true;
 				m_wizardSkeltonInvincibilityTime[i] = 60.0f;
@@ -173,7 +172,6 @@ void Collision::EnemyHit(float playerAttackToEnemy, float playerRadius, float en
 	{
 		if (playerAttackActive)
 		{
-			printfDx(L"Hit\n");
 			enemyHit = true;
 			m_invincibilityTime = 1000.0f;
 		}

@@ -24,5 +24,7 @@ private:
 	VECTOR m_toPlayerDir;
 	bool m_isAttackEnd = false;
 	int m_attackCount = 0;
+	bool m_isCasting = false;
+	bool m_isCastFinished = false;
 };
 

@@ -16,7 +16,7 @@ void GameScene::LoadEnemyData(const std::string fileName, std::vector<std::share
 	std::ifstream file(fileName);
 	if (!file.is_open())
 	{
-		printfDx(L"CSVファイルを開けませんでした: %s\n", fileName.c_str());
+		printfDx("CSVファイルを開けませんでした: %s\n", fileName.c_str());
 		return;
 	}
 	std::string line;

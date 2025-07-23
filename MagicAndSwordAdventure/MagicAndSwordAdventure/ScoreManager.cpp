@@ -1,6 +1,10 @@
 #include "ScoreManager.h"
 #include "DxLib.h"
-
+namespace
+{
+	constexpr int kMaxTimeBonus = 1000;
+	constexpr float kMillisecondsPerSecond = 1000.0f; // ミリ秒から秒への変換
+}
 ScoreManager::ScoreManager():
 	m_score(0),
 	m_startTime(0),
@@ -31,7 +35,7 @@ void ScoreManager::End()
 
 void ScoreManager::Update()
 {
-	m_elapsedTimeSeconds = static_cast<int>((GetNowCount() - m_startTime) / 1000.0f);
+	m_elapsedTimeSeconds = static_cast<int>((GetNowCount() - m_startTime) / kMillisecondsPerSecond);
 }
 
 void ScoreManager::AddScore(int destroyScore)
@@ -57,7 +61,7 @@ int ScoreManager::GetTimeBonus()
 	}
 	else
 	{
-		m_timeBonus = 1000 - m_elapsedTimeSeconds;
+		m_timeBonus = kMaxTimeBonus - m_elapsedTimeSeconds;
 		if (m_timeBonus < 0) m_timeBonus = 0; // ボーナスがマイナスにならないように
 	}
 	return m_timeBonus;

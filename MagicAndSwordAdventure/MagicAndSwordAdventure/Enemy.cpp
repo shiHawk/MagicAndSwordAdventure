@@ -59,3 +59,11 @@ float Enemy::GetColRadius() const
 {
 	return kColRadius;
 }
+
+void Enemy::SetModelFramePos(int modelHandle, char *frameName, int setModelHandle)
+{
+	MATRIX frameMatrix;
+	int frameIndex;
+	// フレーム名からフレーム番号を取得する
+	frameIndex = MV1SearchFrame(modelHandle, frameName);
+}

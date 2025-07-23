@@ -70,7 +70,7 @@ void ResultScene::End()
 SceneBase* ResultScene::Update()
 {
 	UpdateFade();
-	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
+	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
@@ -84,12 +84,12 @@ SceneBase* ResultScene::Update()
 
 void ResultScene::Draw()
 {
-	DrawFormatString(kCharaPosx, kDestroyScorePosY, kFontColorWhite,L"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
-	DrawFormatString(kCharaPosx,kTimeScorePosY, kFontColorWhite,L"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
-	DrawFormatString(kCharaPosx,kScorePosY, kFontColorWhite,L"合計スコア:%d",m_pScoreManager->GetScore());
+	DrawFormatString(kCharaPosx, kDestroyScorePosY, kFontColorWhite,"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatString(kCharaPosx,kTimeScorePosY, kFontColorWhite,"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
+	DrawFormatString(kCharaPosx,kScorePosY, kFontColorWhite,"合計スコア:%d",m_pScoreManager->GetScore());
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatString(kCharaPosx, kPressBPosY, kFontColorCyan, L"Press B Title");
+		DrawFormatString(kCharaPosx, kPressBPosY, kFontColorCyan, "Press A Title");
 	}
 	DrawFade();
 }

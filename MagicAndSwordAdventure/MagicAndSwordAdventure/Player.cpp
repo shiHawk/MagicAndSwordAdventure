@@ -36,6 +36,10 @@ namespace
 	constexpr int kDeathAnimNo = 26;
 	constexpr int kJumpAttackAnimNo = 39;
 	constexpr int kEvadeAnimNo = 16;
+	// アニメーションの速度
+	constexpr float kAnimSpeedFast = 0.5f; // 短めの再生の時
+	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
+	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	// 持続時間
 	constexpr float kAttackDuration = 50.0f;
 	constexpr float kEvadeDuration = 30.0f;
@@ -88,7 +92,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	m_pos = kPlayerInitPos;
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
-	m_modelHandle = MV1LoadModel(L"Data/model/Barbarian.mv1");
+	m_modelHandle = MV1LoadModel("Data/model/Barbarian.mv1");
 	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	m_pAnimation->AttachAnim(m_modelHandle, 1);
@@ -137,7 +141,7 @@ void Player::Update()
 			attack.timer--;
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
 				attack.pos = { 0.0f,-kAttackHideY,0.0f };
 				attack.active = false;
 			}
@@ -166,7 +170,7 @@ void Player::Update()
 			// 回避時間が終わったら
 			if (evadeData.timer <= 0)
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
 				evadeData.active = false;
 				evadeData.evadeCount = 0;
 			}
@@ -177,7 +181,7 @@ void Player::Update()
 			idleCount = 0;
 			if (moveCount < 1)
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kWalkAnimNo, true, 0.5f);
+				m_pAnimation->ChangeAnim(m_modelHandle, kWalkAnimNo, true, kAnimSpeedFast);
 			}
 			moveCount++;
 		}
@@ -211,13 +215,6 @@ void Player::Draw() const
 #endif
 }
 
-VECTOR Player::GetScreenPos()
-{
-	// スクリーン座標に変換
-	m_screenPos = ConvWorldPosToScreenPos(m_pos);
-	return m_screenPos;
-}
-
 float Player::GetColRadius() const
 {
 	return kColRadius;
@@ -229,13 +226,12 @@ void Player::OnDamage(int enemyPower)
 	if (m_hp <= 0 )
 	{
 		m_hp = 0;
-		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, 0.5f);
-		printfDx(L"死亡フラグが立ちました\n");
+		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedFast);
 		m_isDying = true;
 	}
 	else
 	{
-		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, 0.5f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast);
 	}
 	
 	//printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
@@ -266,22 +262,22 @@ void Player::DoAttack()
 	if (m_vec.y > 0)
 	{
 		// ジャンプ攻撃
-		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, 0.7f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, kAnimSpeedMedium);
 	}
 	else
 	{
 		switch (attack.count) {
 		case 1:
 			m_power = kFirstAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, kAnimSpeedFast);
 			break;
 		case 2:
 			m_power = kSecondAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, 0.7f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedMedium);
 			break;
 		case 3:
 			m_power = kThirdAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, 1.0f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, kAnimSpeedSlow);
 			break;
 		}
 	}
@@ -309,7 +305,7 @@ void Player::DoEvade()
 	{
 		evadeData.active = true;
 		// 回避アニメーションに切り替え
-		m_pAnimation->ChangeAnim(m_modelHandle, kEvadeAnimNo, false, 0.5f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kEvadeAnimNo, false, kAnimSpeedFast);
 		// 回避回数を増やす
 		evadeData.evadeCount++;
 		evadeData.timer = kEvadeDuration;
@@ -322,7 +318,7 @@ void Player::DoEvade()
 		else
 		{
 			MV1SetRotationXYZ(m_modelHandle, kRightDir); // モデルは進行方向に背を向ける
-			m_vec.x = -kMoveSpeed * 3.0f;
+			m_vec.x = -kMoveSpeed * kEvadeSpeedMultiplier;
 			m_isAttackDirRight = true;
 		}
 		m_vec.y = kJumpPower * kEvadeJumpMultiplier;
@@ -429,7 +425,7 @@ void Player::DoMove()
 		moveCount = 0;
 		if (idleCount < 1)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, 0.5f);
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
 		}
 		idleCount++;
 	}

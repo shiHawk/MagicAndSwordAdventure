@@ -74,8 +74,8 @@ void TitleScene::Init()
 	// カメラのnear,farを設定する
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 
-	m_titleHandle = LoadGraph(L"Data/title/WarriorAdventureTitle.png");
-	m_titleBGHandle = LoadGraph(L"Data/title/TitleBG.png");
+	m_titleHandle = LoadGraph("Data/title/WarriorAdventureTitle.png");
+	m_titleBGHandle = LoadGraph("Data/title/TitleBG.png");
 }
 
 void TitleScene::End()
@@ -91,7 +91,7 @@ SceneBase* TitleScene::Update()
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
 	// Bボタンを押したらフェードを開始
-	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
+	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
@@ -113,7 +113,7 @@ void TitleScene::Draw()
 	// 点滅させる
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatString(kStartPos, kStartPos, 0x00ffff,L"Press B Start");
+		DrawFormatString(kStartPos, kStartPos, 0x00ffff,"Press A Start");
 	}
 	DrawFade();
 }

@@ -14,6 +14,9 @@ namespace
 	constexpr VECTOR kCameraTarget = { -4800.0f,50.0f,0.0f };
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
+	// nearとfarの位置
+	constexpr float kCameraNearClip = 10.0f;
+	constexpr float kCameraFarClip = 3000.0f;
 	// ライトのカラー
 	constexpr float kRed = 1.0f;
 	constexpr float kGreen = 0.647f;
@@ -68,7 +71,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// カメラからnear以上離れていてfarより近くにあるものが
 	// ゲーム画面に表示される
 	// farはあまり大きすぎる数字を設定しないように気を付ける(表示バグに繋がる)
-	SetCameraNearFar(10.0f, 3000.0f);
+	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 
 	m_lightHandle = CreateDirLightHandle(kSecondLight);
 	SetLightDifColorHandle(m_lightHandle, GetColorF(kRed, kGreen, kBlue, 0.0f));
@@ -98,11 +101,13 @@ void Camera::Update()
 		m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 		m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	}
+	// ステージの左端まで行ったらカメラがそれ以上先に行かない様にする
 	if (m_cameraPos.x < kLeftLimitCamera)
 	{
 		m_cameraPos.x = kLeftLimitCamera;
 		m_cameraTarget.x = kLeftLimitCamera;
 	}
+	// ステージの右端まで行ったらカメラがそれ以上先に行かない様にする
 	if (m_cameraPos.x > kRightLimitCamera)
 	{
 		m_cameraPos.x = kRightLimitCamera;

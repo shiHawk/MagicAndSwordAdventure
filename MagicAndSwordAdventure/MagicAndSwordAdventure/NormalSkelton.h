@@ -28,5 +28,8 @@ private:
 	int m_moveCount;
 	int m_attackCount = 0;
 	int m_idleCount = 0;
+	bool m_isPreparingAttack = false; // 攻撃準備中（構えアニメ中）
+	bool m_isPrepared = false; // 構えアニメが完了したか
+	int m_weponModelHandel;
 };
 

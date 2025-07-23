@@ -36,11 +36,12 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 {
 	m_pPlayer = pPlayer;
 	m_pScoreManager = pScoreManager;
-	m_drawNavigationHandle = LoadGraph(L"Data/UI/Navigation.png");
+	m_drawNavigationHandle = LoadGraph("Data/UI/Navigation.png");
 }
 
 void UIManager::End()
 {
+	DeleteGraph(m_drawNavigationHandle);
 }
 
 void UIManager::Update()
@@ -50,7 +51,7 @@ void UIManager::Update()
 
 void UIManager::DrawHp()
 {
-	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,L"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
+	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
 	DrawBox(kHpGaugeLeft, kHpGaugeTop, kHpGaugeLeft + kHpGaugeWidth * m_hpGaugeRate, kHpGaugeBottom, kHpGaugeColor, true);
 }
 
@@ -61,15 +62,15 @@ void UIManager::DrawNavigation()
 
 void UIManager::DrawDestroyScore()
 {
-	DrawFormatString(kScorePosX, kCharaPosY,0xffdead,L"Score\n%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatString(kScorePosX, kCharaPosY, kScoreColor,"Score\n%d",m_pScoreManager->GetDestroyScore());
 }
 
 void UIManager::DrawmElapsedTimeSeconds()
 {
-	DrawFormatString(kTimePosX, kCharaPosY, kTimeColor,L"Time\n%d",m_pScoreManager->GetTime());
+	DrawFormatString(kTimePosX, kCharaPosY, kTimeColor,"Time\n%d",m_pScoreManager->GetTime());
 }
 
 void UIManager::DrawNumberOfEnemiesRemaining(int remainingCount)
 {
-	DrawFormatString(kEnemyRemainPosX, kCharaPosY, kEnemyRemainColor, L"‚ ‚Æ%d‘Ì", remainingCount);
+	DrawFormatString(kEnemyRemainPosX, kCharaPosY, kEnemyRemainColor, "‚ ‚Æ%d‘Ì", remainingCount);
 }
