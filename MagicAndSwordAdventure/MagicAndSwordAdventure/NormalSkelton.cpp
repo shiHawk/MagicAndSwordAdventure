@@ -140,7 +140,6 @@ void NormalSkelton::Update()
 	}
 	else
 	{
-		
 		End();
 		return;
 	}
