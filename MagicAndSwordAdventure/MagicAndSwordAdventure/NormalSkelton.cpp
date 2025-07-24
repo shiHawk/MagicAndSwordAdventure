@@ -112,8 +112,7 @@ void NormalSkelton::Update()
 
 		if (attack.active)
 		{
-			attack.timer--;
-			if (attack.timer <= 0)
+			if (GetIsAnimEnd())
 			{
 				attack.active = false;
 				attack.pos = { 0.0f,-100.0f,0.0f };

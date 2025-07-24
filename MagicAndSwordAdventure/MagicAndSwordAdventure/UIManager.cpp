@@ -24,7 +24,8 @@ namespace
 }
 UIManager::UIManager() :
 	m_hpGaugeRate(0.0f),
-	m_drawNavigationHandle(-1)
+	m_drawNavigationHandle(-1),
+	m_hpGaugeHandle(-1)
 {
 }
 
@@ -37,11 +38,13 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 	m_pPlayer = pPlayer;
 	m_pScoreManager = pScoreManager;
 	m_drawNavigationHandle = LoadGraph("Data/UI/Navigation.png");
+	m_hpGaugeHandle = LoadGraph("Data/UI/HP.png");
 }
 
 void UIManager::End()
 {
 	DeleteGraph(m_drawNavigationHandle);
+	DeleteGraph(m_hpGaugeHandle);
 }
 
 void UIManager::Update()
@@ -51,8 +54,9 @@ void UIManager::Update()
 
 void UIManager::DrawHp()
 {
+	DrawRectGraph(80,50, 462,293, static_cast<int>(400 * m_hpGaugeRate),30,m_hpGaugeHandle,true);
 	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
-	DrawBox(kHpGaugeLeft, kHpGaugeTop, kHpGaugeLeft + kHpGaugeWidth * m_hpGaugeRate, kHpGaugeBottom, kHpGaugeColor, true);
+	//DrawBox(kHpGaugeLeft, kHpGaugeTop, kHpGaugeLeft + kHpGaugeWidth * m_hpGaugeRate, kHpGaugeBottom, kHpGaugeColor, true);
 }
 
 void UIManager::DrawNavigation()

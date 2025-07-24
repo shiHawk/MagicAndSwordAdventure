@@ -16,6 +16,7 @@ public:
 	virtual void Draw() override;
 private:
 	std::shared_ptr<ScoreManager> m_pScoreManager;
+	int m_resultHandle;
 	bool m_isNextScene = false;
 	// ƒJƒƒ‰‚ÌˆÊ’u
 	VECTOR m_cameraPos;

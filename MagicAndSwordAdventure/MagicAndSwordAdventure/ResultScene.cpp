@@ -30,7 +30,8 @@ ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
 	m_cameraTarget({ 0.0f,0.0f,0.0f }),
 	m_viewAngle(0.0f),
-	m_pScoreManager(pScoreManager)
+	m_pScoreManager(pScoreManager),
+	m_resultHandle(-1)
 {
 }
 
@@ -59,11 +60,12 @@ void ResultScene::Init()
 
 	// カメラのnear,farを設定する
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
-
+	m_resultHandle = LoadGraph("Data/UI/result_seat.png");
 }
 
 void ResultScene::End()
 {
+	DeleteGraph(m_resultHandle);
 	m_pScoreManager->End();
 }
 
@@ -84,6 +86,7 @@ SceneBase* ResultScene::Update()
 
 void ResultScene::Draw()
 {
+	DrawGraph(-350,-150,m_resultHandle,true);
 	DrawFormatString(kCharaPosx, kDestroyScorePosY, kFontColorWhite,"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
 	DrawFormatString(kCharaPosx,kTimeScorePosY, kFontColorWhite,"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
 	DrawFormatString(kCharaPosx,kScorePosY, kFontColorWhite,"合計スコア:%d",m_pScoreManager->GetScore());
