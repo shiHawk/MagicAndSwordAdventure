@@ -14,6 +14,7 @@ public:
 	bool isNowPlaying() { return m_isNowPlaying; }
 	bool GetIsAnimEnd();
 	int GetAttachAnimNo() { return m_currentAttachNo; }
+	float GetPlayTime() { return m_playTime; }
 private:
 	// ‘Ä¶ŠÔ
 	float m_animTotalTime;

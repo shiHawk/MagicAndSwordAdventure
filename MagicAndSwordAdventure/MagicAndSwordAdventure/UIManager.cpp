@@ -1,4 +1,5 @@
 #include "UIManager.h"
+#include <cmath>
 namespace
 {
 	// HPゲージ
@@ -23,14 +24,19 @@ namespace
 	constexpr int kEnemyRemainPosX = 960;
 	constexpr unsigned int kEnemyRemainColor = 0x4b0082;
 	// 点滅周期
-	constexpr int kBlinkCycleMs = 500;
+	constexpr float kBlinkCycleSeconds = 2.0f;
+	constexpr float kFramePerSecond = 60.0f;
+	constexpr float kMillisecondsPerSecond = 1000.0f; // ミリ秒から秒への変換
 }
 UIManager::UIManager() :
 	m_hpGaugeRate(0.0f),
 	m_navigationHandle(-1),
 	m_hpGaugeHandle(-1),
 	m_playerIconHandle(-1),
-	m_playerIconPinchHandle(-1)
+	m_playerIconPinchHandle(-1),
+	m_blinkTime(0.0f),
+	m_blinkProgress(0.0f),
+	m_alpha(0)
 {
 }
 
@@ -77,7 +83,14 @@ void UIManager::DrawHp()
 
 void UIManager::DrawNavigation()
 {
+	m_blinkTime = GetNowCount() / kMillisecondsPerSecond;
+	m_blinkProgress = fmod(m_blinkTime, kBlinkCycleSeconds) / kBlinkCycleSeconds; // 0~1の範囲で正規化
+	m_alpha = static_cast<int>((std::sin(m_blinkProgress * DX_PI * 2) * 0.5f + 0.5f) * 128+128); // 128~255に変換(完全には透明にならない)
+	// アルファブレンドモード設定
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_alpha);
 	DrawGraph(kNavigationPosX, 0, m_navigationHandle, true);
+	// ブレンドモードを戻す
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void UIManager::DrawDestroyScore()

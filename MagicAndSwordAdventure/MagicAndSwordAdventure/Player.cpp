@@ -100,7 +100,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	m_power = kFirstAttackPower;
 	m_hp = kMaxHp;
 	m_isDead = false;
-	attack = { 30, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
+	attack = { 30.0f, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
 }
 
 void Player::End()
@@ -263,8 +263,7 @@ void Player::DoAttack()
 	attack.active = true;
 	if (m_vec.y > 0)
 	{
-		// ジャンプ攻撃
-		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, kAnimSpeedMedium);
+		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, kAnimSpeedMedium);// ジャンプ攻撃
 	}
 	else
 	{

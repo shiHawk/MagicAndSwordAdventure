@@ -25,7 +25,7 @@ namespace
 	constexpr int kStartPos = 600;
 
 	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期(Hz)
-	constexpr float kTitleBobAmplitude = 5.0f; // タイトルロゴの上下揺れ振幅(px)
+	constexpr float kTitleBobAmplitude = 10.0f; // タイトルロゴの上下揺れ振幅(px)
 	constexpr int   kMillisecondsPerSecond = 1000; // ミリ秒→秒換算用
 
 	// nearとfarの位置
@@ -90,7 +90,7 @@ SceneBase* TitleScene::Update()
 	m_time = GetNowCount() / kMillisecondsPerSecond;
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
-	// Bボタンを押したらフェードを開始
+	// Aボタンを押したらフェードを開始
 	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
 	{
 		StartFadeOut();

@@ -23,5 +23,8 @@ private:
 	int m_navigationHandle;
 	int m_playerIconHandle;
 	int m_playerIconPinchHandle;
+	float m_blinkTime;
+	float m_blinkProgress; // 点滅の進行度
+	int m_alpha;
 };
 
