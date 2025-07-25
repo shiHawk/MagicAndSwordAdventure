@@ -5,8 +5,9 @@ namespace
 	constexpr int kHpGaugeWidth = 400;
 	constexpr int kHpGaugeLeft = 80;
 	constexpr int kHpGaugeTop = 50;
-	constexpr int kHpGaugeBottom = 80;
 	constexpr int kHpTextPosY = 30;
+	constexpr int kSrcX = 462; // 切り出し位置(X)
+	constexpr int kSrcY = 293; // 切り出し位置(Y)
 	constexpr unsigned int kFontColorWhite = 0xffffff;// 文字の色
 	constexpr unsigned int kHpGaugeColor = 0x00ff00;// ゲージの色
 	// ナビゲーションの位置
@@ -21,11 +22,15 @@ namespace
 	// 残り敵数の位置
 	constexpr int kEnemyRemainPosX = 960;
 	constexpr unsigned int kEnemyRemainColor = 0x4b0082;
+	// 点滅周期
+	constexpr int kBlinkCycleMs = 500;
 }
 UIManager::UIManager() :
 	m_hpGaugeRate(0.0f),
-	m_drawNavigationHandle(-1),
-	m_hpGaugeHandle(-1)
+	m_navigationHandle(-1),
+	m_hpGaugeHandle(-1),
+	m_playerIconHandle(-1),
+	m_playerIconPinchHandle(-1)
 {
 }
 
@@ -37,14 +42,18 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 {
 	m_pPlayer = pPlayer;
 	m_pScoreManager = pScoreManager;
-	m_drawNavigationHandle = LoadGraph("Data/UI/Navigation.png");
+	m_navigationHandle = LoadGraph("Data/UI/Navigation.png");
 	m_hpGaugeHandle = LoadGraph("Data/UI/HP.png");
+	m_playerIconHandle = LoadGraph("Data/UI/Player_Icon.png");
+	m_playerIconPinchHandle = LoadGraph("Data/UI/Player_Icon_Pinch.png");
 }
 
 void UIManager::End()
 {
-	DeleteGraph(m_drawNavigationHandle);
+	DeleteGraph(m_navigationHandle);
 	DeleteGraph(m_hpGaugeHandle);
+	DeleteGraph(m_playerIconHandle);
+	DeleteGraph(m_playerIconPinchHandle);
 }
 
 void UIManager::Update()
@@ -54,14 +63,21 @@ void UIManager::Update()
 
 void UIManager::DrawHp()
 {
-	DrawRectGraph(80,50, 462,293, static_cast<int>(400 * m_hpGaugeRate),30,m_hpGaugeHandle,true);
+	if (m_pPlayer->IsPinch())
+	{
+		DrawGraph(10, 10, m_playerIconPinchHandle, true); // HPが3分の1以下ならピンチ状態のアイコンにする
+	}
+	else
+	{
+		DrawGraph(10, 10, m_playerIconHandle, true);
+	}
+	DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY,m_hpGaugeHandle,true);
 	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
-	//DrawBox(kHpGaugeLeft, kHpGaugeTop, kHpGaugeLeft + kHpGaugeWidth * m_hpGaugeRate, kHpGaugeBottom, kHpGaugeColor, true);
 }
 
 void UIManager::DrawNavigation()
 {
-	DrawGraph(kNavigationPosX, 0, m_drawNavigationHandle, true);
+	DrawGraph(kNavigationPosX, 0, m_navigationHandle, true);
 }
 
 void UIManager::DrawDestroyScore()

@@ -20,6 +20,8 @@ private:
 	std::shared_ptr<ScoreManager> m_pScoreManager;
 	float m_hpGaugeRate;
 	int m_hpGaugeHandle;
-	int m_drawNavigationHandle;
+	int m_navigationHandle;
+	int m_playerIconHandle;
+	int m_playerIconPinchHandle;
 };
 

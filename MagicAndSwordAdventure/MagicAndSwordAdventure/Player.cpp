@@ -42,7 +42,7 @@ namespace
 	constexpr float kAnimSpeedSlow = 1.0f; // ’·‚ß‚ÌÄ¶‚ÌŽž
 	// Ž‘±ŽžŠÔ
 	constexpr float kAttackDuration = 50.0f;
-	constexpr float kEvadeDuration = 30.0f;
+	constexpr float kEvadeDuration = 40.0f;
 	// ‰ñ”ð‘¬“xæ”
 	constexpr float kEvadeSpeedMultiplier = 3.0f;
 	constexpr float kEvadeJumpMultiplier = 0.5f;
@@ -207,7 +207,6 @@ void Player::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
 #if _DEBUG
-	//DrawCapsule3D(VGet(m_pos.x, m_pos.y + playerHeadOffSet, m_pos.z), VGet(m_pos.x, m_pos.y+ playerFootOffSet, m_pos.z), 30, 8, 0x00ff00, 0xffffff, false);
 	if (attack.active && !m_vec.y > 0)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
@@ -222,7 +221,10 @@ float Player::GetColRadius() const
 
 void Player::OnDamage(int enemyPower)
 {
-	m_hp -= enemyPower;
+	if (!evadeData.active)
+	{
+		m_hp -= enemyPower;
+	}
 	if (m_hp <= 0 )
 	{
 		m_hp = 0;
@@ -343,6 +345,18 @@ bool Player::IsMoving()
 		m_isMovingFlag = true;
 	}
 	return m_isMovingFlag;
+}
+
+bool Player::IsPinch()
+{
+	if (m_hp <= kMaxHp / 3)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 int Player::GetMaxHp()

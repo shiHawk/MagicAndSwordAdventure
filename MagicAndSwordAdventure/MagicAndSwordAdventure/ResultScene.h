@@ -2,7 +2,6 @@
 #include "SceneBase.h"
 #include "DxLib.h"
 #include "ScoreManager.h"
-#include "DxLib.h"
 #include <memory>
 class ResultScene : public SceneBase
 {

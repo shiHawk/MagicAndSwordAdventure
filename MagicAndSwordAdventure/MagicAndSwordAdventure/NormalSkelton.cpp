@@ -68,6 +68,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_knockbackDuration = 0.5f;
 	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
+	MV1SetScale(m_weponModelHandel, VGet(0.1f, 0.1f, 0.1f));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
 	m_destroyScore = 500;
@@ -85,6 +86,7 @@ void NormalSkelton::End()
 
 void NormalSkelton::Update()
 {
+	//SetModelFramePos(m_modelHandle,14, m_weponModelHandel);
 	if (m_isDying)
 	{
 		OnDeath();
@@ -216,6 +218,7 @@ void NormalSkelton::OnDeath()
 void NormalSkelton::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
+	//MV1DrawModel(m_weponModelHandel);
 #if _DEBUG
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kSerchRange, 8, 0x00ff00, 0xffffff, false);

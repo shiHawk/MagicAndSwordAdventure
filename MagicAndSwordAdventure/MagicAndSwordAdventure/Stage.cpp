@@ -49,7 +49,7 @@ void Stage::Init()
 	m_wallCrackedModelBase = MV1LoadModel("Data/model/wall_cracked.mv1");
 	m_wallDoorModelHandle = MV1LoadModel("Data/model/wall_doorway.mv1");
 	m_gateFrameModelHandle = MV1LoadModel("Data/model/wall_open_scaffold.mv1");
-	// ドアと門の壁を拡大、回転させる
+	// ドアと門を拡大、回転させる
 	MV1SetScale(m_wallDoorModelHandle,VGet(2.0f,1.0f,1.0f));
 	MV1SetRotationXYZ(m_wallDoorModelHandle, VGet(0.0f, -DX_PI / 2.0f, 0.0f));
 	MV1SetScale(m_gateFrameModelHandle, VGet(2.0f, 1.0f, 1.0f));

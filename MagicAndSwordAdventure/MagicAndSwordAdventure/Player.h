@@ -29,6 +29,7 @@ public:
 	bool IsMoving();
 	bool IsDead() { return m_isDead; }
 	int GetHp() { return m_hp; }
+	bool IsPinch();
 	int GetMaxHp();
 	AttackSphere attack = { 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f};
 	void AddPos(VECTOR offset);

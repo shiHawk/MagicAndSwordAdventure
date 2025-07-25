@@ -102,11 +102,6 @@ void WizardSkelton::Update()
 		{
 			DoAttack();
 			attack.timer--;
-			if (attack.timer < 0.0f && !m_isAttackEnd)
-			{
-				m_isAttackEnd = true;
-				ChangeAnim(m_modelHandle, kIdleAnimNo, false, kAnimSpeedFast);
-			}
 			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
 			{
 				attack.active = false;
@@ -143,10 +138,7 @@ void WizardSkelton::DoAttack()
 	attack.active = true;
 	// プレイヤーに向かうベクトル
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
-	if (m_attackCount < 1)
-	{
-		//ChangeAnim(m_modelHandle, kAttackAnimNo, false, kAnimSpeedFast);
-	}
+	
 	m_attackCount++;
 	if (m_enemyToPlayer.x > 0)
 	{

@@ -12,8 +12,11 @@ namespace
 	// 文字の位置
 	constexpr int kCharaPosx = 500;
 	constexpr int kDestroyScorePosY = 100;
-	constexpr int kTimeScorePosY = 130;
-	constexpr int kScorePosY = 160;
+	constexpr int kTimeScorePosY = 260;
+	constexpr int kScorePosY = 420;
+	// 背景の位置
+	constexpr int kBGPosX = -350;
+	constexpr int kBGPosY = -150;
 
 	// nearとfarの位置
 	constexpr float kCameraNearClip = 10.0f;
@@ -22,7 +25,7 @@ namespace
 	constexpr int kFontColorWhite = 0xffffff;
 	constexpr int kFontColorCyan = 0x00ffff;
 	// ボタンの位置
-	constexpr int kPressBPosY = 260;
+	constexpr int kPressBPosY = 600;
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
 }
@@ -86,7 +89,7 @@ SceneBase* ResultScene::Update()
 
 void ResultScene::Draw()
 {
-	DrawGraph(-350,-150,m_resultHandle,true);
+	DrawGraph(kBGPosX, kBGPosY,m_resultHandle,true);
 	DrawFormatString(kCharaPosx, kDestroyScorePosY, kFontColorWhite,"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
 	DrawFormatString(kCharaPosx,kTimeScorePosY, kFontColorWhite,"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
 	DrawFormatString(kCharaPosx,kScorePosY, kFontColorWhite,"合計スコア:%d",m_pScoreManager->GetScore());

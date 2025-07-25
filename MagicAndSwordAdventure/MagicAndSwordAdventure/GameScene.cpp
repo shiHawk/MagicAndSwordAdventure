@@ -110,7 +110,7 @@ SceneBase* GameScene::Update()
 	m_pCollision->Update();
 	m_pUIManager->Update();
 	UpdateFade();
-	if (m_pPlayer->IsDead())
+	if (m_pPlayer->IsDead() || Pad::isTrigger(PAD_INPUT_4))
 	{
 		m_pScoreManager->SetIsPlayerDead(true);
 	}
