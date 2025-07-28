@@ -353,72 +353,9 @@ void Player::DoMove()
 	{
 		m_vec.y += kJumpGravity;
 	}
-
-	if (Pad::isPress(PAD_INPUT_RIGHT) && !evadeData.active)
+	if (!m_isAttackingAnim)
 	{
-		m_isNowDirRight = true;
-		if (!evadeData.active)
-		{
-			MV1SetRotationXYZ(m_modelHandle, kRightDir);
-		}
-		if (!isMove)
-		{
-			isMove = true;
-		}
-		m_vec.x = kMoveSpeed;
-		// ダッシュボタンを押した場合
-		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
-		{
-			m_vec.x = kDashSpeed;
-		}
-		m_isAttackDirRight = true;
-		m_isDirRight = true;
-	}
-	else if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
-	{
-		m_isNowDirRight = false;
-		if (!evadeData.active)
-		{
-			MV1SetRotationXYZ(m_modelHandle, kLeftDir);
-		}
-		if (!isMove)
-		{
-			isMove = true;
-		}
-		m_vec.x = -kMoveSpeed;
-		// ダッシュボタンを押した場合
-		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
-		{
-			m_vec.x = -kDashSpeed;
-		}
-		m_isAttackDirRight = false;
-		m_isDirRight = false;
-	}
-	else if (Pad::isPress(PAD_INPUT_UP))
-	{
-		if (!isMove)
-		{
-			isMove = true;
-		}
-		m_vec.z = kMoveSpeed;
-	}
-	else if (Pad::isPress(PAD_INPUT_DOWN))
-	{
-		if (!isMove)
-		{
-			isMove = true;
-		}
-		m_vec.z = -kMoveSpeed;
-	}
-	else
-	{
-		isMove = false;
-		moveCount = 0;
-		if (idleCount < 1)
-		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
-		}
-		idleCount++;
+		HandleInput();
 	}
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
@@ -484,5 +421,75 @@ void Player::UpdateCombo()
 		{
 			attack.count = 0;
 		}
+	}
+}
+
+void Player::HandleInput()
+{
+	if (Pad::isPress(PAD_INPUT_RIGHT) && !evadeData.active)
+	{
+		m_isNowDirRight = true;
+		if (!evadeData.active)
+		{
+			MV1SetRotationXYZ(m_modelHandle, kRightDir);
+		}
+		if (!isMove)
+		{
+			isMove = true;
+		}
+		m_vec.x = kMoveSpeed;
+		// ダッシュボタンを押した場合
+		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
+		{
+			m_vec.x = kDashSpeed;
+		}
+		m_isAttackDirRight = true;
+		m_isDirRight = true;
+	}
+	else if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
+	{
+		m_isNowDirRight = false;
+		if (!evadeData.active)
+		{
+			MV1SetRotationXYZ(m_modelHandle, kLeftDir);
+		}
+		if (!isMove)
+		{
+			isMove = true;
+		}
+		m_vec.x = -kMoveSpeed;
+		// ダッシュボタンを押した場合
+		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
+		{
+			m_vec.x = -kDashSpeed;
+		}
+		m_isAttackDirRight = false;
+		m_isDirRight = false;
+	}
+	else if (Pad::isPress(PAD_INPUT_UP))
+	{
+		if (!isMove)
+		{
+			isMove = true;
+		}
+		m_vec.z = kMoveSpeed;
+	}
+	else if (Pad::isPress(PAD_INPUT_DOWN))
+	{
+		if (!isMove)
+		{
+			isMove = true;
+		}
+		m_vec.z = -kMoveSpeed;
+	}
+	else
+	{
+		isMove = false;
+		moveCount = 0;
+		if (idleCount < 1)
+		{
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+		}
+		idleCount++;
 	}
 }

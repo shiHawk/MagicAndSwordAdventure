@@ -39,6 +39,7 @@ private:
 	void HandleJump();
 	void HandleEvade();
 	void UpdateCombo();
+	void HandleInput();
 	struct EvadeData
 	{
 		int evadeCount; // ‰ñ”ğ‰ñ”
