@@ -20,7 +20,7 @@ namespace
 	// カメラ移動用のしきい値
 	constexpr float kMoveCameraThreshold = 60.0f;
 	// 連続攻撃の受付時間
-	constexpr float kMaxComboDuration = 90.0f;
+	constexpr float kMaxComboDuration = 120.0f;
 
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
@@ -79,7 +79,8 @@ m_isNowDirRight(true),
 m_isPrevDirRight(true),
 m_prevPos({0,0,0}),
 m_distanceAfterMoving(0.0f),
-attack({ 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f })
+attack({ 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f }),
+m_isAttackingAnim(false)
 {
 }
 
@@ -117,14 +118,7 @@ void Player::Update()
 	}
 	if (!m_isDead)
 	{
-		if (attack.comboDuration > 0.0f)
-		{
-			attack.comboDuration--;
-			if (attack.comboDuration <= 0.0f)
-			{
-				attack.count = 0;
-			}
-		}
+		UpdateCombo();
 		if (m_vec.y > 0)
 		{
 			isStartGravity = true;
@@ -147,35 +141,9 @@ void Player::Update()
 			}
 		}
 		m_isPrevButton = m_isNowButton; // ボタンの更新
-		if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)// Aボタンを押したときジャンプ
-		{
-			m_vec.y = kJumpPower;
-			m_jumpCount++;
-		}
-		// ジャンプは2回まで
-		if (m_jumpCount > 1)
-		{
-			m_isJump = true;
-		}
+		HandleJump();
 		DoMove();
-
-		//RBボタンを押したとき
-		if (Pad::isTrigger(PAD_INPUT_6))
-		{
-			DoEvade();
-		}
-		if (evadeData.active)
-		{
-			evadeData.timer--;
-			// 回避時間が終わったら
-			if (evadeData.timer <= 0)
-			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
-				evadeData.active = false;
-				evadeData.evadeCount = 0;
-			}
-		}
-
+		HandleEvade();
 		if (isMove)
 		{
 			idleCount = 0;
@@ -194,13 +162,22 @@ void Player::Update()
 			m_jumpCount = 0;
 		}
 		m_pAnimation->UpdateAnim();
+		// 攻撃中なら、指定カウント以降で攻撃判定ON
+		if (m_isAttackingAnim  &&!attack.active && m_pAnimation->GetPlayTime() >= 11.0f)  // 攻撃アニメーション中かつまだ判定が出てない
+		{
+			attack.active = true;
+		}
+		if (m_isAttackingAnim && m_pAnimation->GetIsAnimEnd())
+		{
+			attack.active = false;
+			m_isAttackingAnim = false;
+		}
 	}
 	else
 	{
 		End();
 		return;
 	}
-	
 }
 
 void Player::Draw() const
@@ -252,7 +229,8 @@ void Player::OnDeath()
 
 void Player::DoAttack()
 {
-	if (attack.active) return; // 攻撃中なら次の攻撃を受け付けない
+	if (m_isAttackingAnim) return; // 攻撃中なら次の攻撃を受け付けない
+	m_isAttackingAnim = true;
 	attack.count++;
 	// 三回攻撃したらまた一回目に戻る
 	if (attack.count > 3)
@@ -260,7 +238,7 @@ void Player::DoAttack()
 		attack.count = 1;
 	}
 	attack.comboDuration = kMaxComboDuration;
-	attack.active = true;
+	//attack.active = true;
 	if (m_vec.y > 0)
 	{
 		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, kAnimSpeedMedium);// ジャンプ攻撃
@@ -461,4 +439,50 @@ void Player::DoMove()
 		m_pos.x = kLeftLimit + kWallOffset;
 	}
 	m_pos = VAdd(m_pos, m_vec);
+}
+
+void Player::HandleJump()
+{
+	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)// Aボタンを押したときジャンプ
+	{
+		m_vec.y = kJumpPower;
+		m_jumpCount++;
+	}
+	// ジャンプは2回まで
+	if (m_jumpCount > 1)
+	{
+		m_isJump = true;
+	}
+}
+
+void Player::HandleEvade()
+{
+	//RBボタンを押したとき
+	if (Pad::isTrigger(PAD_INPUT_6))
+	{
+		DoEvade();
+	}
+	if (evadeData.active)
+	{
+		evadeData.timer--;
+		// 回避時間が終わったら
+		if (evadeData.timer <= 0)
+		{
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+			evadeData.active = false;
+			evadeData.evadeCount = 0;
+		}
+	}
+}
+
+void Player::UpdateCombo()
+{
+	if (attack.comboDuration > 0.0f)
+	{
+		attack.comboDuration--;
+		if (attack.comboDuration <= 0.0f)
+		{
+			attack.count = 0;
+		}
+	}
 }

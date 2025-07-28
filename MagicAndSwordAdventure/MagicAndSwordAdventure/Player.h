@@ -36,6 +36,9 @@ public:
 private:
 	// ˆÚ“®
 	void DoMove();
+	void HandleJump();
+	void HandleEvade();
+	void UpdateCombo();
 	struct EvadeData
 	{
 		int evadeCount; // ‰ñ”ğ‰ñ”
@@ -70,5 +73,6 @@ private:
 	bool m_isPrevDirRight;
 	// Œ»İŒü‚¢‚Ä‚¢‚é•ûŒü
 	bool m_isNowDirRight;
+	bool m_isAttackingAnim;
 };
 

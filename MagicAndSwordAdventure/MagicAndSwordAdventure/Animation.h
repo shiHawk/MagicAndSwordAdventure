@@ -39,5 +39,6 @@ private:
 	// ブレンドの開始
 	bool m_isBlending;
 	bool m_isNowPlaying;
+	float m_blendTime;
 };
 

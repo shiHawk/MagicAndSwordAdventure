@@ -14,7 +14,8 @@ Animation::Animation():
 	m_timeIncrement(0.5f),
 	m_blendRate(0.0f),
 	m_isBlending(false),
-	m_isNowPlaying(false)
+	m_isNowPlaying(false),
+	m_blendTime(0.0f)
 {
 }
 
