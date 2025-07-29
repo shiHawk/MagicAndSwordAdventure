@@ -67,8 +67,8 @@ void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop, float incre
 	// 次のアニメーションをアタッチ
 	m_nextAttachNo = MV1AttachAnim(modelHandle, animNo);
 	// 今アタッチされているアニメーションをデタッチ
-	/*MV1DetachAnim(modelHandle, m_currentAttachNo);
-	m_currentAttachNo = m_nextAttachNo;*/
+	MV1DetachAnim(modelHandle, m_currentAttachNo);
+	m_currentAttachNo = m_nextAttachNo;
 	// アニメーションのブレンドを開始
 	StartBlending();
 	m_isLoop = isLoop;
