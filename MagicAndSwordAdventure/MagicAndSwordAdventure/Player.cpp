@@ -41,7 +41,7 @@ namespace
 	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	// 持続時間
-	constexpr float kAttackDuration = 50.0f;
+	constexpr float kAttackDuration = 37.0f;
 	constexpr float kEvadeDuration = 40.0f;
 	// 回避速度乗数
 	constexpr float kEvadeSpeedMultiplier = 3.0f;
@@ -133,10 +133,12 @@ void Player::Update()
 		if (attack.active)
 		{
 			attack.timer--;
+			printfDx("attack.timer:%f\n", attack.timer);
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
 				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
 				attack.pos = { 0.0f,-kAttackHideY,0.0f };
+				m_isAttackingAnim = false;
 				attack.active = false;
 			}
 		}

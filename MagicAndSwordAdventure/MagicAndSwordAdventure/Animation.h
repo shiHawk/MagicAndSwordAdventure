@@ -14,12 +14,14 @@ public:
 	bool isNowPlaying() { return m_isNowPlaying; }
 	bool GetIsAnimEnd();
 	int GetAttachAnimNo() { return m_currentAttachNo; }
-	float GetPlayTime() { return m_playTime; }
+	float GetPlayTime() { return m_currentPlayTime; }
 private:
 	// 総再生時間
 	float m_animTotalTime;
 	// 再生時間
 	float m_playTime;
+	float m_currentPlayTime;
+	float m_nextPlayTime;
 	// 以前のアニメーションのアタッチ番号
 	int m_oldAttachNo;
 	// 現在のアニメーションのアタッチ番号
