@@ -75,5 +75,6 @@ private:
 	// Œ»İŒü‚¢‚Ä‚¢‚é•ûŒü
 	bool m_isNowDirRight;
 	bool m_isAttackingAnim;
+	bool m_isDamageAnim;
 };
 

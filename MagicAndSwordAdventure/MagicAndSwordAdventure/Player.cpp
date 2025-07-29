@@ -80,7 +80,8 @@ m_isPrevDirRight(true),
 m_prevPos({0,0,0}),
 m_distanceAfterMoving(0.0f),
 attack({ 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f }),
-m_isAttackingAnim(false)
+m_isAttackingAnim(false),
+m_isDamageAnim(false)
 {
 }
 
@@ -118,6 +119,17 @@ void Player::Update()
 	}
 	if (!m_isDead)
 	{
+		if (m_isDamageAnim)
+		{
+			// ダメージモーションが終わったらIdleに戻す
+			if (m_pAnimation->GetIsAnimEnd())
+			{
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+				m_isDamageAnim = false;
+			}
+			m_pAnimation->UpdateAnim();
+			return; // ダメージ中は他の処理を止める（攻撃や移動させない）
+		}
 		UpdateCombo();
 		if (m_vec.y > 0)
 		{
@@ -213,6 +225,7 @@ void Player::OnDamage(int enemyPower)
 	else
 	{
 		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast);
+		m_isDamageAnim = true;
 	}
 	
 	//printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
