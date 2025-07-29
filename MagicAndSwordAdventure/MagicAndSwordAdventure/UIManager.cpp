@@ -36,7 +36,8 @@ UIManager::UIManager() :
 	m_playerIconPinchHandle(-1),
 	m_blinkTime(0.0f),
 	m_blinkProgress(0.0f),
-	m_alpha(0)
+	m_alpha(0),
+	m_playerHpGaugePinchHandle(-1)
 {
 }
 
@@ -52,6 +53,7 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 	m_hpGaugeHandle = LoadGraph("Data/UI/HP.png");
 	m_playerIconHandle = LoadGraph("Data/UI/Player_Icon.png");
 	m_playerIconPinchHandle = LoadGraph("Data/UI/Player_Icon_Pinch.png");
+	m_playerHpGaugePinchHandle = LoadGraph("Data/UI/HP_pinch.png");
 }
 
 void UIManager::End()
@@ -60,6 +62,7 @@ void UIManager::End()
 	DeleteGraph(m_hpGaugeHandle);
 	DeleteGraph(m_playerIconHandle);
 	DeleteGraph(m_playerIconPinchHandle);
+	DeleteGraph(m_playerHpGaugePinchHandle);
 }
 
 void UIManager::Update()
@@ -72,13 +75,17 @@ void UIManager::DrawHp()
 	if (m_pPlayer->IsPinch())
 	{
 		DrawGraph(10, 10, m_playerIconPinchHandle, true); // HPが3分の1以下ならピンチ状態のアイコンにする
+		// HPバーの色を変える
+		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_playerHpGaugePinchHandle, true);
 	}
 	else
 	{
+		SetDrawBright(255, 255, 255);
 		DrawGraph(10, 10, m_playerIconHandle, true);
+		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_hpGaugeHandle, true);
 	}
-	DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY,m_hpGaugeHandle,true);
 	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
+	SetDrawBright(255, 255, 255);
 }
 
 void UIManager::DrawNavigation()
