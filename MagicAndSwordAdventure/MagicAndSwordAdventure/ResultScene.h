@@ -13,6 +13,7 @@ public:
 
 	virtual SceneBase* Update() override;
 	virtual void Draw() override;
+	virtual SceneID GetSceneID() const override;
 private:
 	std::shared_ptr<ScoreManager> m_pScoreManager;
 	int m_resultHandle;

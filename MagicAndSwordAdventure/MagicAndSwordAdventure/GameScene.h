@@ -32,6 +32,7 @@ public:
 
 	virtual SceneBase* Update() override;
 	virtual void Draw() override;
+	virtual SceneID GetSceneID() const override;
 	int GetRemainingEnemies();
 private:
 	bool IsAreAllEnemiesDefeated(); // ‘S–Å‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©

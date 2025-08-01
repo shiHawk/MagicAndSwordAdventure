@@ -49,3 +49,15 @@ void SceneManager::Draw()
 
 	m_pScene->Draw();
 }
+
+SceneID SceneManager::GetCurrentSceneID() const
+{
+	if (m_pScene)
+	{
+		return m_pScene->GetSceneID();
+	}
+	else
+	{
+		return SceneID::TitleScene;
+	}
+}

@@ -24,6 +24,8 @@ namespace
 
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr VECTOR kLeftDir = { 0.0,90.0f * DX_PI_F / 180.0f,0.0f };
+	constexpr VECTOR kFrontDir = { 0.0,0.0f * DX_PI_F / 180.0f,0.0f };
+	constexpr VECTOR kBackDir = { 0.0,180.0f * DX_PI_F / 180.0f,0.0f };
 	constexpr float kModelScale = 50.0f; // モデルのスケール
 	constexpr VECTOR kPlayerInitPos = { -4800.0f, 0.0f, 0.0f }; // プレイヤーの初期位置
 	// アニメーションの番号
@@ -487,6 +489,7 @@ void Player::HandleInput()
 		{
 			isMove = true;
 		}
+		MV1SetRotationXYZ(m_modelHandle, kBackDir);
 		m_vec.z = kMoveSpeed;
 	}
 	else if (Pad::isPress(PAD_INPUT_DOWN))
@@ -495,6 +498,7 @@ void Player::HandleInput()
 		{
 			isMove = true;
 		}
+		MV1SetRotationXYZ(m_modelHandle, kFrontDir);
 		m_vec.z = -kMoveSpeed;
 	}
 	else

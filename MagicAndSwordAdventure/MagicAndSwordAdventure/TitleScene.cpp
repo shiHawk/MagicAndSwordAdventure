@@ -117,3 +117,8 @@ void TitleScene::Draw()
 	}
 	DrawFade();
 }
+
+SceneID TitleScene::GetSceneID() const
+{
+	return SceneID::TitleScene;
+}

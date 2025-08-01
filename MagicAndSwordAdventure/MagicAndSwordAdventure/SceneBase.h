@@ -1,5 +1,11 @@
 #pragma once
 // ゲームシーン基底クラス
+enum class SceneID
+{
+	TitleScene,
+	GameScene,
+	ResultScene
+};
 class SceneBase
 {
 public:
@@ -12,6 +18,7 @@ public:
 
 	virtual SceneBase* Update() { return this; }
 	virtual void Draw() {}
+	virtual SceneID GetSceneID() const = 0;
 
 	// フェード関連
 	void UpdateFade();

@@ -99,3 +99,8 @@ void ResultScene::Draw()
 	}
 	DrawFade();
 }
+
+SceneID ResultScene::GetSceneID() const
+{
+	return SceneID::ResultScene;
+}

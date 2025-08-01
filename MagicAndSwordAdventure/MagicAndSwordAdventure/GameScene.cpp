@@ -150,6 +150,11 @@ void GameScene::Draw()
 	//m_pBattleArea->DebugDraw();
 }
 
+SceneID GameScene::GetSceneID() const
+{
+	return SceneID::GameScene;
+}
+
 int GameScene::GetRemainingEnemies()
 {
 	m_remainingEnemysCount = 0;
