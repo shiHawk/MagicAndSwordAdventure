@@ -4,6 +4,13 @@
 #include "Animation.h"
 #include "CharacterBase.h"
 #include <memory>
+enum  class Dir
+{
+	Right,
+	Left,
+	Front,
+	Back
+};
 class Player:public CharacterBase
 {
 public:
@@ -49,6 +56,7 @@ private:
 	EvadeData evadeData = { 0,false,0.0f };
 	// UŒ‚‚ªo‚é•ûŒü
 	bool m_isAttackDirRight;
+	Dir m_playerDir;
 	VECTOR m_screenPos;
 	int m_damageFrame;
 	int m_hp;

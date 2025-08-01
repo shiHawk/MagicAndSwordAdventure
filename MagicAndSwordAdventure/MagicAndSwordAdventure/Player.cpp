@@ -278,21 +278,36 @@ void Player::DoAttack()
 		}
 	}
 	//printfDx(L"attack.count:%d\n", attack.count);
-	if (m_isAttackDirRight)
+	if (m_playerDir == Dir::Right)
 	{
 		// 攻撃の時に少し前進する
 		m_vec.x = +kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x + attack.attackOffSetX;
+		attack.pos.z = m_pos.z;
 	}
-	else 
+	if(m_playerDir == Dir::Left)
 	{
 		// 攻撃の時に少し前進する
 		m_vec.x = -kMoveSpeed * 0.5f;
 		attack.pos.x = m_pos.x - attack.attackOffSetX;
+		attack.pos.z = m_pos.z;
+	}
+	if (m_playerDir == Dir::Front)
+	{
+		// 攻撃の時に少し前進する
+		m_vec.z = -kMoveSpeed * 0.5f;
+		attack.pos.x = m_pos.x;
+		attack.pos.z = m_pos.z - 60.0f;
+	}
+	if (m_playerDir == Dir::Back)
+	{
+		// 攻撃の時に少し前進する
+		m_vec.z = kMoveSpeed * 0.5f;
+		attack.pos.x = m_pos.x;
+		attack.pos.z = m_pos.z + 60.0f;
 	}
 	attack.timer = kAttackDuration;
 	attack.pos.y = m_pos.y+attack.attackOffSetY;
-	attack.pos.z = m_pos.z;
 }
 
 void Player::DoEvade()
@@ -445,6 +460,7 @@ void Player::HandleInput()
 {
 	if (Pad::isPress(PAD_INPUT_RIGHT) && !evadeData.active)
 	{
+		m_playerDir = Dir::Right;
 		m_isNowDirRight = true;
 		if (!evadeData.active)
 		{
@@ -465,6 +481,7 @@ void Player::HandleInput()
 	}
 	else if (Pad::isPress(PAD_INPUT_LEFT) && !evadeData.active)
 	{
+		m_playerDir = Dir::Left;
 		m_isNowDirRight = false;
 		if (!evadeData.active)
 		{
@@ -485,6 +502,7 @@ void Player::HandleInput()
 	}
 	else if (Pad::isPress(PAD_INPUT_UP))
 	{
+		m_playerDir = Dir::Back;
 		if (!isMove)
 		{
 			isMove = true;
@@ -494,6 +512,8 @@ void Player::HandleInput()
 	}
 	else if (Pad::isPress(PAD_INPUT_DOWN))
 	{
+		m_playerDir = Dir::Front;
+		attack.pos.z = m_pos.z - 20.0f;
 		if (!isMove)
 		{
 			isMove = true;
