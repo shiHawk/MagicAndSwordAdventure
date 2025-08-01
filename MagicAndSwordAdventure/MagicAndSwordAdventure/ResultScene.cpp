@@ -1,4 +1,5 @@
 #include "ResultScene.h"
+#include "SoundManager.h"
 #include "TitleScene.h"
 #include "Pad.h"
 #include "game.h"
@@ -63,25 +64,33 @@ void ResultScene::Init()
 
 	// ƒJƒƒ‰‚Ìnear,far‚ðÝ’è‚·‚é
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
+	SoundManager::GetInstance()->PlayBGM();
 	m_resultHandle = LoadGraph("Data/UI/result_seat.png");
 }
 
 void ResultScene::End()
 {
 	DeleteGraph(m_resultHandle);
+	SoundManager::GetInstance()->StopBGM();
 	m_pScoreManager->End();
 }
 
 SceneBase* ResultScene::Update()
 {
 	UpdateFade();
+	SoundManager::GetInstance()->Update();
 	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
 	}
+	if (IsFadingOut())
+	{
+		SoundManager::GetInstance()->FadeBGMVol();
+	}
 	if (m_isNextScene && IsFadeComplete())
 	{
+		
 		return new TitleScene();
 	}
 	return this;

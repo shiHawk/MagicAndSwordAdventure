@@ -1,4 +1,5 @@
 #include "SoundManager.h"
+#include "SceneManager.h"
 namespace
 {
 	constexpr int kMaxVol = 255;
@@ -14,9 +15,9 @@ SoundManager::SoundManager():
 {
 }
 
-void SoundManager::Init(SceneManager pSceneManager)
+void SoundManager::Init(SceneManager* pSceneManager)
 {
-	m_SceneManager = pSceneManager;
+	m_pSceneManager = pSceneManager;
 	m_titleBgmHandle = LoadSoundMem("Data/sound/titlebgm.mp3");
 	m_gameSceneBgmHandle = LoadSoundMem("Data/sound/gamebgm.mp3");
 	m_resultBgmHandle = LoadSoundMem("Data/sound/resultbgm.mp3");
@@ -39,15 +40,16 @@ void SoundManager::Update()
 
 void SoundManager::PlayBGM()
 {
-	if (m_SceneManager.GetCurrentSceneID() == SceneID::TitleScene)
+	m_soundVol = 0;
+	if (m_pSceneManager->GetCurrentSceneID() == SceneID::TitleScene)
 	{
 		m_currentBgmHandle = m_titleBgmHandle;
 	}
-	if (m_SceneManager.GetCurrentSceneID() == SceneID::GameScene)
+	if (m_pSceneManager->GetCurrentSceneID() == SceneID::GameScene)
 	{
 		m_currentBgmHandle = m_gameSceneBgmHandle;
 	}
-	if (m_SceneManager.GetCurrentSceneID() == SceneID::ResultScene)
+	if (m_pSceneManager->GetCurrentSceneID() == SceneID::ResultScene)
 	{
 		m_currentBgmHandle = m_resultBgmHandle;
 	}
@@ -69,5 +71,8 @@ int SoundManager::FadeBGMVol()
 
 void SoundManager::StopBGM()
 {
-	StopSoundFile();
+	if (m_currentBgmHandle != -1) {
+		StopSoundMem(m_currentBgmHandle);  // © ‚±‚Á‚¿‚ğg‚¤
+		m_currentBgmHandle = -1;           // ƒNƒŠƒA‚µ‚Ä‚¨‚­
+	}
 }

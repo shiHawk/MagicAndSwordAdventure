@@ -1,4 +1,5 @@
 #include "TitleScene.h"
+#include "SoundManager.h"
 #include "DxLib.h"
 #include "GameScene.h"
 #include "Pad.h"
@@ -73,7 +74,7 @@ void TitleScene::Init()
 
 	// カメラのnear,farを設定する
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
-
+	SoundManager::GetInstance()->PlayBGM();
 	m_titleHandle = LoadGraph("Data/title/WarriorAdventureTitle.png");
 	m_titleBGHandle = LoadGraph("Data/title/TitleBG.png");
 }
@@ -82,11 +83,13 @@ void TitleScene::End()
 {
 	DeleteGraph(m_titleHandle);
 	DeleteGraph(m_titleBGHandle);
+	SoundManager::GetInstance()->StopBGM();
 }
 
 SceneBase* TitleScene::Update()
 {
 	UpdateFade();
+	SoundManager::GetInstance()->Update();
 	m_time = GetNowCount() / kMillisecondsPerSecond;
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
@@ -96,9 +99,14 @@ SceneBase* TitleScene::Update()
 		StartFadeOut();
 		m_isNextScene = true;
 	}
+	if (IsFadingOut())
+	{
+		SoundManager::GetInstance()->FadeBGMVol();
+	}
 	// フェードが終了したら遷移する
 	if (m_isNextScene && IsFadeComplete())
 	{
+		
 		return new GameScene();
 	}
 	return this;

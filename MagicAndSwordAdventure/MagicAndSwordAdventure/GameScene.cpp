@@ -1,4 +1,5 @@
 #include "GameScene.h"
+#include "SoundManager.h"
 #include "DxLib.h"
 #include <cmath>
 #include "game.h"
@@ -73,11 +74,13 @@ void GameScene::Init()
 	m_pUIManager->Init(m_pPlayer, m_pScoreManager);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pAnimation->Init();
+	SoundManager::GetInstance()->PlayBGM();
 	m_remainingEnemysCount = 0;
 }
 
 void GameScene::End()
 {
+	SoundManager::GetInstance()->StopBGM();
 	m_pPlayer->End();
 	m_pCollision->End();
 	m_pStage->End();
@@ -94,6 +97,7 @@ void GameScene::End()
 
 SceneBase* GameScene::Update()
 {
+	SoundManager::GetInstance()->Update();
 	m_pCamera->Update();
 	m_pScoreManager->Update();
 	m_pStage->Updata();
@@ -117,10 +121,16 @@ SceneBase* GameScene::Update()
 	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()) || Pad::isTrigger(PAD_INPUT_4))
 	{
 		StartFadeOut();
+		
 		m_isNextScene = true;
+	}
+	if (IsFadingOut())
+	{
+		SoundManager::GetInstance()->FadeBGMVol();
 	}
 	if (m_isNextScene && IsFadeComplete())
 	{
+		
 		return new ResultScene(m_pScoreManager);
 	}
 	return this;

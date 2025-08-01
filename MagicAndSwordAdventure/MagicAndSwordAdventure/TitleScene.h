@@ -1,6 +1,5 @@
 #pragma once
 #include "SceneBase.h"
-#include "SoundManager.h"
 #include "DxLib.h"
 #include <memory>
 class TitleScene : public SceneBase
@@ -15,7 +14,7 @@ public:
 	virtual void Draw() override;
 	virtual SceneID GetSceneID() const override;
 private:
-	std::shared_ptr<SoundManager> m_pSoundManager;
+	//std::shared_ptr<SoundManager> m_pSoundManager;
 	int m_titleHandle;
 	int m_titleBGHandle;
 	float m_time;

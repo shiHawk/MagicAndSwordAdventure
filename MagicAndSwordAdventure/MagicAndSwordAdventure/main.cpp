@@ -22,9 +22,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 	SetDrawScreen(DX_SCREEN_BACK);
 	// 最初のシーンの初期化
 	SceneManager scene;
+	SoundManager::GetInstance()->Init(&scene);
 	scene.Init();
-	SoundManager sound;
-	sound.Init(scene);
 
 	// ゲームループ部
 	while (ProcessMessage() == 0)
@@ -50,7 +49,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 
 	scene.End();
 	/*終了処理*/
-	sound.End();
+	SoundManager::GetInstance()->End();
 	DxLib_End();//Dxlib終了処理
 	return 0;//終了 
 }
