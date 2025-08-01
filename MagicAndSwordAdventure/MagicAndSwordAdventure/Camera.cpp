@@ -74,6 +74,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 
 	m_lightHandle = CreateDirLightHandle(kSecondLight);
+	// ライトの色を変更する
 	SetLightDifColorHandle(m_lightHandle, GetColorF(kRed, kGreen, kBlue, 0.0f));
 }
 

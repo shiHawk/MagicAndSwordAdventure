@@ -51,7 +51,7 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 			// 敵とプレイヤーまでの距離が一定以下になったら
 			if (m_playerToNormalSkeltonDistance < m_battleTriggerDistance)
 			{
-				m_battleState = State::None;
+				m_battleState = State::None; // 戦闘状態に移行できるよう戦闘中ではない状態に戻す
 				break;
 			}
 		}
@@ -64,7 +64,7 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 			// 敵とプレイヤーまでの距離が一定以下になったら
 			if (m_playerToWizardSkeltonDistance < m_battleTriggerDistance)
 			{
-				m_battleState = State::None;
+				m_battleState = State::None;// 戦闘状態に移行できるよう戦闘中ではない状態に戻す
 				break;
 			}
 		}
@@ -80,7 +80,7 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 			// 敵とプレイヤーまでの距離が一定以下になったら
 			if (m_playerToNormalSkeltonDistance < m_battleTriggerDistance)
 			{
-				EnterBattle(m_pPlayer->GetPos());
+				EnterBattle(m_pPlayer->GetPos()); // 戦闘開始
 				break;
 			}
 		}
@@ -93,7 +93,7 @@ void BattleAreaManager::Updata(std::vector<std::shared_ptr<NormalSkelton>>& norm
 			// 敵とプレイヤーまでの距離が一定以下になったら
 			if (m_playerToWizardSkeltonDistance < m_battleTriggerDistance)
 			{
-				EnterBattle(m_pPlayer->GetPos());
+				EnterBattle(m_pPlayer->GetPos()); // 戦闘開始
 				break;
 			}
 		}
@@ -129,7 +129,9 @@ void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 {
 	m_battleState = State::InBattle;
 	VECTOR screenCenter = ConvScreenPosToWorldPos(VGet(Game::kScreenWidth*0.5f,0.0f,0.0f));
+	// 画面中央をバトルエリアの中心とする
 	m_battleAreaCenterPos = VGet(screenCenter.x,0.0f,0.0f);
+	// 戦闘用のカメラに切り替え(カメラは動かさない)
 	m_pCamera->ChangeBattleCamera(m_battleAreaCenterPos);
 
 	// バトルエリア内の敵だけアクティブに入れる
