@@ -226,6 +226,8 @@ void Player::OnDamage(int enemyPower)
 	}
 	else
 	{
+		m_isAttackingAnim = false;
+		attack.active = false;
 		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast);
 		m_isDamageAnim = true;
 	}
