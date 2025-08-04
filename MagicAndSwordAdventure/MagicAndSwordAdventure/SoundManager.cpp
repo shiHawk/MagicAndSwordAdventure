@@ -72,7 +72,7 @@ int SoundManager::FadeBGMVol()
 void SoundManager::StopBGM()
 {
 	if (m_currentBgmHandle != -1) {
-		StopSoundMem(m_currentBgmHandle);  // ← こっちを使う
-		m_currentBgmHandle = -1;           // クリアしておく
+		StopSoundMem(m_currentBgmHandle);
+		m_currentBgmHandle = -1; // クリアしておく
 	}
 }
