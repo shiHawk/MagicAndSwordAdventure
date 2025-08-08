@@ -20,10 +20,14 @@ public:
 		std::vector<std::shared_ptr<WizardSkelton>> wizardSkeltons);
 	void End();
 	void Update();
-	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive,int enemyPower);
+	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive,int enemyPower,VECTOR enemyAttackPos);
 	void EnemyHit(float playerAttackToEnemy, float playerRadius, float enemyAttackRadius,bool playerAttackActive,bool enemyHit);
 	bool GetIsPlayerHit() { return m_isPlayerHit; }
+	VECTOR GetPlayerHitPos() { return m_playerHitPos; }
+	VECTOR GetNormalSkeltonHitPos() { return m_normalSkeltonHitPos; }
+	VECTOR GetWizardSkeltonHitPos() { return m_wizardSkeltonHitPos; }
 private:
+	VECTOR CalcHitPosition(VECTOR attackCenter, VECTOR targetCenter); // 攻撃が当たった位置を返す
 	std::shared_ptr<Player> m_pPlayer;
 	std::vector<std::shared_ptr<NormalSkelton>> m_normalSkeltons;
 	std::vector<std::shared_ptr<WizardSkelton>> m_wizardSkeltons;
@@ -61,5 +65,9 @@ private:
 	VECTOR m_playerAttackToNormalSkelton; // プレイヤーの攻撃からNormalSkelton
 	VECTOR m_playerToWizardSkeltonAttack; // プレイヤーからWizardSkeltonの攻撃
 	VECTOR m_playerAttackToWizardSkelton; // プレイヤーの攻撃からWizardSkelton
+
+	VECTOR m_normalSkeltonHitPos; // NormalSkeltonが攻撃に当たった位置
+	VECTOR m_wizardSkeltonHitPos; // WizardSkeltonが攻撃に当たった位置
+	VECTOR m_playerHitPos; // Playerが攻撃に当たった位置
 };
 

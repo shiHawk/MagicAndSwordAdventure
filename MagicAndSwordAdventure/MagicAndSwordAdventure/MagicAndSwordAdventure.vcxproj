@@ -79,6 +79,7 @@
       <AdditionalIncludeDirectories>C:\Users\志鷹 瑛仁\Desktop\Program\Dxlib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;../../Dxlib_VC</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,6 +98,7 @@
       <AdditionalIncludeDirectories>C:\Users\志鷹 瑛仁\Desktop\Program\Dxlib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;../../Dxlib_VC</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +117,7 @@
       <AdditionalIncludeDirectories>C:\Users\志鷹 瑛仁\Desktop\Program\Dxlib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;../../Dxlib_VC</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,6 +136,7 @@
       <AdditionalIncludeDirectories>C:\Users\志鷹 瑛仁\Desktop\Program\Dxlib_VC\DxLib_VC\プロジェクトに追加すべきファイル_VC用;../../Dxlib_VC</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

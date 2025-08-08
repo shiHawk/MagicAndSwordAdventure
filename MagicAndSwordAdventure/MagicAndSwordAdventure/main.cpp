@@ -2,7 +2,11 @@
 #include "game.h"
 #include "SceneManager.h"
 #include "SoundManager.h"
-
+#include<EffekseerForDXLib.h>
+namespace
+{
+	constexpr int kParticleMax = 8000;
+}
 //Dxlibのエントリーポイント
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -12,6 +16,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 	SetMainWindowText("WarriorAdventure");
 	// 画面サイズの設定
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorDepth);
+
+	//Effekseer関係初期化
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+	Effekseer_Init(kParticleMax);
+	//Effekseer_InitDistortion();
+	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	Effekseer_Sync3DSetting();
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
