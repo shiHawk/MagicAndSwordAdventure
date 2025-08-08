@@ -17,6 +17,12 @@ EffectManager::~EffectManager()
 
 void EffectManager::Init(std::shared_ptr<Collision> pCollision)
 {
+	//Effekseerä÷åWèâä˙âª
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+	Effekseer_Init(kParticleMax);
+	//Effekseer_InitDistortion();
+	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	Effekseer_Sync3DSetting();
 	m_pCollision = pCollision;
 	m_effectHandle = LoadEffekseerEffect("Data/effect/hit_eff.efk");
 }

@@ -64,6 +64,7 @@ void GameScene::Init()
 	m_pBattleArea = std::make_unique<BattleAreaManager>();
 	LoadEnemyData("Data/enemyData/enemyPositionData.csv",m_NormalSkeltons,m_WizardSkeltons,m_pPlayer,m_pScoreManager);
 	m_pAnimation = std::make_shared<Animation>();
+	m_pEffectManager = std::make_shared<EffectManager>();
 	m_pUIManager = std::make_unique<UIManager>();
 	m_pCamera->Init(m_pPlayer);
 	m_pScoreManager->Init();
@@ -73,6 +74,7 @@ void GameScene::Init()
 	m_pBattleArea->SetEnemys(m_NormalSkeltons,m_WizardSkeltons);
 	m_pUIManager->Init(m_pPlayer, m_pScoreManager);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
+	m_pEffectManager->Init(m_pCollision);
 	m_pAnimation->Init();
 	SoundManager::GetInstance()->PlayBGM();
 	m_remainingEnemysCount = 0;
@@ -93,6 +95,7 @@ void GameScene::End()
 	{
 		wizardSkelton->End();
 	}
+	m_pEffectManager->End();
 }
 
 SceneBase* GameScene::Update()
@@ -113,6 +116,7 @@ SceneBase* GameScene::Update()
 	m_pBattleArea->Updata(m_NormalSkeltons, m_WizardSkeltons);
 	m_pCollision->Update();
 	m_pUIManager->Update();
+	m_pEffectManager->Update();
 	UpdateFade();
 	if (m_pPlayer->IsDead() || Pad::isTrigger(PAD_INPUT_4))
 	{
@@ -152,6 +156,7 @@ void GameScene::Draw()
 	m_pUIManager->DrawDestroyScore();
 	m_pUIManager->DrawmElapsedTimeSeconds();
 	m_pUIManager->DrawNumberOfEnemiesRemaining(GetRemainingEnemies());
+	m_pEffectManager->Draw();
 	if (!m_pBattleArea->IsInBattle())
 	{
 		m_pUIManager->DrawNavigation();

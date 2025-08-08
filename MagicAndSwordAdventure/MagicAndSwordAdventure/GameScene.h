@@ -12,6 +12,7 @@
 #include "BattleAreaManager.h"
 #include "UIManager.h"
 #include "ScoreManager.h"
+#include "EffectManager.h"
 #include <memory>
 #include <vector>
 #include <fstream>
@@ -45,6 +46,7 @@ private:
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Stage> m_pStage;
 	std::shared_ptr<ScoreManager> m_pScoreManager;
+	std::shared_ptr<EffectManager> m_pEffectManager;
 	std::unique_ptr<BattleAreaManager> m_pBattleArea;
 	std::unique_ptr<UIManager> m_pUIManager;
 	bool m_isNextScene;
