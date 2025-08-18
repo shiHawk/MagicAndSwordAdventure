@@ -17,6 +17,7 @@ public:
 	void SetHitEffectPosWizardSkelton();
 private:
 	int m_effectHandle;
+	int m_playEffectHandle;
 	std::shared_ptr<Collision> m_pCollision;
 };
 

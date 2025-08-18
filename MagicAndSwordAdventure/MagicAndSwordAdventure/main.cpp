@@ -17,13 +17,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 	// 画面サイズの設定
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorDepth);
 
-	
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了
 	}
-
+	Effekseer_Init(kParticleMax);
+	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+	Effekseer_Sync3DSetting();
 	// ダブルバッファモード
 	SetDrawScreen(DX_SCREEN_BACK);
 	// 最初のシーンの初期化
@@ -56,6 +58,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 	scene.End();
 	/*終了処理*/
 	SoundManager::GetInstance()->End();
+	Effkseer_End();
 	DxLib_End();//Dxlib終了処理
 	return 0;//終了 
 }

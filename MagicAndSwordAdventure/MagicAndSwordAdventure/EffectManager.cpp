@@ -7,7 +7,8 @@ namespace
 }
 
 EffectManager::EffectManager():
-	m_effectHandle(-1)
+	m_effectHandle(-1),
+	m_playEffectHandle(-1)
 {
 }
 
@@ -17,14 +18,9 @@ EffectManager::~EffectManager()
 
 void EffectManager::Init(std::shared_ptr<Collision> pCollision)
 {
-	//EffekseerŠÖŒW‰Šú‰»
-	SetUseDirect3DVersion(DX_DIRECT3D_11);
-	Effekseer_Init(kParticleMax);
-	//Effekseer_InitDistortion();
-	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
-	Effekseer_Sync3DSetting();
 	m_pCollision = pCollision;
 	m_effectHandle = LoadEffekseerEffect("Data/effect/hit_eff.efk");
+	m_playEffectHandle = -1;
 }
 
 
@@ -35,7 +31,10 @@ void EffectManager::End()
 
 void EffectManager::Update()
 {
-	SetPosPlayingEffekseer3DEffect(m_effectHandle,0.0f,0.0f,0.0f);
+	m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle);
+	SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 10.0f, 10.0f, 10.0f);
+	SetHitEffectPosPlayer();
+	//SetPosPlayingEffekseer3DEffect(m_playEffectHandle, -1500.0f, 0.0f, 0.0f);
 	UpdateEffekseer3D();
 }
 
@@ -48,21 +47,22 @@ void EffectManager::Draw()
 
 void EffectManager::SetHitEffectPosPlayer()
 {
-	SetPosPlayingEffekseer3DEffect(m_effectHandle, m_pCollision->GetPlayerHitPos().x, 
-								   m_pCollision->GetPlayerHitPos().y, m_pCollision->GetPlayerHitPos().z);
-	PlayEffekseer3DEffect(m_effectHandle);
+	if (m_pCollision->GetIsPlayerHit())
+	{
+		SetPosPlayingEffekseer3DEffect(m_playEffectHandle, m_pCollision->GetPlayerHitPos().x,
+			m_pCollision->GetPlayerHitPos().y, m_pCollision->GetPlayerHitPos().z);
+	}
 }
 
 void EffectManager::SetHitEffectPosNormalSkelton()
 {
-	SetPosPlayingEffekseer3DEffect(m_effectHandle, m_pCollision->GetNormalSkeltonHitPos().x,
+	
+	SetPosPlayingEffekseer3DEffect(m_playEffectHandle, m_pCollision->GetNormalSkeltonHitPos().x,
 		m_pCollision->GetNormalSkeltonHitPos().y, m_pCollision->GetNormalSkeltonHitPos().z);
-	PlayEffekseer3DEffect(m_effectHandle);
 }
 
 void EffectManager::SetHitEffectPosWizardSkelton()
 {
-	SetPosPlayingEffekseer3DEffect(m_effectHandle, m_pCollision->GetWizardSkeltonHitPos().x,
+	SetPosPlayingEffekseer3DEffect(m_playEffectHandle, m_pCollision->GetWizardSkeltonHitPos().x,
 		m_pCollision->GetWizardSkeltonHitPos().y, m_pCollision->GetWizardSkeltonHitPos().z);
-	PlayEffekseer3DEffect(m_effectHandle);
 }

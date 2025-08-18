@@ -147,7 +147,7 @@ void Player::Update()
 		if (attack.active)
 		{
 			attack.timer--;
-			printfDx("attack.timer:%f\n", attack.timer);
+			//printfDx("attack.timer:%f\n", attack.timer);
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
 				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);

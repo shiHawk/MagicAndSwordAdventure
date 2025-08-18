@@ -23,6 +23,8 @@ public:
 	void PlayerHit(float enemyAttackToPlayer,float playerRadius,float enemyAttackRadius,bool enemyAttackActive,int enemyPower,VECTOR enemyAttackPos);
 	void EnemyHit(float playerAttackToEnemy, float playerRadius, float enemyAttackRadius,bool playerAttackActive,bool enemyHit);
 	bool GetIsPlayerHit() { return m_isPlayerHit; }
+	const std::vector<bool>& GetNormalSkeltonHit() { return m_normalSkeltonHit;}
+	const std::vector<bool>& GetWizardSkeltonHit() { return m_wizardSkeltonHit;}
 	VECTOR GetPlayerHitPos() { return m_playerHitPos; }
 	VECTOR GetNormalSkeltonHitPos() { return m_normalSkeltonHitPos; }
 	VECTOR GetWizardSkeltonHitPos() { return m_wizardSkeltonHitPos; }
