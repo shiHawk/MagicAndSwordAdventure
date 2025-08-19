@@ -25,7 +25,7 @@ EffectManager::~EffectManager()
 void EffectManager::Init(std::shared_ptr<Collision> pCollision)
 {
 	m_pCollision = pCollision;
-	m_effectHandle = LoadEffekseerEffect("Data/effect/hit_eff.efk");
+	m_effectHandle = LoadEffekseerEffect("Data/effect/hit_eff.efk"); // エフェクトのロード
 	m_playEffectHandle = -1;
 }
 

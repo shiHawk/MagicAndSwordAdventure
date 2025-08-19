@@ -26,5 +26,7 @@ private:
 	int m_attackCount = 0;
 	bool m_isCasting = false;
 	bool m_isCastFinished = false;
+	int m_barrelHandle;
+	float m_rollAngleZ;
 };
 

@@ -31,9 +31,11 @@ namespace
 WizardSkelton::WizardSkelton():
 m_toPlayerDir({0.0f,0.0f,0.0f}),
 m_isAttackEnd(false),
-attack({ 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f }),
+attack({ 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,0.0,60.0f }),
 m_isCasting(false),
-m_isCastFinished(false)
+m_isCastFinished(false),
+m_barrelHandle(-1),
+m_rollAngleZ(0.0f)
 {
 }
 
@@ -45,6 +47,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_pos = VAdd(m_pos, pos);
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, m_pos.z);
 	m_modelHandle = MV1LoadModel("Data/model/Skeleton_Mage.mv1");
+	m_barrelHandle = MV1LoadModel("Data/model/barrel_large.mv1");
 	attack.attackCoolTime = -1.0f;
 	attack.timer = kAttackDuration;
 	m_isDying = false;
@@ -66,6 +69,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 void WizardSkelton::End()
 {
 	MV1DeleteModel(m_modelHandle);
+	MV1DeleteModel(m_barrelHandle);
 	attack.pos = { attack.pos.x,attack.pos.y - 1000.0f,attack.pos.z };
 	attack.active = false;
 	m_pos = { m_pos.x,m_pos.y - 1000.0f,m_pos.z };
@@ -101,6 +105,11 @@ void WizardSkelton::Update()
 		if (attack.active)
 		{
 			DoAttack();
+			m_rollAngleZ += 0.02f;
+			if (m_rollAngleZ > DX_PI_F*2.0f)
+			{
+				m_rollAngleZ -= DX_PI_F * 2.0f;
+			}
 			attack.timer--;
 			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
 			{
@@ -151,7 +160,11 @@ void WizardSkelton::DoAttack()
 	// プレイヤーの位置に向かって攻撃を飛ばす
 	attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
 	attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
-	attack.pos.y = m_pos.y + attack.attackOffSetY;
+	attack.pos.y = 20.0f;
+
+	MV1SetPosition(m_barrelHandle,attack.pos);
+	MV1SetRotationXYZ(m_barrelHandle, VGet(DX_PI_F / 2.0f + DX_PI_F, 0.0f, m_rollAngleZ));
+	MV1SetScale(m_barrelHandle, VGet(0.25f, 0.25f, 0.25f));
 }
 
 void WizardSkelton::OnDamage()
@@ -207,6 +220,7 @@ void WizardSkelton::Draw() const
 	if (attack.active && !m_isDying)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, true);
+		MV1DrawModel(m_barrelHandle);
 	}
 #if _DEBUG
 	DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
