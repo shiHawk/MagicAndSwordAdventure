@@ -21,5 +21,9 @@ private:
 	std::shared_ptr<Collision> m_pCollision;
 	bool m_wasHitPlayer;
 	bool m_isHitPlayer;
+	bool m_wasHitNormalSkelton;
+	bool m_isHitNormalSkelton;
+	bool m_wasHitWizardSkelton;
+	bool m_isHitWizardSkelton;
 };
 

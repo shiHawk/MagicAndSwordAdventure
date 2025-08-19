@@ -10,7 +10,11 @@ EffectManager::EffectManager():
 	m_effectHandle(-1),
 	m_playEffectHandle(-1),
 	m_wasHitPlayer(false),
-	m_isHitPlayer(false)
+	m_isHitPlayer(false),
+	m_wasHitNormalSkelton(false),
+	m_isHitNormalSkelton(false),
+	m_wasHitWizardSkelton(false),
+	m_isHitWizardSkelton(false)
 {
 }
 
@@ -33,15 +37,54 @@ void EffectManager::End()
 
 void EffectManager::Update()
 {
+	// プレイヤーの被弾エフェクト
 	m_isHitPlayer = m_pCollision->GetIsPlayerHit();
 	if (m_isHitPlayer && !m_wasHitPlayer)
 	{
-		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle);
-		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 10.0f, 10.0f, 10.0f);
-		SetHitEffectPosPlayer();
+		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle); // エフェクトを再生
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 10.0f, 10.0f, 10.0f); // エフェクトのサイズを設定
+		SetHitEffectPosPlayer(); // エフェクトの位置を設定
 	}
 	m_wasHitPlayer = m_isHitPlayer;
-	//SetPosPlayingEffekseer3DEffect(m_playEffectHandle, -1500.0f, 0.0f, 0.0f);
+
+	// NormalSkeltonの被弾エフェクト
+	const auto& hitResults = m_pCollision->GetNormalSkeltonHit();
+	m_isHitNormalSkelton = false;
+	for (bool hit : hitResults)
+	{
+		if (hit)
+		{
+			m_isHitNormalSkelton = true;
+			break; // 一つでもtrueが見つかればループを抜ける
+		}
+	}
+	if (m_isHitNormalSkelton && !m_wasHitNormalSkelton)
+	{
+		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle); // エフェクトを再生
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 20.0f, 20.0f, 20.0f); // エフェクトのサイズを設定
+		SetHitEffectPosNormalSkelton(); // エフェクトの位置を設定
+	}
+	m_wasHitNormalSkelton = m_isHitNormalSkelton; // ヒット情報の更新
+
+	// WizardSkeltonの被弾エフェクト
+	const auto& hitWizardResults = m_pCollision->GetWizardSkeltonHit();
+	m_isHitWizardSkelton = false;
+	for (bool hit : hitWizardResults)
+	{
+		if (hit)
+		{
+			m_isHitWizardSkelton = true;
+			break; // 一つでもtrueが見つかればループを抜ける
+		}
+	}
+	if (m_isHitWizardSkelton && !m_wasHitWizardSkelton)
+	{
+		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle); // エフェクトを再生
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 20.0f, 20.0f, 20.0f); // エフェクトのサイズを設定
+		SetHitEffectPosWizardSkelton(); // エフェクトの位置を設定
+	}
+	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新
+	
 	UpdateEffekseer3D();
 }
 
