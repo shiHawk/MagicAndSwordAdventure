@@ -27,6 +27,8 @@ namespace
 	constexpr float kBlinkCycleSeconds = 2.0f;
 	constexpr float kFramePerSecond = 60.0f;
 	constexpr float kMillisecondsPerSecond = 1000.0f; // ƒ~ƒŠ•b‚©‚ç•b‚Ö‚Ì•ÏŠ·
+
+	//const TCHAR* kFontName = 
 }
 UIManager::UIManager() :
 	m_hpGaugeRate(0.0f),

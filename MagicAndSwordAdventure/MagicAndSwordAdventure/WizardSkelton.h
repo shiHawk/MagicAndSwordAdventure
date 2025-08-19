@@ -24,9 +24,9 @@ private:
 	VECTOR m_toPlayerDir;
 	bool m_isAttackEnd = false;
 	int m_attackCount = 0;
-	bool m_isCasting = false;
-	bool m_isCastFinished = false;
-	int m_barrelHandle;
-	float m_rollAngleZ;
+	bool m_isCasting = false; // —\”õ“®ìŠJn
+	bool m_isCastFinished = false; // —\”õ“®ìI—¹
+	int m_barrelHandle; // ’M‚Ìƒnƒ“ƒhƒ‹
+	float m_rollAngleZ; // ‰ñ“]
 };
 

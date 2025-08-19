@@ -85,14 +85,14 @@ void EffectManager::Update()
 	}
 	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新
 	
-	UpdateEffekseer3D();
+	UpdateEffekseer3D(); // エフェクトの更新
 }
 
 void EffectManager::Draw()
 {
-	Effekseer_Sync3DSetting();
+	Effekseer_Sync3DSetting(); // Effekseerの表示設定をDXライブラリの設定に同期させる
 
-	DrawEffekseer3D();
+	DrawEffekseer3D(); // エフェクトの描画
 }
 
 void EffectManager::SetHitEffectPosPlayer()

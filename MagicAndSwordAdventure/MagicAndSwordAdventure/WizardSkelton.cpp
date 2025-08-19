@@ -105,10 +105,10 @@ void WizardSkelton::Update()
 		if (attack.active)
 		{
 			DoAttack();
-			m_rollAngleZ += 0.02f;
+			m_rollAngleZ += 0.1f; // ’e‚Ì‰ñ“]‚ði‚ß‚é
 			if (m_rollAngleZ > DX_PI_F*2.0f)
 			{
-				m_rollAngleZ -= DX_PI_F * 2.0f;
+				m_rollAngleZ -= DX_PI_F * 2.0f; // 360“x‚ð’´‚¦‚½‚ç0“x‚É–ß‚·
 			}
 			attack.timer--;
 			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
@@ -219,7 +219,7 @@ void WizardSkelton::Draw() const
 	MV1DrawModel(m_modelHandle);
 	if (attack.active && !m_isDying)
 	{
-		DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, true);
+		//DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, true);
 		MV1DrawModel(m_barrelHandle);
 	}
 #if _DEBUG
