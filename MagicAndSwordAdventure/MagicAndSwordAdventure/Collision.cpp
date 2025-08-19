@@ -51,6 +51,7 @@ void Collision::End()
 
 void Collision::Update()
 {
+	//printfDx("m_isPlayerHit:%d\n", m_isPlayerHit);
 	for (size_t i = 0; i < m_normalSkeltons.size(); ++i)
 	{
 		auto& normalSkelton = m_normalSkeltons[i];
@@ -167,6 +168,7 @@ void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float e
 		m_pPlayer->OnDamage(enemyPower);
 		m_playerInvincibilityTime = 100.0f;
 		m_playerHitPos = CalcHitPosition(enemyAttackPos,m_pPlayer->GetPos());
+		m_playerHitPos.y = m_playerHitPos.y * 2;
 	}
 }
 

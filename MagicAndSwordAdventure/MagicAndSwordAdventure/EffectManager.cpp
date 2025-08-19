@@ -8,7 +8,9 @@ namespace
 
 EffectManager::EffectManager():
 	m_effectHandle(-1),
-	m_playEffectHandle(-1)
+	m_playEffectHandle(-1),
+	m_wasHitPlayer(false),
+	m_isHitPlayer(false)
 {
 }
 
@@ -31,9 +33,14 @@ void EffectManager::End()
 
 void EffectManager::Update()
 {
-	m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle);
-	SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 10.0f, 10.0f, 10.0f);
-	SetHitEffectPosPlayer();
+	m_isHitPlayer = m_pCollision->GetIsPlayerHit();
+	if (m_isHitPlayer && !m_wasHitPlayer)
+	{
+		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle);
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 10.0f, 10.0f, 10.0f);
+		SetHitEffectPosPlayer();
+	}
+	m_wasHitPlayer = m_isHitPlayer;
 	//SetPosPlayingEffekseer3DEffect(m_playEffectHandle, -1500.0f, 0.0f, 0.0f);
 	UpdateEffekseer3D();
 }
@@ -47,16 +54,12 @@ void EffectManager::Draw()
 
 void EffectManager::SetHitEffectPosPlayer()
 {
-	if (m_pCollision->GetIsPlayerHit())
-	{
-		SetPosPlayingEffekseer3DEffect(m_playEffectHandle, m_pCollision->GetPlayerHitPos().x,
-			m_pCollision->GetPlayerHitPos().y, m_pCollision->GetPlayerHitPos().z);
-	}
+	SetPosPlayingEffekseer3DEffect(m_playEffectHandle, m_pCollision->GetPlayerHitPos().x,
+		m_pCollision->GetPlayerHitPos().y, m_pCollision->GetPlayerHitPos().z);
 }
 
 void EffectManager::SetHitEffectPosNormalSkelton()
 {
-	
 	SetPosPlayingEffekseer3DEffect(m_playEffectHandle, m_pCollision->GetNormalSkeltonHitPos().x,
 		m_pCollision->GetNormalSkeltonHitPos().y, m_pCollision->GetNormalSkeltonHitPos().z);
 }
