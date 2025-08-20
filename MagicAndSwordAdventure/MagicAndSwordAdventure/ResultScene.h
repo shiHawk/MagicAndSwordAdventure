@@ -24,5 +24,6 @@ private:
 	VECTOR m_cameraTarget;
 	// ƒJƒƒ‰‚Ì‹–ìŠp
 	float m_viewAngle;
+	int m_fontHandle;
 };
 

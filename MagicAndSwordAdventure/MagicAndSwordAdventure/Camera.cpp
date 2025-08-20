@@ -48,7 +48,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 
 	SetUseBackCulling(true);  // ポリゴンの裏面を表示しない
 
-	// カメラの色を変更する
+	// ライトの色を変更する
 	SetLightSpcColor(GetColorF(kRed, kGreen, kBlue, 0.0f));
 
 	// カメラの位置の初期化を行う

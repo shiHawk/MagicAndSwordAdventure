@@ -35,7 +35,8 @@ ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraTarget({ 0.0f,0.0f,0.0f }),
 	m_viewAngle(0.0f),
 	m_pScoreManager(pScoreManager),
-	m_resultHandle(-1)
+	m_resultHandle(-1),
+	m_fontHandle(-1)
 {
 }
 
@@ -66,6 +67,7 @@ void ResultScene::Init()
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 	SoundManager::GetInstance()->PlayBGM();
 	m_resultHandle = LoadGraph("Data/UI/result_seat.png");
+	m_fontHandle = CreateFontToHandle(NULL,20,5, DX_FONTTYPE_NORMAL);
 }
 
 void ResultScene::End()
@@ -99,9 +101,9 @@ SceneBase* ResultScene::Update()
 void ResultScene::Draw()
 {
 	DrawGraph(kBGPosX, kBGPosY,m_resultHandle,true);
-	DrawFormatString(kCharaPosx, kDestroyScorePosY, kFontColorWhite,"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
-	DrawFormatString(kCharaPosx,kTimeScorePosY, kFontColorWhite,"タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
-	DrawFormatString(kCharaPosx,kScorePosY, kFontColorWhite,"合計スコア:%d",m_pScoreManager->GetScore());
+	DrawFormatStringToHandle(kCharaPosx, kDestroyScorePosY, kFontColorWhite,m_fontHandle,"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatStringToHandle(kCharaPosx,kTimeScorePosY, kFontColorWhite, m_fontHandle, "タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
+	DrawFormatStringToHandle(kCharaPosx,kScorePosY, kFontColorWhite, m_fontHandle, "合計スコア:%d",m_pScoreManager->GetScore());
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
 		DrawFormatString(kCharaPosx, kPressBPosY, kFontColorCyan, "Press A Title");

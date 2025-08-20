@@ -27,7 +27,7 @@ void BattleAreaManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Ca
 	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;
 	m_battleAreaCenterPos = { 0.0f,0.0f,0.0f };
-	m_battleAreaRadius = 400.0f;
+	m_battleAreaRadius = 350.0f;
 	m_battleTriggerDistance = 300.0f;
 	m_battleState = State::None;
 }

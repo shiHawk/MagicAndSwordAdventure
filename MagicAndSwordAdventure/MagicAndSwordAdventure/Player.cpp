@@ -6,7 +6,7 @@ namespace
 {
 	constexpr float kMoveSpeed = 3.0f;
 	constexpr float kDashSpeed = 6.0f;
-	constexpr float kJumpPower = 9.0f;
+	constexpr float kJumpPower = 7.0f;
 	constexpr float kJumpGravity = -0.4f;
 	constexpr float kBackLimit = 240.0f;
 	constexpr float kFrontLimit = -350.0f;

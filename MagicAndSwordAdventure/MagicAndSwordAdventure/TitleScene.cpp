@@ -123,6 +123,26 @@ SceneBase* TitleScene::Update()
 
 void TitleScene::Draw()
 {	
+	//// 頂点配列（PolygonNum × 3個 = 2×3=6個）
+	//VERTEX3D vertices[6];
+
+	//// 左上、右上、右下、左下（四角形の座標）
+	//VECTOR posLT = VGet(-640.0f, 360.0f, 800.0f); // 左上
+	//VECTOR posRT = VGet(640.0f, 360.0f, 800.0f);  // 右上
+	//VECTOR posRB = VGet(640.0f, -400.0f, 800.0f); // 右下
+	//VECTOR posLB = VGet(-640.0f, -400.0f, 800.0f);// 左下
+
+	//// 三角形1：左上、右上、右下
+	//vertices[0].pos = posLT; vertices[0].norm = VGet(0, 0, -1); vertices[0].dif = GetColorU8(255, 255, 255, 255); vertices[0].spc = GetColorU8(0, 0, 0, 0); vertices[0].u = 0.0f; vertices[0].v = 0.0f;
+	//vertices[1].pos = posRT; vertices[1].norm = VGet(0, 0, -1); vertices[1].dif = GetColorU8(255, 255, 255, 255); vertices[1].spc = GetColorU8(0, 0, 0, 0); vertices[1].u = 1.0f; vertices[1].v = 0.0f;
+	//vertices[2].pos = posRB; vertices[2].norm = VGet(0, 0, -1); vertices[2].dif = GetColorU8(255, 255, 255, 255); vertices[2].spc = GetColorU8(0, 0, 0, 0); vertices[2].u = 1.0f; vertices[2].v = 1.0f;
+
+	//// 三角形2：右下、左下、左上
+	//vertices[3].pos = posRB; vertices[3].norm = VGet(0, 0, -1); vertices[3].dif = GetColorU8(255, 255, 255, 255); vertices[3].spc = GetColorU8(0, 0, 0, 0); vertices[3].u = 1.0f; vertices[3].v = 1.0f;
+	//vertices[4].pos = posLB; vertices[4].norm = VGet(0, 0, -1); vertices[4].dif = GetColorU8(255, 255, 255, 255); vertices[4].spc = GetColorU8(0, 0, 0, 0); vertices[4].u = 0.0f; vertices[4].v = 1.0f;
+	//vertices[5].pos = posLT; vertices[5].norm = VGet(0, 0, -1); vertices[5].dif = GetColorU8(255, 255, 255, 255); vertices[5].spc = GetColorU8(0, 0, 0, 0); vertices[5].u = 0.0f; vertices[5].v = 0.0f;
+
+	//DrawPolygon3D(vertices, 2, m_titleBGHandle, TRUE);
 	MV1DrawModel(m_modelHandle);
 	// 背景を描画
 	DrawGraph(0,0, m_titleBGHandle,false);
