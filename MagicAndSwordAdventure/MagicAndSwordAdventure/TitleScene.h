@@ -21,6 +21,7 @@ private:
 	float m_time;
 	int m_offsetY;
 	bool m_isNextScene = false;
+	VECTOR m_playerPos;
 	// カメラの位置
 	VECTOR m_cameraPos;
 	// カメラの注視点(見ている場所)

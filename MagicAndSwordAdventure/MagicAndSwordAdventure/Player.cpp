@@ -181,7 +181,7 @@ void Player::Update()
 			}
 			moveCount++;
 		}
-		printfDx("attachAnimNo:%d\n", m_pAnimation->GetAttachAnimNo());
+		//printfDx("attachAnimNo:%d\n", m_pAnimation->GetAttachAnimNo());
 
 		if (m_pos.y < 0.0f)
 		{
@@ -213,10 +213,10 @@ void Player::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
 #if _DEBUG
-	if (attack.active && !m_vec.y > 0)
+	/*if (attack.active && !m_vec.y > 0)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
-	}
+	}*/
 #endif
 }
 

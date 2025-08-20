@@ -220,13 +220,13 @@ void NormalSkelton::Draw() const
 	MV1DrawModel(m_modelHandle);
 	//MV1DrawModel(m_weponModelHandel);
 #if _DEBUG
-	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
+	/*DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kSerchRange, 8, 0x00ff00, 0xffffff, false);
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kAttackRange, 8, 0x0000ff, 0xffffff, false);
 	if (attack.active)
 	{
 		DrawSphere3D(attack.pos, attack.radius, 8, 0x0000ff, 0xffffff, false);
-	}
+	}*/
 #endif
 }
 
