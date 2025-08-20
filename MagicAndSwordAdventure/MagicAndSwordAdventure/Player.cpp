@@ -4,8 +4,8 @@
 
 namespace
 {
-	constexpr float kMoveSpeed = 5.0f;
-	constexpr float kDashSpeed = 10.0f;
+	constexpr float kMoveSpeed = 3.0f;
+	constexpr float kDashSpeed = 6.0f;
 	constexpr float kJumpPower = 9.0f;
 	constexpr float kJumpGravity = -0.4f;
 	constexpr float kBackLimit = 240.0f;
@@ -31,6 +31,7 @@ namespace
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 1;
 	constexpr int kWalkAnimNo = 3;
+	constexpr int kDashAnimNo = 6;
 	constexpr int kAttack1AnimNo = 31;
 	constexpr int kAttack2AnimNo = 40;
 	constexpr int kAttack3AnimNo = 42;
@@ -163,12 +164,24 @@ void Player::Update()
 		if (isMove)
 		{
 			idleCount = 0;
-			if (moveCount < 1)
+			int targetAnimNo;
+			if (Pad::isPress(PAD_INPUT_3))
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kWalkAnimNo, true, kAnimSpeedFast);
+				targetAnimNo = kDashAnimNo;
+			}
+			else
+			{
+				targetAnimNo = kWalkAnimNo;
+			}
+
+			// 現在のアニメと違う場合だけ切り替える
+			if (m_pAnimation->GetAttachAnimNo() != targetAnimNo)
+			{
+				m_pAnimation->ChangeAnim(m_modelHandle, targetAnimNo, true, kAnimSpeedFast);
 			}
 			moveCount++;
 		}
+		printfDx("attachAnimNo:%d\n", m_pAnimation->GetAttachAnimNo());
 
 		if (m_pos.y < 0.0f)
 		{
@@ -322,18 +335,9 @@ void Player::DoEvade()
 		// 回避回数を増やす
 		evadeData.evadeCount++;
 		evadeData.timer = kEvadeDuration;
-		if (m_isDirRight)
-		{
-			MV1SetRotationXYZ(m_modelHandle, kLeftDir); // モデルは進行方向に背を向ける
-			m_vec.x = kMoveSpeed * kEvadeSpeedMultiplier;
-			m_isAttackDirRight = false;
-		}
-		else
-		{
-			MV1SetRotationXYZ(m_modelHandle, kRightDir); // モデルは進行方向に背を向ける
-			m_vec.x = -kMoveSpeed * kEvadeSpeedMultiplier;
-			m_isAttackDirRight = true;
-		}
+		MV1SetRotationXYZ(m_modelHandle, kRightDir); 
+		m_vec.x = -kMoveSpeed * kEvadeSpeedMultiplier;
+		m_isAttackDirRight = true;
 		m_vec.y = kJumpPower * kEvadeJumpMultiplier;
 	}
 	MV1SetPosition(m_modelHandle, m_pos);
@@ -394,21 +398,30 @@ void Player::DoMove()
 	m_vec.x *= kMoveDecRate;
 	m_vec.z *= kMoveDecRate;
 	MV1SetPosition(m_modelHandle, m_pos);
-	if (m_pos.z >= kBackLimit)
+	// 移動先の仮座標
+	VECTOR nextPos = VAdd(m_pos, m_vec);
+
+	// Z方向の制限
+	if (nextPos.z >= kBackLimit - kWallOffset)
 	{
+		nextPos.z = kBackLimit - kWallOffset;
 		m_vec.z = 0.0f;
-		m_pos.z = kBackLimit - kWallOffset;
 	}
-	if (m_pos.z <= kFrontLimit)
+	else if (nextPos.z <= kFrontLimit + kWallOffset)
 	{
+		nextPos.z = kFrontLimit + kWallOffset;
 		m_vec.z = 0.0f;
-		m_pos.z = kFrontLimit + kWallOffset;
 	}
-	if (m_pos.x < kLeftLimit)
+	// X方向の制限
+	if (nextPos.x <= kLeftLimit + kWallOffset)
 	{
+		nextPos.x = kLeftLimit + kWallOffset;
 		m_vec.x = 0.0f;
-		m_pos.x = kLeftLimit + kWallOffset;
 	}
+
+	// 最終決定
+	m_pos = nextPos;
+
 	m_pos = VAdd(m_pos, m_vec);
 }
 

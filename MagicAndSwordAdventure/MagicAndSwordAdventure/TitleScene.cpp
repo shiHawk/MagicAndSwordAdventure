@@ -51,6 +51,7 @@ void TitleScene::Init()
 {
 	m_fadeBright = 0;
 	m_fadeSpeed = -kFadeSpeed;
+	m_modelHandle = MV1LoadModel("Data/model/Barbarian.mv1");
 	// 3D表示の設定
 	SetUseZBuffer3D(true);	  // Zバッファを指定する
 	SetWriteZBuffer3D(true);  // Zバッファへの書き込みを行う
@@ -83,6 +84,7 @@ void TitleScene::End()
 {
 	DeleteGraph(m_titleHandle);
 	DeleteGraph(m_titleBGHandle);
+	MV1DeleteModel(m_modelHandle);
 	SoundManager::GetInstance()->StopBGM();
 }
 

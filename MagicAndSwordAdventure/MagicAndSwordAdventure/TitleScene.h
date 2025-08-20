@@ -17,6 +17,7 @@ private:
 	//std::shared_ptr<SoundManager> m_pSoundManager;
 	int m_titleHandle;
 	int m_titleBGHandle;
+	int m_modelHandle;
 	float m_time;
 	int m_offsetY;
 	bool m_isNextScene = false;

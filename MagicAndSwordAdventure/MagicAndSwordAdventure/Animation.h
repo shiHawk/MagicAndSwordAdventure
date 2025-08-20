@@ -13,7 +13,7 @@ public:
 	void StartBlending();
 	bool isNowPlaying() { return m_isNowPlaying; }
 	bool GetIsAnimEnd();
-	int GetAttachAnimNo() { return m_currentAttachNo; }
+	int GetAttachAnimNo() { return m_attachAnimNo; }
 	float GetPlayTime() { return m_currentPlayTime; }
 private:
 	// ëççƒê∂éûä‘
@@ -42,5 +42,6 @@ private:
 	bool m_isBlending;
 	bool m_isNowPlaying;
 	float m_blendTime;
+	int m_attachAnimNo;
 };
 

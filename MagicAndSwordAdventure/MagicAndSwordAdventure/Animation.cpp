@@ -17,7 +17,8 @@ Animation::Animation():
 	m_isNowPlaying(false),
 	m_blendTime(0.0f),
 	m_currentPlayTime(0.0f),
-	m_nextPlayTime(0.0f)
+	m_nextPlayTime(0.0f),
+	m_attachAnimNo(-1)
 {
 }
 
@@ -78,6 +79,7 @@ void Animation::ChangeAnim(int modelHandle, int animNo, bool isLoop, float incre
 	// ëççƒê∂éûä‘Ççƒê›íË
 	m_animTotalTime = MV1GetAttachAnimTotalTime(modelHandle, m_nextAttachNo);
 	m_isEnd = false;
+	m_attachAnimNo = animNo;
 }
 
 void Animation::UpdateBlendAnim(int modelHandle, int animNo)
