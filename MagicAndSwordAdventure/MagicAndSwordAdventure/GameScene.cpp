@@ -170,7 +170,7 @@ SceneBase* GameScene::Update()
 	}
 	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新
 
-	if (m_pPlayer->IsDead() || Pad::isTrigger(PAD_INPUT_4)) // プレイヤーが死亡したら
+	if (m_pPlayer->IsDead()) // プレイヤーが死亡したら
 	{
 		m_pScoreManager->SetIsPlayerDead(true);
 	}
