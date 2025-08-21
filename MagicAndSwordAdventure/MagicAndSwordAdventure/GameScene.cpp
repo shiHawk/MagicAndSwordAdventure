@@ -7,7 +7,13 @@
 #include "ResultScene.h"
 GameScene::GameScene():
 	m_isNextScene(false),
-	m_remainingEnemysCount(30)
+	m_remainingEnemysCount(30),
+	m_isHitPlayer(false),
+	m_wasHitPlayer(false),
+	m_isHitNormalSkelton(false),
+	m_isHitWizardSkelton(false),
+	m_wasHitNormalSkelton(false),
+	m_wasHitWizardSkelton(false)
 {
 }
 
@@ -78,6 +84,9 @@ void GameScene::Init()
 	m_pAnimation->Init();
 	SoundManager::GetInstance()->PlayBGM();
 	m_remainingEnemysCount = 0;
+	m_isHitNormalSkelton = false;
+	m_isHitWizardSkelton = false;
+	m_isHitPlayer = false;
 }
 
 void GameScene::End()
@@ -118,7 +127,50 @@ SceneBase* GameScene::Update()
 	m_pUIManager->Update();
 	m_pEffectManager->Update();
 	UpdateFade();
-	if (m_pPlayer->IsDead() || Pad::isTrigger(PAD_INPUT_4))
+
+	// プレイヤーの被弾SE
+	m_isHitPlayer = m_pCollision->GetIsPlayerHit();
+	if (m_isHitPlayer && !m_wasHitPlayer)
+	{
+		SoundManager::GetInstance()->PlayEnemyAttackSE();
+	}
+	m_wasHitPlayer = m_isHitPlayer;
+	
+	// NormalSkeltonの被弾SE
+	const auto& hitResults = m_pCollision->GetNormalSkeltonHit();
+	m_isHitNormalSkelton = false;
+	for (bool hit : hitResults)
+	{
+		if (hit)
+		{
+			m_isHitNormalSkelton = true;
+			break; // 一つでもtrueが見つかればループを抜ける
+		}
+	}
+	if (m_isHitNormalSkelton && !m_wasHitNormalSkelton)
+	{
+		SoundManager::GetInstance()->PlayPlayerAttackSE(m_pPlayer->GetAttackCount());
+	}
+	m_wasHitNormalSkelton = m_isHitNormalSkelton; // ヒット情報の更新
+
+	// WizardSkeltonの被弾SE
+	const auto& hitWizardResults = m_pCollision->GetWizardSkeltonHit();
+	m_isHitWizardSkelton = false;
+	for (bool hit : hitWizardResults)
+	{
+		if (hit)
+		{
+			m_isHitWizardSkelton = true;
+			break; // 一つでもtrueが見つかればループを抜ける
+		}
+	}
+	if (m_isHitWizardSkelton && !m_wasHitWizardSkelton)
+	{
+		SoundManager::GetInstance()->PlayPlayerAttackSE(m_pPlayer->GetAttackCount());
+	}
+	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新
+
+	if (m_pPlayer->IsDead() || Pad::isTrigger(PAD_INPUT_4)) // プレイヤーが死亡したら
 	{
 		m_pScoreManager->SetIsPlayerDead(true);
 	}

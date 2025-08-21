@@ -30,6 +30,7 @@ public:
 	// ‰ñ”ð
 	void DoEvade();
 	VECTOR GetAttackPos() { return attack.pos; }
+	int GetAttackCount() { return attack.count; }
 	float GetAttackRadius() { return attack.radius; }
 	bool IsAttackActive() const { return attack.active; }
 	bool IsDirRight() { return m_isDirRight; }

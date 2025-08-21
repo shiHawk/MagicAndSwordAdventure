@@ -6,7 +6,7 @@ namespace
 	constexpr VECTOR kRightDir = { 0.0,270.0f * DX_PI_F / 180.0f,0.0f }; // ‰EŒü‚«
 	constexpr float kColRadius = 25.0f; // “G–{‘Ì‚Ì“–‚½‚è”»’è
 	constexpr float kSerchRange = 500.0f; // õ“G”ÍˆÍ
-	constexpr float kAttackRange = 200.0f; // UŒ‚”ÍˆÍ
+	constexpr float kAttackRange = 400.0f; // UŒ‚”ÍˆÍ
 	constexpr float kMoveSpeed = 2.0f; // ˆÚ“®‘¬“x
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kMoveAccRate = 1.1f;// ‰Á‘¬

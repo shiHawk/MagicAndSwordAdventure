@@ -25,6 +25,8 @@ public:
 	void End();
 	void Update();
 	void PlayBGM();
+	void PlayPlayerAttackSE(int attackCount);
+	void PlayEnemyAttackSE();
 	int FadeBGMVol(); // フェードに合わせて音量を小さくする
 	void StopBGM();
 private:
@@ -38,7 +40,9 @@ private:
 	int m_titleBgmHandle;
 	int m_gameSceneBgmHandle;
 	int m_resultBgmHandle;
-	int m_playerAttackSoundHandle;
+	int m_playerFirstAttackSoundHandle; // 一段目の攻撃
+	int m_playerSecondAttackSoundHandle; // 二段目の攻撃
+	int m_playerThirdAttackSoundHandle; // 三段目の攻撃
 	int m_enemyAttackSoundHandle;
 };
 

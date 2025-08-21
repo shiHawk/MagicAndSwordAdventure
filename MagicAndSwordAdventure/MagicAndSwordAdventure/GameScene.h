@@ -50,6 +50,12 @@ private:
 	std::unique_ptr<BattleAreaManager> m_pBattleArea;
 	std::unique_ptr<UIManager> m_pUIManager;
 	bool m_isNextScene;
-	int m_remainingEnemysCount;
+	int m_remainingEnemysCount; // c‚è“G”
+	bool m_isHitPlayer; // player‚ªUŒ‚‚ğó‚¯‚½‚©
+	bool m_isHitNormalSkelton; // NormalSkelton‚ªUŒ‚‚ğó‚¯‚½‚©
+	bool m_isHitWizardSkelton; // WizardSkelton‚ªUŒ‚‚ğó‚¯‚½‚©
+	bool m_wasHitPlayer; // player‚ªUŒ‚‚ğó‚¯‚Ä‚¢‚½‚©
+	bool m_wasHitNormalSkelton; // NormalSkelton‚ªUŒ‚‚ğó‚¯‚Ä‚¢‚½‚©
+	bool m_wasHitWizardSkelton; // WizardSkelton‚ªUŒ‚‚ğó‚¯‚Ä‚¢‚½‚©
 };
 
