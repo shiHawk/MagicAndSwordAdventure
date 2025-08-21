@@ -24,7 +24,8 @@ namespace
 	constexpr float kCameraFarClip = 3000.0f;
 	// 色
 	constexpr int kFontColorWhite = 0xffffff;
-	constexpr int kFontColorCyan = 0x00ffff;
+	constexpr int kFontColorBlue = 0x00bfff;
+	constexpr int kFontColorRed = 0xff6347;
 	// ボタンの位置
 	constexpr int kPressBPosY = 600;
 	// 点滅周期
@@ -36,7 +37,9 @@ ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_viewAngle(0.0f),
 	m_pScoreManager(pScoreManager),
 	m_resultHandle(-1),
-	m_fontHandle(-1)
+	m_fontHandle(-1),
+	m_skeltonIconHandle(-1),
+	m_timerIconHandle(-1)
 {
 }
 
@@ -67,12 +70,16 @@ void ResultScene::Init()
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 	SoundManager::GetInstance()->PlayBGM();
 	m_resultHandle = LoadGraph("Data/UI/result_seat.png");
-	m_fontHandle = CreateFontToHandle(NULL,20,5, DX_FONTTYPE_NORMAL);
+	m_fontHandle = CreateFontToHandle("Arial Black", 30, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	m_skeltonIconHandle = LoadGraph("Data/UI/skeltonIcon.png");
+	m_timerIconHandle = LoadGraph("Data/UI/timerIcon.png");
 }
 
 void ResultScene::End()
 {
 	DeleteGraph(m_resultHandle);
+	DeleteGraph(m_skeltonIconHandle);
+	DeleteGraph(m_timerIconHandle);
 	SoundManager::GetInstance()->StopBGM();
 	m_pScoreManager->End();
 }
@@ -101,12 +108,14 @@ SceneBase* ResultScene::Update()
 void ResultScene::Draw()
 {
 	DrawGraph(kBGPosX, kBGPosY,m_resultHandle,true);
-	DrawFormatStringToHandle(kCharaPosx, kDestroyScorePosY, kFontColorWhite,m_fontHandle,"撃破スコア:%d",m_pScoreManager->GetDestroyScore());
-	DrawFormatStringToHandle(kCharaPosx,kTimeScorePosY, kFontColorWhite, m_fontHandle, "タイムボーナス:%d",m_pScoreManager->GetTimeBonus());
-	DrawFormatStringToHandle(kCharaPosx,kScorePosY, kFontColorWhite, m_fontHandle, "合計スコア:%d",m_pScoreManager->GetScore());
+	DrawGraph(440, 95,m_skeltonIconHandle,true);
+	DrawGraph(440, 255,m_timerIconHandle,true);
+	DrawFormatStringToHandle(kCharaPosx, kDestroyScorePosY, kFontColorWhite,m_fontHandle,"Defeat Score: %d",m_pScoreManager->GetDestroyScore());
+	DrawFormatStringToHandle(kCharaPosx,kTimeScorePosY, kFontColorWhite, m_fontHandle, "Time Bonus: %d",m_pScoreManager->GetTimeBonus());
+	DrawFormatStringToHandle(kCharaPosx,kScorePosY, kFontColorRed, m_fontHandle, "Total Score: %d",m_pScoreManager->GetScore());
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatString(kCharaPosx, kPressBPosY, kFontColorCyan, "Press A Title");
+		DrawFormatStringToHandle(kCharaPosx, kPressBPosY, kFontColorBlue, m_fontHandle,"Press A Title");
 	}
 	DrawFade();
 }

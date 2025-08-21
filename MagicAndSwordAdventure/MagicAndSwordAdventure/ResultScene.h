@@ -25,5 +25,7 @@ private:
 	// ƒJƒƒ‰‚Ì‹–ìŠp
 	float m_viewAngle;
 	int m_fontHandle;
+	int m_skeltonIconHandle;
+	int m_timerIconHandle;
 };
 
