@@ -130,12 +130,11 @@ SceneBase* GameScene::Update()
 	}
 	if (IsFadingOut())
 	{
-		SoundManager::GetInstance()->FadeBGMVol();
+		SoundManager::GetInstance()->FadeBGMVol(); // フェードアウトに合わせて音量を下げる
 	}
 	if (m_isNextScene && IsFadeComplete())
 	{
-		
-		return new ResultScene(m_pScoreManager);
+		return new ResultScene(m_pScoreManager); // フェードが終わったらリザルトシーンへ移行
 	}
 	return this;
 }
@@ -154,7 +153,7 @@ void GameScene::Draw()
 	m_pStage->Draw();
 	m_pUIManager->DrawHp();
 	m_pUIManager->DrawDestroyScore();
-	m_pUIManager->DrawmElapsedTimeSeconds();
+	m_pUIManager->DrawElapsedTimeSeconds();
 	m_pUIManager->DrawNumberOfEnemiesRemaining(GetRemainingEnemies());
 	m_pEffectManager->Draw();
 	if (!m_pBattleArea->IsInBattle())
@@ -175,11 +174,11 @@ int GameScene::GetRemainingEnemies()
 	m_remainingEnemysCount = 0;
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
-		if (!normalSkelton->IsDead()) ++m_remainingEnemysCount;
+		if (!normalSkelton->IsDead()) ++m_remainingEnemysCount; // 死んでいないNormalSkeltonの数をカウント
 	}
 	for (auto& wizardSkelton : m_WizardSkeltons)
 	{
-		if (!wizardSkelton->IsDead()) ++m_remainingEnemysCount;
+		if (!wizardSkelton->IsDead()) ++m_remainingEnemysCount; // 死んでいないWizardSkeltonの数をカウント
 	}
 	return m_remainingEnemysCount;
 }

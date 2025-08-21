@@ -13,7 +13,7 @@ public:
 	void DrawHp();
 	void DrawNavigation();
 	void DrawDestroyScore(); // 撃破スコア
-	void DrawmElapsedTimeSeconds(); // 経過時間
+	void DrawElapsedTimeSeconds(); // 経過時間
 	void DrawNumberOfEnemiesRemaining(int remainingCount);
 private:
 	std::shared_ptr<Player> m_pPlayer;

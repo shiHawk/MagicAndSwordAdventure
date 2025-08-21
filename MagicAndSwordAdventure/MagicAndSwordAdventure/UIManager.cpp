@@ -107,7 +107,7 @@ void UIManager::DrawDestroyScore()
 	DrawFormatString(kScorePosX, kCharaPosY, kScoreColor,"Score\n%d",m_pScoreManager->GetDestroyScore());
 }
 
-void UIManager::DrawmElapsedTimeSeconds()
+void UIManager::DrawElapsedTimeSeconds()
 {
 	DrawFormatString(kTimePosX, kCharaPosY, kTimeColor,"Time\n%d",m_pScoreManager->GetTime());
 }
