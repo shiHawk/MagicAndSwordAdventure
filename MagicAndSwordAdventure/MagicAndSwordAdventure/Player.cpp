@@ -427,7 +427,7 @@ void Player::DoMove()
 
 void Player::HandleJump()
 {
-	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)// Aボタンを押したときジャンプ
+	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active && !m_isJump)// Aボタンを押したときジャンプ
 	{
 		m_vec.y = kJumpPower;
 		m_jumpCount++;
