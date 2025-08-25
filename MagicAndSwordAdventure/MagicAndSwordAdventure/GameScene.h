@@ -57,5 +57,8 @@ private:
 	bool m_wasHitPlayer; // player‚ªUŒ‚‚ğó‚¯‚Ä‚¢‚½‚©
 	bool m_wasHitNormalSkelton; // NormalSkelton‚ªUŒ‚‚ğó‚¯‚Ä‚¢‚½‚©
 	bool m_wasHitWizardSkelton; // WizardSkelton‚ªUŒ‚‚ğó‚¯‚Ä‚¢‚½‚©
+	int m_shadowGraphHandle;
+	VECTOR m_shadowPos;
+	int m_shadowAlpha;
 };
 

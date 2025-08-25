@@ -5,6 +5,10 @@
 #include "game.h"
 #include "Pad.h"
 #include "ResultScene.h"
+namespace
+{
+	constexpr float kGroundPosY = 20.0f;
+}
 GameScene::GameScene():
 	m_isNextScene(false),
 	m_remainingEnemysCount(30),
@@ -13,7 +17,10 @@ GameScene::GameScene():
 	m_isHitNormalSkelton(false),
 	m_isHitWizardSkelton(false),
 	m_wasHitNormalSkelton(false),
-	m_wasHitWizardSkelton(false)
+	m_wasHitWizardSkelton(false),
+	m_shadowGraphHandle(-1),
+	m_shadowPos({0.0f,0.0f,0.0f}),
+	m_shadowAlpha(0)
 {
 }
 
@@ -87,6 +94,9 @@ void GameScene::Init()
 	m_isHitNormalSkelton = false;
 	m_isHitWizardSkelton = false;
 	m_isHitPlayer = false;
+	m_shadowGraphHandle = LoadGraph("Data/UI/Shadow.png");
+	m_shadowPos = { 0.0f,0.0f,0.0f };
+	m_shadowAlpha = 255;
 }
 
 void GameScene::End()
@@ -105,6 +115,7 @@ void GameScene::End()
 		wizardSkelton->End();
 	}
 	m_pEffectManager->End();
+	DeleteGraph(m_shadowGraphHandle);
 }
 
 SceneBase* GameScene::Update()
@@ -188,11 +199,16 @@ SceneBase* GameScene::Update()
 	{
 		return new ResultScene(m_pScoreManager); // フェードが終わったらリザルトシーンへ移行
 	}
+	m_shadowPos = VGet(m_pPlayer->GetPos().x, kGroundPosY, m_pPlayer->GetPos().z);
 	return this;
 }
 
 void GameScene::Draw()
 {
+	m_pStage->Draw();
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_shadowAlpha);
+	DrawBillboard3D(m_shadowPos, 0.5f, 0.5f, 50.0f, 0.0f, m_shadowGraphHandle, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	m_pPlayer->Draw();
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
@@ -202,7 +218,6 @@ void GameScene::Draw()
 	{
 		wizardSkelton->Draw();
 	}
-	m_pStage->Draw();
 	m_pUIManager->DrawHp();
 	m_pUIManager->DrawDestroyScore();
 	m_pUIManager->DrawElapsedTimeSeconds();

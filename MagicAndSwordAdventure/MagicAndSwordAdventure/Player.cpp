@@ -106,6 +106,9 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	m_hp = kMaxHp;
 	m_isDead = false;
 	attack = { 30.0f, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
+	/*m_ShadowMapHandle = MakeShadowMap(512, 512);
+	SetShadowMapLightDirection(m_ShadowMapHandle, VGet(0.0f, -1.0f, 0.0f));
+	SetShadowMapDrawArea(m_ShadowMapHandle,VGet(kLeftLimit,-20.0f, kFrontLimit),VGet(-kLeftLimit,20.0f,kBackLimit));*/
 }
 
 void Player::End()
@@ -211,7 +214,10 @@ void Player::Update()
 
 void Player::Draw() const
 {
+	//ShadowMap_DrawSetup(m_ShadowMapHandle);
 	MV1DrawModel(m_modelHandle);
+	//ShadowMap_DrawEnd();
+	//SetUseShadowMap(1, m_ShadowMapHandle);
 #if _DEBUG
 	/*if (attack.active && !m_vec.y > 0)
 	{
@@ -229,19 +235,19 @@ void Player::OnDamage(int enemyPower)
 {
 	if (!evadeData.active)
 	{
-		m_hp -= enemyPower;
+		m_hp -= enemyPower; // 回避中でなければダメージを受ける
 	}
-	if (m_hp <= 0 )
+	if (m_hp <= 0 ) // HPが0になったら
 	{
 		m_hp = 0;
-		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedFast);
+		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedFast); // 死亡アニメーションを再生
 		m_isDying = true;
 	}
 	else
 	{
 		m_isAttackingAnim = false;
 		attack.active = false;
-		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast);
+		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast); // 被弾アニメーションを再生
 		m_isDamageAnim = true;
 	}
 	
@@ -427,7 +433,7 @@ void Player::DoMove()
 
 void Player::HandleJump()
 {
-	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active)// Aボタンを押したときジャンプ
+	if (Pad::isTrigger(PAD_INPUT_1) && !attack.active && !m_isJump)// Aボタンを押したときジャンプ
 	{
 		m_vec.y = kJumpPower;
 		m_jumpCount++;
