@@ -206,8 +206,42 @@ SceneBase* GameScene::Update()
 void GameScene::Draw()
 {
 	m_pStage->Draw();
+	VERTEX3D vertex[6];
+	// ¶ã
+	vertex[0].pos = VGet(m_pPlayer->GetPos().x, 0.0f, m_pPlayer->GetPos().z+10.0f);
+	vertex[0].u = 0.0f;
+	vertex[0].v = 0.0f;
+	// ‰E‰º
+	vertex[1].pos = VGet(m_pPlayer->GetPos().x+50.0f, 0.0f, m_pPlayer->GetPos().z -20.0f);
+	vertex[1].u = 1.0f;
+	vertex[1].v = 1.0f;
+	// ¶‰º
+	vertex[2].pos = VGet(m_pPlayer->GetPos().x, 0.0f, m_pPlayer->GetPos().z -20.0f);
+	vertex[2].u = 0.0f;
+	vertex[2].v = 1.0f;
+	// ¶ã(2‚Â–Ú)
+	vertex[3].pos = VGet(m_pPlayer->GetPos().x, 0.0f, m_pPlayer->GetPos().z+10.0f);
+	vertex[3].u = 0.0f;
+	vertex[3].v = 0.0f;
+	// ‰Eã
+	vertex[4].pos = VGet(m_pPlayer->GetPos().x+50.0f, 0.0f, m_pPlayer->GetPos().z+10.0f);
+	vertex[4].u = 1.0f;
+	vertex[4].v = 0.0f;
+	// ‰E‰º(2‚Â–Ú)
+	vertex[5].pos = VGet(m_pPlayer->GetPos().x+50.0f, 0.0f, m_pPlayer->GetPos().z -20.0f);
+	vertex[5].u = 1.0f;
+	vertex[5].v = 1.0f;
+
+	for (int i = 0; i < 6; i++)
+	{
+		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
+		vertex[i].dif = GetColorU8(255, 255, 255, m_shadowAlpha);
+		vertex[i].spc = GetColorU8(0.0f, 0.0f, 0.0f, 0.0f);
+	}
+	DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_shadowAlpha);
-	DrawBillboard3D(m_shadowPos, 0.5f, 0.5f, 50.0f, 0.0f, m_shadowGraphHandle, TRUE);
+	//DrawBillboard3D(m_shadowPos, 0.5f, 0.5f, 50.0f, 0.0f, m_shadowGraphHandle, TRUE);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	m_pPlayer->Draw();
 	for (auto& normalSkelton : m_NormalSkeltons)

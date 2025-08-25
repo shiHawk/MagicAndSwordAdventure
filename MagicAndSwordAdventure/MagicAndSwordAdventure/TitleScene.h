@@ -14,7 +14,6 @@ public:
 	virtual void Draw() override;
 	virtual SceneID GetSceneID() const override;
 private:
-	//std::shared_ptr<SoundManager> m_pSoundManager;
 	int m_titleHandle;
 	int m_titleBGHandle;
 	int m_modelHandle;

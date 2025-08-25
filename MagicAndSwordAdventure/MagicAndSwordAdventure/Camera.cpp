@@ -10,7 +10,7 @@ namespace
 	constexpr float kRightLimitCamera = 4807.0f;
 	constexpr float kLeftLimitCamera = -2355.0f;
 	// カメラの位置と注視点
-	constexpr VECTOR kCameraPos = { -4800.0f,200.0f,-840.0f };
+	constexpr VECTOR kCameraPos = { -4800.0f,300.0f,-840.0f };
 	constexpr VECTOR kCameraTarget = { -4800.0f,50.0f,0.0f };
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
