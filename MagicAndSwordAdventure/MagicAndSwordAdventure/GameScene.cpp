@@ -206,43 +206,8 @@ SceneBase* GameScene::Update()
 void GameScene::Draw()
 {
 	m_pStage->Draw();
-	VERTEX3D vertex[6];
-	// 左上
-	vertex[0].pos = VGet(m_pPlayer->GetPos().x, 0.0f, m_pPlayer->GetPos().z+10.0f);
-	vertex[0].u = 0.0f;
-	vertex[0].v = 0.0f;
-	// 右下
-	vertex[1].pos = VGet(m_pPlayer->GetPos().x+50.0f, 0.0f, m_pPlayer->GetPos().z -20.0f);
-	vertex[1].u = 1.0f;
-	vertex[1].v = 1.0f;
-	// 左下
-	vertex[2].pos = VGet(m_pPlayer->GetPos().x, 0.0f, m_pPlayer->GetPos().z -20.0f);
-	vertex[2].u = 0.0f;
-	vertex[2].v = 1.0f;
-	// 左上(2つ目)
-	vertex[3].pos = VGet(m_pPlayer->GetPos().x, 0.0f, m_pPlayer->GetPos().z+10.0f);
-	vertex[3].u = 0.0f;
-	vertex[3].v = 0.0f;
-	// 右上
-	vertex[4].pos = VGet(m_pPlayer->GetPos().x+50.0f, 0.0f, m_pPlayer->GetPos().z+10.0f);
-	vertex[4].u = 1.0f;
-	vertex[4].v = 0.0f;
-	// 右下(2つ目)
-	vertex[5].pos = VGet(m_pPlayer->GetPos().x+50.0f, 0.0f, m_pPlayer->GetPos().z -20.0f);
-	vertex[5].u = 1.0f;
-	vertex[5].v = 1.0f;
-
-	for (int i = 0; i < 6; i++)
-	{
-		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
-		vertex[i].dif = GetColorU8(255, 255, 255, m_shadowAlpha);
-		vertex[i].spc = GetColorU8(0.0f, 0.0f, 0.0f, 0.0f);
-	}
-	DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_shadowAlpha);
-	//DrawBillboard3D(m_shadowPos, 0.5f, 0.5f, 50.0f, 0.0f, m_shadowGraphHandle, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	
+	DrawCharacterShadow();
 	m_pPlayer->Draw();
 	for (auto& normalSkelton : m_NormalSkeltons)
 	{
@@ -295,4 +260,69 @@ bool GameScene::IsAreAllEnemiesDefeated()
 		if (!wizardSkelton->IsDead()) return false;
 	}
 	return true;
+}
+
+void GameScene::MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex)
+{
+	// キャラの位置とサイズから影の頂点配列を作る
+	constexpr float left = -30.0f;
+	constexpr float right = 40.0f;
+	constexpr float front = 20.0f;
+	constexpr float back = -20.0f;
+
+	// 左上
+	vertex[0].pos = VGet(pos.x + left, 0.0f, pos.z + front);
+	vertex[0].u = 0.0f; vertex[0].v = 0.0f;
+
+	// 右下
+	vertex[1].pos = VGet(pos.x + right, 0.0f, pos.z + back);
+	vertex[1].u = 1.0f; vertex[1].v = 1.0f;
+
+	// 左下
+	vertex[2].pos = VGet(pos.x + left, 0.0f, pos.z + back);
+	vertex[2].u = 0.0f; vertex[2].v = 1.0f;
+
+	// 左上(2つ目)
+	vertex[3].pos = VGet(pos.x + left, 0.0f, pos.z + front);
+	vertex[3].u = 0.0f; vertex[3].v = 0.0f;
+
+	// 右上
+	vertex[4].pos = VGet(pos.x + right, 0.0f, pos.z + front);
+	vertex[4].u = 1.0f; vertex[4].v = 0.0f;
+
+	// 右下(2つ目)
+	vertex[5].pos = VGet(pos.x + right, 0.0f, pos.z + back);
+	vertex[5].u = 1.0f; vertex[5].v = 1.0f;
+
+	for (int i = 0; i < 6; i++)
+	{
+		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
+		vertex[i].dif = GetColorU8(255, 255, 255, m_shadowAlpha);
+		vertex[i].spc = GetColorU8(0, 0, 0, 0);
+	}
+}
+
+void GameScene::DrawCharacterShadow()
+{
+	VERTEX3D vertex[6];
+
+	// プレイヤーの影
+	MakeShadowVertex(m_pPlayer->GetPos(), vertex);
+	DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+
+	// ノーマルスケルトンの影
+	for (auto& normalSkelton : m_NormalSkeltons)
+	{
+		if (normalSkelton->IsDead()) continue;
+		MakeShadowVertex(normalSkelton->GetPos(), vertex);
+		DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+	}
+
+	// ウィザードスケルトンの影
+	for (auto& wizardSkelton : m_WizardSkeltons)
+	{
+		if (wizardSkelton->IsDead()) continue;
+		MakeShadowVertex(wizardSkelton->GetPos(), vertex);
+		DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+	}
 }

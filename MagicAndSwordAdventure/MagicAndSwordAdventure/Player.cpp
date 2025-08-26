@@ -40,8 +40,8 @@ namespace
 	constexpr int kJumpAttackAnimNo = 39;
 	constexpr int kEvadeAnimNo = 16;
 	// アニメーションの速度
-	constexpr float kAnimSpeedFast = 0.5f; // 短めの再生の時
-	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
+	constexpr float kAnimSpeedFast = 0.75f; // 短めの再生の時
+	constexpr float kAnimSpeedMedium = 0.5f; // 中程度のテンポ
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	// 持続時間
 	constexpr float kAttackDuration = 37.0f;
@@ -105,10 +105,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation)
 	m_power = kFirstAttackPower;
 	m_hp = kMaxHp;
 	m_isDead = false;
-	attack = { 30.0f, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
-	/*m_ShadowMapHandle = MakeShadowMap(512, 512);
-	SetShadowMapLightDirection(m_ShadowMapHandle, VGet(0.0f, -1.0f, 0.0f));
-	SetShadowMapDrawArea(m_ShadowMapHandle,VGet(kLeftLimit,-20.0f, kFrontLimit),VGet(-kLeftLimit,20.0f,kBackLimit));*/
+	attack = { 35.0f, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
 }
 
 void Player::End()
@@ -130,7 +127,7 @@ void Player::Update()
 			// ダメージモーションが終わったらIdleに戻す
 			if (m_pAnimation->GetIsAnimEnd())
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
 				m_isDamageAnim = false;
 			}
 			m_pAnimation->UpdateAnim();
@@ -154,7 +151,7 @@ void Player::Update()
 			//printfDx("attack.timer:%f\n", attack.timer);
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
 				attack.pos = { 0.0f,-kAttackHideY,0.0f };
 				m_isAttackingAnim = false;
 				attack.active = false;
@@ -180,7 +177,7 @@ void Player::Update()
 			// 現在のアニメと違う場合だけ切り替える
 			if (m_pAnimation->GetAttachAnimNo() != targetAnimNo)
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, targetAnimNo, true, kAnimSpeedFast);
+				m_pAnimation->ChangeAnim(m_modelHandle, targetAnimNo, true, kAnimSpeedMedium);
 			}
 			moveCount++;
 		}
@@ -195,7 +192,7 @@ void Player::Update()
 		}
 		m_pAnimation->UpdateAnim();
 		// 攻撃中なら、指定カウント以降で攻撃判定ON
-		if (m_isAttackingAnim  &&!attack.active && m_pAnimation->GetPlayTime() >= 11.0f)  // 攻撃アニメーション中かつまだ判定が出てない
+		if (m_isAttackingAnim  &&!attack.active && m_pAnimation->GetPlayTime() >= 5.0f)  // 攻撃アニメーション中かつまだ判定が出てない
 		{
 			attack.active = true;
 		}
@@ -240,14 +237,14 @@ void Player::OnDamage(int enemyPower)
 	if (m_hp <= 0 ) // HPが0になったら
 	{
 		m_hp = 0;
-		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedFast); // 死亡アニメーションを再生
+		m_pAnimation->ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedMedium); // 死亡アニメーションを再生
 		m_isDying = true;
 	}
 	else
 	{
 		m_isAttackingAnim = false;
 		attack.active = false;
-		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedFast); // 被弾アニメーションを再生
+		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedMedium); // 被弾アニメーションを再生
 		m_isDamageAnim = true;
 	}
 	
@@ -276,7 +273,6 @@ void Player::DoAttack()
 		attack.count = 1;
 	}
 	attack.comboDuration = kMaxComboDuration;
-	//attack.active = true;
 	if (m_vec.y > 0)
 	{
 		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, kAnimSpeedMedium);// ジャンプ攻撃
@@ -290,11 +286,11 @@ void Player::DoAttack()
 			break;
 		case 2:
 			m_power = kSecondAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedMedium);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedFast+0.2f);
 			break;
 		case 3:
 			m_power = kThirdAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, kAnimSpeedSlow);
+			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, kAnimSpeedFast+0.3f);
 			break;
 		}
 	}
@@ -337,7 +333,7 @@ void Player::DoEvade()
 	{
 		evadeData.active = true;
 		// 回避アニメーションに切り替え
-		m_pAnimation->ChangeAnim(m_modelHandle, kEvadeAnimNo, false, kAnimSpeedFast);
+		m_pAnimation->ChangeAnim(m_modelHandle, kEvadeAnimNo, false, kAnimSpeedMedium);
 		// 回避回数を増やす
 		evadeData.evadeCount++;
 		evadeData.timer = kEvadeDuration;
@@ -458,7 +454,7 @@ void Player::HandleEvade()
 		// 回避時間が終わったら
 		if (evadeData.timer <= 0)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
 			evadeData.active = false;
 			evadeData.evadeCount = 0;
 		}
@@ -548,7 +544,7 @@ void Player::HandleInput()
 		moveCount = 0;
 		if (idleCount < 1)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedFast);
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
 		}
 		idleCount++;
 	}
