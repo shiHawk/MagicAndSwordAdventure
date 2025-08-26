@@ -22,7 +22,7 @@ namespace
 	constexpr unsigned int kTimeColor = 0x008b8b;
 	// c‚è“G”‚ÌˆÊ’u
 	constexpr int kEnemyRemainPosX = 960;
-	constexpr unsigned int kEnemyRemainColor = 0x4b0082;
+	constexpr unsigned int kEnemyRemainColor = 0xdda0dd;
 	// “_–ÅüŠú
 	constexpr float kBlinkCycleSeconds = 2.0f;
 	constexpr float kFramePerSecond = 60.0f;
@@ -39,7 +39,8 @@ UIManager::UIManager() :
 	m_blinkTime(0.0f),
 	m_blinkProgress(0.0f),
 	m_alpha(0),
-	m_playerHpGaugePinchHandle(-1)
+	m_playerHpGaugePinchHandle(-1),
+	m_fontHandle(-1)
 {
 }
 
@@ -56,6 +57,7 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 	m_playerIconHandle = LoadGraph("Data/UI/Player_Icon.png");
 	m_playerIconPinchHandle = LoadGraph("Data/UI/Player_Icon_Pinch.png");
 	m_playerHpGaugePinchHandle = LoadGraph("Data/UI/HP_pinch.png");
+	m_fontHandle = CreateFontToHandle("Noto Serif JP Black",15, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 }
 
 void UIManager::End()
@@ -65,6 +67,7 @@ void UIManager::End()
 	DeleteGraph(m_playerIconHandle);
 	DeleteGraph(m_playerIconPinchHandle);
 	DeleteGraph(m_playerHpGaugePinchHandle);
+	DeleteFontToHandle(m_fontHandle);
 }
 
 void UIManager::Update()
@@ -86,7 +89,7 @@ void UIManager::DrawHp()
 		DrawGraph(10, 10, m_playerIconHandle, true);
 		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_hpGaugeHandle, true);
 	}
-	DrawFormatString(kHpGaugeWidth, kHpTextPosY,kFontColorWhite,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
+	DrawFormatStringToHandle(kHpGaugeWidth, kHpTextPosY,kFontColorWhite, m_fontHandle,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
 	SetDrawBright(255, 255, 255);
 }
 
@@ -104,15 +107,15 @@ void UIManager::DrawNavigation()
 
 void UIManager::DrawDestroyScore()
 {
-	DrawFormatString(kScorePosX, kCharaPosY, kScoreColor,"Score\n%d",m_pScoreManager->GetDestroyScore());
+	DrawFormatStringToHandle(kScorePosX, kCharaPosY, kScoreColor, m_fontHandle, "Score\n%d",m_pScoreManager->GetDestroyScore());
 }
 
 void UIManager::DrawElapsedTimeSeconds()
 {
-	DrawFormatString(kTimePosX, kCharaPosY, kTimeColor,"Time\n%d",m_pScoreManager->GetTime());
+	DrawFormatStringToHandle(kTimePosX, kCharaPosY, kTimeColor, m_fontHandle, "Time\n%d",m_pScoreManager->GetTime());
 }
 
 void UIManager::DrawNumberOfEnemiesRemaining(int remainingCount)
 {
-	DrawFormatString(kEnemyRemainPosX, kCharaPosY, kEnemyRemainColor, "‚ ‚Æ%d‘Ì", remainingCount);
+	DrawFormatStringToHandle(kEnemyRemainPosX, kCharaPosY, kEnemyRemainColor, m_fontHandle, "‚ ‚Æ%d‘Ì", remainingCount);
 }

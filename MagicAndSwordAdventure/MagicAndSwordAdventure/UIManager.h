@@ -18,14 +18,17 @@ public:
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<ScoreManager> m_pScoreManager;
+	// UIのハンドル
 	float m_hpGaugeRate;
 	int m_hpGaugeHandle;
 	int m_navigationHandle;
 	int m_playerIconHandle;
 	int m_playerIconPinchHandle;
 	int m_playerHpGaugePinchHandle;
+
 	float m_blinkTime;
 	float m_blinkProgress; // 点滅の進行度
-	int m_alpha;
+	int m_alpha; // 透明度
+	int m_fontHandle;
 };
 
