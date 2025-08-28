@@ -22,9 +22,13 @@ namespace
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
 
+	// PressAの文字の位置のポジション
+	constexpr int kPressAPosX = 570;
+	constexpr int kPressAPosY = 600;
 	// GameStartの文字の位置のポジション
 	constexpr int kStartPosX = 570;
-	constexpr int kStartPosY = 600;
+	constexpr int kStartPosY = 660;
+
 
 	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期(Hz)
 	constexpr float kTitleBobAmplitude = 10.0f; // タイトルロゴの上下揺れ振幅(px)
@@ -48,7 +52,9 @@ TitleScene::TitleScene():
 	m_titleBGHandle(-1),
 	m_modelHandle(-1),
 	m_playerPos({ 0.0f,0.0f,0.0f }),
-	m_fontHandle(-1)
+	m_fontHandle(-1),
+	m_manualHandle(-1),
+	m_isManualFlag(false)
 {
 }
 
@@ -60,6 +66,7 @@ void TitleScene::Init()
 	m_playerPos = { 0.0f,0.0f,0.0f };
 	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
 	MV1SetPosition(m_modelHandle, m_playerPos);
+	m_isManualFlag = false;
 
 	// 3D表示の設定
 	SetUseZBuffer3D(true);	  // Zバッファを指定する
@@ -87,6 +94,7 @@ void TitleScene::Init()
 	SoundManager::GetInstance()->PlayBGM();
 	m_titleHandle = LoadGraph("Data/title/WarriorAdventureTitle.png");
 	m_titleBGHandle = LoadGraph("Data/title/TitleBG.png");
+	m_manualHandle = LoadGraph("Data/title/WarriorAdventure_manual.png");
 	m_fontHandle = CreateFontToHandle("Arial Black", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 }
 
@@ -95,6 +103,7 @@ void TitleScene::End()
 	DeleteGraph(m_titleHandle);
 	DeleteGraph(m_titleBGHandle);
 	MV1DeleteModel(m_modelHandle);
+	MV1DeleteModel(m_manualHandle);
 	DeleteFontToHandle(m_fontHandle);
 	SoundManager::GetInstance()->StopBGM();
 }
@@ -107,10 +116,19 @@ SceneBase* TitleScene::Update()
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
 	// Aボタンを押したらフェードを開始
-	if(!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
+	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
 	{
-		StartFadeOut();
-		m_isNextScene = true;
+		if (!m_isManualFlag)
+		{
+			// 最初のAボタンでマニュアル表示
+			m_isManualFlag = true;
+		}
+		else
+		{
+			// 2回目のAボタンでフェード開始
+			StartFadeOut();
+			m_isNextScene = true;
+		}
 	}
 	if (IsFadingOut())
 	{
@@ -152,10 +170,22 @@ void TitleScene::Draw()
 	DrawGraph(0,0, m_titleBGHandle,false);
 	// タイトルロゴを拡大表示
 	DrawExtendGraph(kTitlePosX, kTitlePosY + m_offsetY, kTitlePosX+ kTitleSize, kTitlePosY+ +m_offsetY+kTitleSize, m_titleHandle, true);
+	if (m_isManualFlag)
+	{
+		DrawGraph(0, 0, m_manualHandle, false);
+	}
 	// 点滅させる
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatStringToHandle(kStartPosX, kStartPosY, 0x00ffff,m_fontHandle,"Press A Start");
+		if (!m_isManualFlag)
+		{
+			DrawFormatStringToHandle(kPressAPosX, kPressAPosX, 0x00ffff, m_fontHandle, "Press A Button");
+		}
+		else
+		{
+			DrawFormatStringToHandle(kStartPosX, kStartPosY, 0x00ffff, m_fontHandle, "Press A Start");
+		}
+		
 	}
 	
 	DrawFade();

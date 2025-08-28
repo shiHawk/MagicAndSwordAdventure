@@ -28,5 +28,7 @@ private:
 	// ƒJƒƒ‰‚Ì‹–ìŠp
 	float m_viewAngle;
 	int m_fontHandle;
+	int m_manualHandle;
+	bool m_isManualFlag;
 };
 
