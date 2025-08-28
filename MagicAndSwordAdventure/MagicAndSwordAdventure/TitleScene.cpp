@@ -137,7 +137,6 @@ SceneBase* TitleScene::Update()
 	// フェードが終了したら遷移する
 	if (m_isNextScene && IsFadeComplete())
 	{
-		
 		return new GameScene();
 	}
 	return this;
@@ -185,7 +184,6 @@ void TitleScene::Draw()
 		{
 			DrawFormatStringToHandle(kStartPosX, kStartPosY, 0x00ffff, m_fontHandle, "Press A Start");
 		}
-		
 	}
 	
 	DrawFade();

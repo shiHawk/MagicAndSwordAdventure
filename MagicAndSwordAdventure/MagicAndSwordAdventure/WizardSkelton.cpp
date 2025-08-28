@@ -53,7 +53,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_isDying = false;
 	m_isDead = false;
 	m_hp = kMaxHp;
-	m_power = 30;
+	m_power = 20;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
 	m_knockbackSpeed = 5.0f;
 	m_knockbackDuration = 0.5f;
@@ -216,6 +216,10 @@ void WizardSkelton::OnDeath()
 
 void WizardSkelton::Draw() const
 {
+	if (m_isCasting)
+	{
+		
+	}
 	MV1DrawModel(m_modelHandle);
 	if (attack.active && !m_isDying)
 	{
