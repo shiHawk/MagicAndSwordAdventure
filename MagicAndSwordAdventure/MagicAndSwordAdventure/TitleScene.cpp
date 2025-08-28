@@ -23,7 +23,8 @@ namespace
 	constexpr float kViewAngle = 0.447f;
 
 	// GameStartの文字の位置のポジション
-	constexpr int kStartPos = 600;
+	constexpr int kStartPosX = 570;
+	constexpr int kStartPosY = 600;
 
 	constexpr float kTitleBobFrequency = 2.0f; // タイトルロゴの上下揺れ周期(Hz)
 	constexpr float kTitleBobAmplitude = 10.0f; // タイトルロゴの上下揺れ振幅(px)
@@ -46,7 +47,8 @@ TitleScene::TitleScene():
 	m_offsetY(0),
 	m_titleBGHandle(-1),
 	m_modelHandle(-1),
-	m_playerPos({ 0.0f,0.0f,0.0f })
+	m_playerPos({ 0.0f,0.0f,0.0f }),
+	m_fontHandle(-1)
 {
 }
 
@@ -85,6 +87,7 @@ void TitleScene::Init()
 	SoundManager::GetInstance()->PlayBGM();
 	m_titleHandle = LoadGraph("Data/title/WarriorAdventureTitle.png");
 	m_titleBGHandle = LoadGraph("Data/title/TitleBG.png");
+	m_fontHandle = CreateFontToHandle("Arial Black", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 }
 
 void TitleScene::End()
@@ -92,6 +95,7 @@ void TitleScene::End()
 	DeleteGraph(m_titleHandle);
 	DeleteGraph(m_titleBGHandle);
 	MV1DeleteModel(m_modelHandle);
+	DeleteFontToHandle(m_fontHandle);
 	SoundManager::GetInstance()->StopBGM();
 }
 
@@ -151,7 +155,7 @@ void TitleScene::Draw()
 	// 点滅させる
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatString(kStartPos, kStartPos, 0x00ffff,"Press A Start");
+		DrawFormatStringToHandle(kStartPosX, kStartPosY, 0x00ffff,m_fontHandle,"Press A Start");
 	}
 	
 	DrawFade();
