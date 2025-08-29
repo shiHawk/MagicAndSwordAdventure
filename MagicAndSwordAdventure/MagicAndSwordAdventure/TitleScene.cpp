@@ -119,7 +119,7 @@ SceneBase* TitleScene::Update()
 	{
 		if (!m_isManualFlag)
 		{
-			// 最初のAボタンでマニュアル表示
+			// 最初のAボタンで操作説明を表示
 			m_isManualFlag = true;
 		}
 		else
@@ -177,7 +177,7 @@ void TitleScene::Draw()
 	{
 		if (!m_isManualFlag)
 		{
-			DrawFormatStringToHandle(kPressAPosX, kPressAPosX, 0x00ffff, m_fontHandle, "Press A Button");
+			DrawFormatStringToHandle(kPressAPosX, kPressAPosY, 0x00ffff, m_fontHandle, "Press A Button");
 		}
 		else
 		{

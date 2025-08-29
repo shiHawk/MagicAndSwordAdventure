@@ -140,7 +140,7 @@ void ResultScene::Draw()
 	{
 		DrawGraph(840, 170, m_rankSHandle, true);
 	}
-	else if (m_pScoreManager->GetScore() > kRankScoreB)
+	else if (m_pScoreManager->GetScore() > kRankScoreA)
 	{
 		DrawGraph(840, 170, m_rankAHandle, true);
 	}
