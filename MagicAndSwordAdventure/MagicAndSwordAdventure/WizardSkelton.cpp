@@ -25,6 +25,7 @@ namespace
 	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	// 最大HP
 	constexpr int kMaxHp = 60;
+	constexpr int kMaxHomingTime = 60; // 追尾する時間
 	//int attackCount = 0;
 }
 
@@ -35,7 +36,9 @@ attack({ 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,0.0
 m_isCasting(false),
 m_isCastFinished(false),
 m_barrelHandle(-1),
-m_rollAngleZ(0.0f)
+m_rollAngleZ(0.0f),
+m_attackDir({0.0f,0.0f,0.0f}),
+m_homingTimer(0)
 {
 }
 
@@ -144,11 +147,21 @@ void WizardSkelton::Update()
 void WizardSkelton::DoAttack()
 {
 	if (m_isDying || m_isDead) return;
-	attack.active = true;
+	
 	// プレイヤーに向かうベクトル
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
-	
+	if (m_attackCount == 0) // m_attackCountが0から1になるときを攻撃開始フレームとする
+	{
+		attack.active = true;
+		m_attackDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos)); // 攻撃の初期方向を計算
+		m_homingTimer = kMaxHomingTime; // 追尾タイマーをセット
+	}
 	m_attackCount++;
+	if (m_homingTimer > 0) // 追尾タイマーが残っている間はベクトルを更新する
+	{
+		m_attackDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos)); // プレイヤーに向かうベクトルを更新
+		m_homingTimer--; // タイマーを減らす
+	}
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
@@ -158,8 +171,8 @@ void WizardSkelton::DoAttack()
 		MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	}
 	// プレイヤーの位置に向かって攻撃を飛ばす
-	attack.pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveAccRate;
-	attack.pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveAccRate;
+	attack.pos.x += m_attackDir.x * kMoveSpeed * kMoveAccRate;
+	attack.pos.z += m_attackDir.z * kMoveSpeed * kMoveAccRate;
 	attack.pos.y = 20.0f;
 
 	MV1SetPosition(m_barrelHandle,attack.pos);

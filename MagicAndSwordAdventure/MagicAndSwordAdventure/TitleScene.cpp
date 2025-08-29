@@ -29,7 +29,6 @@ namespace
 	constexpr int kStartPosX = 570;
 	constexpr int kStartPosY = 660;
 
-
 	constexpr float kTitleBobFrequency = 2.0f; // ƒ^ƒCƒgƒ‹ƒƒS‚Ìã‰º—h‚êüŠú(Hz)
 	constexpr float kTitleBobAmplitude = 10.0f; // ƒ^ƒCƒgƒ‹ƒƒS‚Ìã‰º—h‚êU•(px)
 	constexpr int   kMillisecondsPerSecond = 1000; // ƒ~ƒŠ•b¨•bŠ·Z—p

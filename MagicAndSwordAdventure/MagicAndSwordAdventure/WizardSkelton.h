@@ -28,5 +28,7 @@ private:
 	bool m_isCastFinished = false; // —\”õ“®ìI—¹
 	int m_barrelHandle; // ’M‚Ìƒnƒ“ƒhƒ‹
 	float m_rollAngleZ; // ‰ñ“]
+	VECTOR m_attackDir; // ’e‚Ìis•ûŒü‚ğ•Û‚·‚é•Ï”
+	int m_homingTimer;
 };
 
