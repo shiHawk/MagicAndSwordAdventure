@@ -12,11 +12,14 @@ public:
 	int GetTime();
 	int GetTimeBonus();
 	int GetScore();
+	void HpBonus(int hp);
+	int GetHpBonus();
 	void SetIsPlayerDead(bool isDead);
 private:
-	int m_destroyScore;
-	int m_timeBonus;
-	int m_score;
+	int m_destroyScore; // 撃破スコア
+	int m_timeBonus; // タイムボーナス
+	int m_hpBonus;
+	int m_score; // スコアの合計
 	int m_startTime;
 	int m_elapsedTimeSeconds; // 経過時間(秒)
 	bool m_isPlayerDead; // プレイヤーが死んだか

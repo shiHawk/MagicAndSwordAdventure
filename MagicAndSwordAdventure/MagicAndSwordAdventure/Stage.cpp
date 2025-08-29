@@ -56,6 +56,7 @@ void Stage::Init()
 	MV1SetRotationXYZ(m_gateFrameModelHandle, VGet(0.0f, -DX_PI / 2.0f, 0.0f));
 
 	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
+	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
 	{
 		printfDx("ì«Ç›çûÇ›é∏îs\n");
 		return;

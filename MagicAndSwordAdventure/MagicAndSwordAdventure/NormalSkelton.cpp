@@ -71,7 +71,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	MV1SetScale(m_weponModelHandel, VGet(0.1f, 0.1f, 0.1f));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
-	m_destroyScore = 500;
+	m_destroyScore = 300;
 	attack = { 30.0f,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,40.0f,40.0,60.0f };
 }
 

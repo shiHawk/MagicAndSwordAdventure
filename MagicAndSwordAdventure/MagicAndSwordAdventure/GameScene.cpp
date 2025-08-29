@@ -199,6 +199,7 @@ SceneBase* GameScene::Update()
 	{
 		return new ResultScene(m_pScoreManager); // フェードが終わったらリザルトシーンへ移行
 	}
+	m_pScoreManager->HpBonus(m_pPlayer->GetHp());
 	m_shadowPos = VGet(m_pPlayer->GetPos().x, kGroundPosY, m_pPlayer->GetPos().z);
 	return this;
 }

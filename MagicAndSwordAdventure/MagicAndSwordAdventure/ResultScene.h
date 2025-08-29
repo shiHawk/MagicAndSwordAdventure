@@ -25,7 +25,12 @@ private:
 	// カメラの視野角
 	float m_viewAngle;
 	int m_fontHandle;
-	int m_skeltonIconHandle;
-	int m_timerIconHandle;
+	int m_skeltonIconHandle; // 撃破スコアのアイコンハンドル
+	int m_timerIconHandle; // タイムボーナスのアイコンハンドル
+ 	int m_HPIconHandle; // HPボーナスのアイコンハンドル
+	// ランクのハンドル
+	int m_rankSHandle; 
+	int m_rankAHandle; 
+	int m_rankBHandle; 
 };
 
