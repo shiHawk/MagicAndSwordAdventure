@@ -49,6 +49,7 @@ TitleScene::TitleScene():
 	m_time(0.0f),
 	m_offsetY(0),
 	m_titleBGHandle(-1),
+	m_BGHandle(-1),
 	m_modelHandle(-1),
 	m_playerPos({ 0.0f,0.0f,0.0f }),
 	m_fontHandle(-1),
@@ -95,6 +96,7 @@ void TitleScene::Init()
 	m_titleBGHandle = LoadGraph("Data/title/TitleBG.png");
 	m_manualHandle = LoadGraph("Data/title/WarriorAdventure_manual.png");
 	m_fontHandle = CreateFontToHandle("Arial Black", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	m_BGHandle = LoadGraph("Data/title/title_BG.mp4");
 }
 
 void TitleScene::End()
@@ -104,6 +106,7 @@ void TitleScene::End()
 	MV1DeleteModel(m_modelHandle);
 	MV1DeleteModel(m_manualHandle);
 	DeleteFontToHandle(m_fontHandle);
+	DeleteGraph(m_BGHandle);
 	SoundManager::GetInstance()->StopBGM();
 }
 
@@ -112,6 +115,7 @@ SceneBase* TitleScene::Update()
 	UpdateFade();
 	SoundManager::GetInstance()->Update();
 	m_time = GetNowCount() / kMillisecondsPerSecond;
+	PlayMovieToGraph(m_BGHandle);
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
 	// Aボタンを押したらフェードを開始
@@ -143,29 +147,9 @@ SceneBase* TitleScene::Update()
 
 void TitleScene::Draw()
 {	
-	//// 頂点配列（PolygonNum × 3個 = 2×3=6個）
-	//VERTEX3D vertices[6];
-
-	//// 左上、右上、右下、左下（四角形の座標）
-	//VECTOR posLT = VGet(-640.0f, 360.0f, 800.0f); // 左上
-	//VECTOR posRT = VGet(640.0f, 360.0f, 800.0f);  // 右上
-	//VECTOR posRB = VGet(640.0f, -400.0f, 800.0f); // 右下
-	//VECTOR posLB = VGet(-640.0f, -400.0f, 800.0f);// 左下
-
-	//// 三角形1：左上、右上、右下
-	//vertices[0].pos = posLT; vertices[0].norm = VGet(0, 0, -1); vertices[0].dif = GetColorU8(255, 255, 255, 255); vertices[0].spc = GetColorU8(0, 0, 0, 0); vertices[0].u = 0.0f; vertices[0].v = 0.0f;
-	//vertices[1].pos = posRT; vertices[1].norm = VGet(0, 0, -1); vertices[1].dif = GetColorU8(255, 255, 255, 255); vertices[1].spc = GetColorU8(0, 0, 0, 0); vertices[1].u = 1.0f; vertices[1].v = 0.0f;
-	//vertices[2].pos = posRB; vertices[2].norm = VGet(0, 0, -1); vertices[2].dif = GetColorU8(255, 255, 255, 255); vertices[2].spc = GetColorU8(0, 0, 0, 0); vertices[2].u = 1.0f; vertices[2].v = 1.0f;
-
-	//// 三角形2：右下、左下、左上
-	//vertices[3].pos = posRB; vertices[3].norm = VGet(0, 0, -1); vertices[3].dif = GetColorU8(255, 255, 255, 255); vertices[3].spc = GetColorU8(0, 0, 0, 0); vertices[3].u = 1.0f; vertices[3].v = 1.0f;
-	//vertices[4].pos = posLB; vertices[4].norm = VGet(0, 0, -1); vertices[4].dif = GetColorU8(255, 255, 255, 255); vertices[4].spc = GetColorU8(0, 0, 0, 0); vertices[4].u = 0.0f; vertices[4].v = 1.0f;
-	//vertices[5].pos = posLT; vertices[5].norm = VGet(0, 0, -1); vertices[5].dif = GetColorU8(255, 255, 255, 255); vertices[5].spc = GetColorU8(0, 0, 0, 0); vertices[5].u = 0.0f; vertices[5].v = 0.0f;
-
-	//DrawPolygon3D(vertices, 2, m_titleBGHandle, TRUE);
-	MV1DrawModel(m_modelHandle);
+	DrawGraph(0, 0, m_BGHandle, false);
 	// 背景を描画
-	DrawGraph(0,0, m_titleBGHandle,false);
+	//DrawGraph(0,0, m_titleBGHandle,false);
 	// タイトルロゴを拡大表示
 	DrawExtendGraph(kTitlePosX, kTitlePosY + m_offsetY, kTitlePosX+ kTitleSize, kTitlePosY+ +m_offsetY+kTitleSize, m_titleHandle, true);
 	if (m_isManualFlag)

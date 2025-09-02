@@ -16,6 +16,7 @@ public:
 private:
 	int m_titleHandle;
 	int m_titleBGHandle;
+	int m_BGHandle;
 	int m_modelHandle;
 	float m_time;
 	int m_offsetY;
@@ -29,6 +30,6 @@ private:
 	float m_viewAngle;
 	int m_fontHandle;
 	int m_manualHandle;
-	bool m_isManualFlag;
+	bool m_isManualFlag; // ‘€ìà–¾‚ğ•\¦‚·‚é‚©
 };
 

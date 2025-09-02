@@ -7,9 +7,11 @@ namespace
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
 	constexpr float kSerchRange = 500.0f; // 索敵範囲
 	constexpr float kAttackRange = 400.0f; // 攻撃範囲
-	constexpr float kMoveSpeed = 2.0f; // 移動速度
+	constexpr float kMoveSpeed = 4.0f; // 移動速度
+	constexpr float kAttackSpeed = 2.5f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kMoveAccRate = 1.1f;// 加速
+	constexpr float kMoveDecRate = 0.80f;// 減速
 	constexpr float kDefaultAttackCoolTime = 120.0f;
 	constexpr float kAttackDuration = 60.0f; // 攻撃の持続時間
 	// アニメーションの番号
@@ -24,7 +26,7 @@ namespace
 	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
 	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	// 最大HP
-	constexpr int kMaxHp = 60;
+	constexpr int kMaxHp = 160;
 	constexpr int kMaxHomingTime = 60; // 追尾する時間
 	//int attackCount = 0;
 }
@@ -38,7 +40,8 @@ m_isCastFinished(false),
 m_barrelHandle(-1),
 m_rollAngleZ(0.0f),
 m_attackDir({0.0f,0.0f,0.0f}),
-m_homingTimer(0)
+m_homingTimer(0),
+m_isTrackFlag(false)
 {
 }
 
@@ -67,6 +70,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_destroyScore = 300;
 	attack = { 20.0f,{m_pos.x - attack.attackOffSetX,0,m_pos.z},false,0,0,30,30.0f,40.0,60.0f };
 	m_attackCount = 0;
+	m_isTrackFlag = false;
 }
 
 void WizardSkelton::End()
@@ -76,6 +80,7 @@ void WizardSkelton::End()
 	attack.pos = { attack.pos.x,attack.pos.y - 1000.0f,attack.pos.z };
 	attack.active = false;
 	m_pos = { m_pos.x,m_pos.y - 1000.0f,m_pos.z };
+	m_isTrackFlag = false;
 }
 
 void WizardSkelton::Update()
@@ -91,6 +96,11 @@ void WizardSkelton::Update()
 		// エネミーからプレイヤーまでの距離の大きさ
 		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 		//printfDx(L"m_enemyToPlayerDistance:%f\n",m_enemyToPlayerDistance);
+		// 
+		if (m_enemyToPlayerDistance < kSerchRange && !m_isTrackFlag)
+		{
+			TrackPlayer();
+		}
 		// 索敵範囲内に入ったら攻撃する
 		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0 && !attack.active && !m_isCasting)
 		{
@@ -171,8 +181,8 @@ void WizardSkelton::DoAttack()
 		MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	}
 	// プレイヤーの位置に向かって攻撃を飛ばす
-	attack.pos.x += m_attackDir.x * kMoveSpeed * kMoveAccRate;
-	attack.pos.z += m_attackDir.z * kMoveSpeed * kMoveAccRate;
+	attack.pos.x += m_attackDir.x * kAttackSpeed * kMoveAccRate;
+	attack.pos.z += m_attackDir.z * kAttackSpeed * kMoveAccRate;
 	attack.pos.y = 20.0f;
 
 	MV1SetPosition(m_barrelHandle,attack.pos);
@@ -249,4 +259,17 @@ void WizardSkelton::Draw() const
 bool WizardSkelton::IsAttackActive() const
 {
 	return attack.active; 
+}
+
+void WizardSkelton::TrackPlayer()
+{
+	if (VSize(m_enemyToPlayer) < 100.0f)
+	{
+		m_pos.x = m_attackDir.x * kMoveSpeed * kMoveDecRate;
+		m_pos.z = m_attackDir.z * kMoveSpeed * kMoveDecRate;
+	}
+	else
+	{
+		m_isTrackFlag = true;
+	}
 }

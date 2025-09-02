@@ -20,6 +20,7 @@ public:
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<ScoreManager> m_pScoreManager;
+	void TrackPlayer();
 	// プレイヤーに向かうベクトル
 	VECTOR m_toPlayerDir;
 	bool m_isAttackEnd = false;
@@ -29,6 +30,7 @@ private:
 	int m_barrelHandle; // 樽のハンドル
 	float m_rollAngleZ; // 回転
 	VECTOR m_attackDir; // 弾の進行方向を保持する変数
-	int m_homingTimer;
+	int m_homingTimer; // 弾が追尾するまでの時間
+	bool m_isTrackFlag;
 };
 

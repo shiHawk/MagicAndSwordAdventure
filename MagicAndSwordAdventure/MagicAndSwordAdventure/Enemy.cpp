@@ -21,7 +21,7 @@ Enemy::Enemy()
 	m_moveSpeed = 0.0f;
 	m_enemyToPlayerDistance = 0.0f;
 	m_destroyScore = 0;
-	m_attackWaitingTime = 60.0f;
+	m_preparingTime = 60.0f;
 	m_enemyToPlayer = { 0.0f,0.0f,0.0f };
 	m_isDirRight = false;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };

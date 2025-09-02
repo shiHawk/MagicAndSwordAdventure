@@ -29,6 +29,7 @@ private:
 	float m_blinkTime;
 	float m_blinkProgress; // 点滅の進行度
 	int m_alpha; // 透明度
-	int m_fontHandle;
+	int m_fontTextHandle; // UIの変動しない文字のハンドル
+	int m_fontHandle; // UIの変動する数字のハンドル
 };
 

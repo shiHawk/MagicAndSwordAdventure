@@ -85,7 +85,7 @@ void Collision::Update()
 			{
 				normalSkelton->OnDamage();
 				m_normalSkeltonHit[i] = true;
-				m_normalSkeltonInvincibilityTime[i] = 60.0f;
+				m_normalSkeltonInvincibilityTime[i] = 30.0f;
 				m_normalSkeltonHitPos = CalcHitPosition(m_pPlayer->GetAttackPos(),normalSkelton->GetPos());
 				m_normalSkeltonHitPos.y = m_normalSkeltonHitPos.y * 2;
 			}
@@ -135,7 +135,7 @@ void Collision::Update()
 			{
 				wizardSkelton->OnDamage();
 				m_wizardSkeltonHit[i] = true;
-				m_wizardSkeltonInvincibilityTime[i] = 60.0f;
+				m_wizardSkeltonInvincibilityTime[i] = 30.0f;
 				m_wizardSkeltonHitPos = CalcHitPosition(m_pPlayer->GetAttackPos(), wizardSkelton->GetPos());
 				m_wizardSkeltonHitPos.y = m_wizardSkeltonHitPos.y * 2;
 			}

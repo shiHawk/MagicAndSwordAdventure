@@ -23,8 +23,8 @@ public:
 protected:
 	void SetModelFramePos(int modelHandle,int index,int setModelHandle);
 	int m_destroyScore;
-	// 攻撃を開始するまでの時間
-	float m_attackWaitingTime;
+	// 攻撃を構えている時間
+	float m_preparingTime;
 	// 死亡時の吹き飛ぶ方向
 	VECTOR m_knockbackDir;
 	// 吹き飛ぶ速度

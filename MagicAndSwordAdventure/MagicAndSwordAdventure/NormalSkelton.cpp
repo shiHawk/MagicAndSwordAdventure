@@ -9,13 +9,13 @@ namespace
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
 	constexpr float kSerchRange = 500.0f; // 索敵範囲
 	constexpr float kAttackRange = 90.0f; // 攻撃範囲
-	constexpr float kMoveSpeed = 2.0f; // 移動速度
+	constexpr float kMoveSpeed = 4.0f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kBackLimit = 270.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
-	constexpr float kDefaultAttackCoolTime = 100.0f; // クールタイム
-	constexpr float kDefaultAttackWaitingTime = 40.0f; // 追跡から攻撃に移る時間
+	constexpr float kDefaultAttackCoolTime = 80.0f; // クールタイム
+	constexpr float kDefaultPreparingTime = 115.0f; // 追跡から攻撃に移る時間
 	constexpr float kAttackDuration = 27.0f; // 攻撃の持続時間
 
 	// アニメーションの番号
@@ -31,7 +31,7 @@ namespace
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	constexpr float kAnimSpeedakeAStand = 0.3f; // 構えているときの再生速度
 	// 最大HP
-	constexpr int kMaxHp = 100;
+	constexpr int kMaxHp = 200;
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
 	// モデルのスケール
@@ -58,13 +58,13 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	attack.timer = 40.0f;
 	attack.attackCoolTime = -1.0f;
 	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
-	m_attackWaitingTime = kDefaultAttackWaitingTime;
+	m_preparingTime = kDefaultPreparingTime;
 	m_modelHandle = MV1LoadModel("Data/model/Skeleton_Rogue.mv1");
 	m_weponModelHandel = MV1LoadModel("Data/model/Skeleton_Blade.mv1");
 	m_isDead = false;
 	m_isDying = false;
 	m_hp = kMaxHp;
-	m_power = 20;
+	m_power = 40;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
 	m_knockbackSpeed = 5.0f;
 	m_knockbackDuration = 0.5f;
@@ -126,7 +126,7 @@ void NormalSkelton::Update()
 				attack.pos = { 0.0f,-100.0f,0.0f };
 				attack.timer = 0.0f;
 				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
-				m_attackWaitingTime = kDefaultAttackWaitingTime;
+				m_preparingTime = kDefaultPreparingTime;
 				m_attackCount = 0;
 				m_isPreparingAttack = false;
 				m_isPrepared = false;
@@ -241,9 +241,11 @@ void NormalSkelton::Draw() const
 
 void NormalSkelton::TrackPlayer()
 {
+	
 	if (m_isPreparingAttack)
 	{
-		if (!m_isPrepared && GetIsAnimEnd())
+		m_preparingTime--;
+		if (m_preparingTime < 0)
 		{
 			m_isPrepared = true;
 			OnAttack();
@@ -255,7 +257,7 @@ void NormalSkelton::TrackPlayer()
 		// 移動アニメーションを停止し、構えているアニメーションに切り替える
 		if (!m_isPreparingAttack && !attack.active)
 		{
-			ChangeAnim(m_modelHandle, kTakeAStandAnimNo, false, kAnimSpeedFast);
+			ChangeAnim(m_modelHandle, kTakeAStandAnimNo, true, kAnimSpeedFast);
 			m_isPreparingAttack = true;
 			m_isPrepared = false;
 			m_isMove = false;

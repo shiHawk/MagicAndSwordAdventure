@@ -4,8 +4,8 @@
 
 namespace
 {
-	constexpr float kMoveSpeed = 3.0f;
-	constexpr float kDashSpeed = 6.0f;
+	constexpr float kMoveSpeed = 4.0f;
+	constexpr float kDashSpeed = 7.0f;
 	constexpr float kJumpPower = 7.0f;
 	constexpr float kJumpGravity = -0.4f;
 	constexpr float kBackLimit = 240.0f;
@@ -40,14 +40,14 @@ namespace
 	constexpr int kJumpAttackAnimNo = 39;
 	constexpr int kEvadeAnimNo = 16;
 	// アニメーションの速度
-	constexpr float kAnimSpeedFast = 0.75f; // 短めの再生の時
+	constexpr float kAnimSpeedFast = 0.9f; // 短めの再生の時
 	constexpr float kAnimSpeedMedium = 0.5f; // 中程度のテンポ
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	// 持続時間
 	constexpr float kAttackDuration = 37.0f;
 	constexpr float kEvadeDuration = 40.0f;
 	// 回避速度乗数
-	constexpr float kEvadeSpeedMultiplier = 3.0f;
+	constexpr float kEvadeSpeedMultiplier = 6.0f;
 	constexpr float kEvadeJumpMultiplier = 0.5f;
 	// 各攻撃の攻撃力
 	constexpr int kFirstAttackPower = 20;
@@ -141,8 +141,14 @@ void Player::Update()
 		// Bボタンを押したとき
 		m_isNowButton = Pad::isPress(PAD_INPUT_2);
 		// Bボタンが押されっぱなしでない
-		if (m_isNowButton && !m_isPrevButton && !m_isJump && !isMove)
+		if (m_isNowButton && !m_isPrevButton && !m_isJump)
 		{
+			if (isMove) // 移動中に攻撃を押すと移動を辞める
+			{
+				isMove = false;
+				m_vec.x = 0.0f;
+				m_vec.y = 0.0f;
+			}
 			DoAttack();
 		}
 		if (attack.active)
@@ -151,10 +157,7 @@ void Player::Update()
 			//printfDx("attack.timer:%f\n", attack.timer);
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
-				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
 				attack.pos = { 0.0f,-kAttackHideY,0.0f };
-				m_isAttackingAnim = false;
-				attack.active = false;
 			}
 		}
 		m_isPrevButton = m_isNowButton; // ボタンの更新
@@ -173,33 +176,32 @@ void Player::Update()
 			{
 				targetAnimNo = kWalkAnimNo;
 			}
-
 			// 現在のアニメと違う場合だけ切り替える
 			if (m_pAnimation->GetAttachAnimNo() != targetAnimNo)
 			{
 				m_pAnimation->ChangeAnim(m_modelHandle, targetAnimNo, true, kAnimSpeedMedium);
 			}
-			moveCount++;
 		}
 		//printfDx("attachAnimNo:%d\n", m_pAnimation->GetAttachAnimNo());
 
-		if (m_pos.y < 0.0f)
+		if (m_pos.y < 0.0f) // 地面に着いた時の補正
 		{
 			m_pos.y = 0.0f;
-			m_vec.y = 0;
+			m_vec.y = 0.0f;
 			m_isJump = false;
 			m_jumpCount = 0;
 		}
 		m_pAnimation->UpdateAnim();
 		// 攻撃中なら、指定カウント以降で攻撃判定ON
-		if (m_isAttackingAnim  &&!attack.active && m_pAnimation->GetPlayTime() >= 5.0f)  // 攻撃アニメーション中かつまだ判定が出てない
+		if (m_isAttackingAnim  &&!attack.active && m_pAnimation->GetPlayTime() >= 4.0f) // 攻撃アニメーション中かつまだ判定が出てない
 		{
 			attack.active = true;
 		}
-		if (m_isAttackingAnim && m_pAnimation->GetIsAnimEnd())
+		if (m_isAttackingAnim && m_pAnimation->GetIsAnimEnd()) // 攻撃アニメーションを再生していた状態からアニメーションが終了する
 		{
 			attack.active = false;
 			m_isAttackingAnim = false;
+			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
 		}
 	}
 	else
@@ -211,16 +213,11 @@ void Player::Update()
 
 void Player::Draw() const
 {
-	//ShadowMap_DrawSetup(m_ShadowMapHandle);
 	MV1DrawModel(m_modelHandle);
-	//ShadowMap_DrawEnd();
-	//SetUseShadowMap(1, m_ShadowMapHandle);
-#if _DEBUG
-	/*if (attack.active && !m_vec.y > 0)
+	if (attack.active)
 	{
-		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
-	}*/
-#endif
+		//DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
+	}
 }
 
 float Player::GetColRadius() const
@@ -247,7 +244,6 @@ void Player::OnDamage(int enemyPower)
 		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedMedium); // 被弾アニメーションを再生
 		m_isDamageAnim = true;
 	}
-	
 	//printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
 }
 
@@ -264,7 +260,7 @@ void Player::OnDeath()
 
 void Player::DoAttack()
 {
-	if (m_isAttackingAnim) return; // 攻撃中なら次の攻撃を受け付けない
+	if (m_isAttackingAnim && attack.count == 3) return; // 攻撃中なら次の攻撃を受け付けない
 	m_isAttackingAnim = true;
 	attack.count++;
 	// 三回攻撃したらまた一回目に戻る
@@ -281,7 +277,7 @@ void Player::DoAttack()
 	{
 		switch (attack.count) {
 		case 1:
-			m_power = kFirstAttackPower;
+			m_power = kFirstAttackPower; // 攻撃力の変更
 			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, kAnimSpeedFast);
 			break;
 		case 2:
@@ -403,7 +399,7 @@ void Player::DoMove()
 	// 移動先の仮座標
 	VECTOR nextPos = VAdd(m_pos, m_vec);
 
-	// Z方向の制限
+	// Z方向の制限　移動先の座標が壁を越えていたら戻す
 	if (nextPos.z >= kBackLimit - kWallOffset)
 	{
 		nextPos.z = kBackLimit - kWallOffset;
@@ -414,7 +410,7 @@ void Player::DoMove()
 		nextPos.z = kFrontLimit + kWallOffset;
 		m_vec.z = 0.0f;
 	}
-	// X方向の制限
+	// X方向の制限　移動先の座標が壁を越えていたら戻す
 	if (nextPos.x <= kLeftLimit + kWallOffset)
 	{
 		nextPos.x = kLeftLimit + kWallOffset;
@@ -423,7 +419,6 @@ void Player::DoMove()
 
 	// 最終決定
 	m_pos = nextPos;
-
 	m_pos = VAdd(m_pos, m_vec);
 }
 
@@ -465,8 +460,8 @@ void Player::UpdateCombo()
 {
 	if (attack.comboDuration > 0.0f)
 	{
-		attack.comboDuration--;
-		if (attack.comboDuration <= 0.0f)
+		attack.comboDuration--; // コンボの受付時間を減らす
+		if (attack.comboDuration <= 0.0f) // コンボの受付時間が終了したら攻撃を一段目に戻す
 		{
 			attack.count = 0;
 		}
@@ -475,24 +470,20 @@ void Player::UpdateCombo()
 
 void Player::HandleInput()
 {
+	// 毎フレーム移動量をリセット
+	m_vec.x = 0.0f;
+	m_vec.z = 0.0f;
+	// 垂直方向の入力をチェック
 	if (Pad::isPress(PAD_INPUT_RIGHT) && !evadeData.active)
 	{
 		m_playerDir = Dir::Right;
 		m_isNowDirRight = true;
-		if (!evadeData.active)
-		{
-			MV1SetRotationXYZ(m_modelHandle, kRightDir);
-		}
 		if (!isMove)
 		{
 			isMove = true;
 		}
 		m_vec.x = kMoveSpeed;
-		// ダッシュボタンを押した場合
-		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
-		{
-			m_vec.x = kDashSpeed;
-		}
+		
 		m_isAttackDirRight = true;
 		m_isDirRight = true;
 	}
@@ -500,34 +491,26 @@ void Player::HandleInput()
 	{
 		m_playerDir = Dir::Left;
 		m_isNowDirRight = false;
-		if (!evadeData.active)
-		{
-			MV1SetRotationXYZ(m_modelHandle, kLeftDir);
-		}
 		if (!isMove)
 		{
 			isMove = true;
 		}
 		m_vec.x = -kMoveSpeed;
-		// ダッシュボタンを押した場合
-		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
-		{
-			m_vec.x = -kDashSpeed;
-		}
+		
 		m_isAttackDirRight = false;
 		m_isDirRight = false;
 	}
-	else if (Pad::isPress(PAD_INPUT_UP))
+	// 水平方向の入力をチェック
+	if (Pad::isPress(PAD_INPUT_UP))
 	{
 		m_playerDir = Dir::Back;
 		if (!isMove)
 		{
 			isMove = true;
 		}
-		MV1SetRotationXYZ(m_modelHandle, kBackDir);
 		m_vec.z = kMoveSpeed;
 	}
-	else if (Pad::isPress(PAD_INPUT_DOWN))
+	if (Pad::isPress(PAD_INPUT_DOWN))
 	{
 		m_playerDir = Dir::Front;
 		attack.pos.z = m_pos.z - 20.0f;
@@ -535,16 +518,44 @@ void Player::HandleInput()
 		{
 			isMove = true;
 		}
-		MV1SetRotationXYZ(m_modelHandle, kFrontDir);
 		m_vec.z = -kMoveSpeed;
+	}
+	const bool isNowMoving = (m_vec.x != 0.0f || m_vec.z != 0.0f);
+
+	if (isNowMoving)
+	{
+		attack.count = 0;
+		float length = sqrt(m_vec.x * m_vec.x + m_vec.z * m_vec.z);
+		if (length > 0.0f)
+		{
+			m_vec.x /= length;
+			m_vec.z /= length;
+		}
+		
+		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
+		{
+			m_vec.x *= kDashSpeed;
+			m_vec.z *= kDashSpeed;
+		}
+		else
+		{
+			m_vec.x *= kMoveSpeed;
+			m_vec.z *= kMoveSpeed;
+		}
+		float angle = atan2(m_vec.x, m_vec.z);
+		angle += DX_PI_F;
+		MV1SetRotationXYZ(m_modelHandle, VGet(0.0f, angle, 0.0f));
 	}
 	else
 	{
-		isMove = false;
-		moveCount = 0;
-		if (idleCount < 1)
+		if (isMove)
 		{
-			m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
+			isMove = false;
+			moveCount = 0;
+			if (idleCount < 1)
+			{
+				m_pAnimation->ChangeAnim(m_modelHandle, kIdleAnimNo, true, kAnimSpeedMedium);
+			}
 		}
 		idleCount++;
 	}
