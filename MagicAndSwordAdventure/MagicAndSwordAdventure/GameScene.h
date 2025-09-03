@@ -37,8 +37,8 @@ public:
 	int GetRemainingEnemies();
 private:
 	bool IsAreAllEnemiesDefeated(); // ‘S–Å‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
-	void MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex);
-	void DrawCharacterShadow();
+	void MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex); // ‰e‚ÌƒeƒNƒXƒ`ƒƒ‚ð“\‚éƒ|ƒŠƒSƒ“
+	void DrawCharacterShadow(); // ‰e‚ð•`‚­
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy> m_pEnemy;
 	std::shared_ptr<Collision> m_pCollision;

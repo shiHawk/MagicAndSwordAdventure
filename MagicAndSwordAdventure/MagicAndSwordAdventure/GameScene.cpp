@@ -8,6 +8,11 @@
 namespace
 {
 	constexpr float kGroundPosY = 20.0f;
+	// キャラの位置とサイズから影の頂点配列を作る
+	constexpr float kLeftShadow = -30.0f;
+	constexpr float kRightShadow = 40.0f;
+	constexpr float kFrontShadow = 25.0f;
+	constexpr float kBackShadow = -25.0f;
 }
 GameScene::GameScene():
 	m_isNextScene(false),
@@ -181,11 +186,11 @@ SceneBase* GameScene::Update()
 	}
 	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新
 
-	if (m_pPlayer->IsDead() || Pad::isTrigger(PAD_INPUT_4)) // プレイヤーが死亡したら
+	if (m_pPlayer->IsDead()) // プレイヤーが死亡したら
 	{
 		m_pScoreManager->SetIsPlayerDead(true);
 	}
-	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()) || Pad::isTrigger(PAD_INPUT_4))
+	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()))
 	{
 		StartFadeOut();
 		
@@ -263,34 +268,28 @@ bool GameScene::IsAreAllEnemiesDefeated()
 
 void GameScene::MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex)
 {
-	// キャラの位置とサイズから影の頂点配列を作る
-	constexpr float left = -30.0f;
-	constexpr float right = 40.0f;
-	constexpr float front = 20.0f;
-	constexpr float back = -20.0f;
-
 	// 左上
-	vertex[0].pos = VGet(pos.x + left, 0.0f, pos.z + front);
+	vertex[0].pos = VGet(pos.x + kLeftShadow, 0.0f, pos.z + kFrontShadow);
 	vertex[0].u = 0.0f; vertex[0].v = 0.0f;
 
 	// 右下
-	vertex[1].pos = VGet(pos.x + right, 0.0f, pos.z + back);
+	vertex[1].pos = VGet(pos.x + kRightShadow, 0.0f, pos.z + kBackShadow);
 	vertex[1].u = 1.0f; vertex[1].v = 1.0f;
 
 	// 左下
-	vertex[2].pos = VGet(pos.x + left, 0.0f, pos.z + back);
+	vertex[2].pos = VGet(pos.x + kLeftShadow, 0.0f, pos.z + kBackShadow);
 	vertex[2].u = 0.0f; vertex[2].v = 1.0f;
 
 	// 左上(2つ目)
-	vertex[3].pos = VGet(pos.x + left, 0.0f, pos.z + front);
+	vertex[3].pos = VGet(pos.x + kLeftShadow, 0.0f, pos.z + kFrontShadow);
 	vertex[3].u = 0.0f; vertex[3].v = 0.0f;
 
 	// 右上
-	vertex[4].pos = VGet(pos.x + right, 0.0f, pos.z + front);
+	vertex[4].pos = VGet(pos.x + kRightShadow, 0.0f, pos.z + kFrontShadow);
 	vertex[4].u = 1.0f; vertex[4].v = 0.0f;
 
 	// 右下(2つ目)
-	vertex[5].pos = VGet(pos.x + right, 0.0f, pos.z + back);
+	vertex[5].pos = VGet(pos.x + kRightShadow, 0.0f, pos.z + kBackShadow);
 	vertex[5].u = 1.0f; vertex[5].v = 1.0f;
 
 	for (int i = 0; i < 6; i++)

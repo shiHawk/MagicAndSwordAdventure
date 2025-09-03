@@ -4,7 +4,7 @@
 
 namespace
 {
-	constexpr float kMoveSpeed = 4.0f;
+	constexpr float kMoveSpeed = 3.5f;
 	constexpr float kDashSpeed = 7.0f;
 	constexpr float kJumpPower = 7.0f;
 	constexpr float kJumpGravity = -0.4f;
@@ -47,7 +47,7 @@ namespace
 	constexpr float kAttackDuration = 37.0f;
 	constexpr float kEvadeDuration = 40.0f;
 	// ‰ñ”ğ‘¬“xæ”
-	constexpr float kEvadeSpeedMultiplier = 6.0f;
+	constexpr float kEvadeSpeedMultiplier = 10.0f;
 	constexpr float kEvadeJumpMultiplier = 0.5f;
 	// ŠeUŒ‚‚ÌUŒ‚—Í
 	constexpr int kFirstAttackPower = 20;
@@ -217,7 +217,7 @@ void Player::Draw() const
 	MV1DrawModel(m_modelHandle);
 	if (attack.active)
 	{
-		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
+		//DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 }
 
@@ -293,8 +293,8 @@ void Player::DoAttack()
 
 	attack.timer = kAttackDuration; // UŒ‚‘±ŠÔ‚Ìİ’è
 	// UŒ‚‚·‚é‚Æ‚«‚É­‚µ‘Oi‚·‚é
-	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.5f); 
-	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.5f); 
+	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.25f); 
+	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.25f); 
 }
 
 void Player::DoEvade()
@@ -494,9 +494,9 @@ void Player::HandleInput()
 		}
 		m_vec.z = -kMoveSpeed;
 	}
-	const bool isNowMoving = (m_vec.x != 0.0f || m_vec.z != 0.0f);
+	const bool m_isNowMoving = (m_vec.x != 0.0f || m_vec.z != 0.0f);
 
-	if (isNowMoving)
+	if (m_isNowMoving)
 	{
 		attack.count = 0;
 		float length = sqrt(m_vec.x * m_vec.x + m_vec.z * m_vec.z);

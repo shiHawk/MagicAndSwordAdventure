@@ -127,7 +127,7 @@ SceneBase* TitleScene::Update()
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
 	// Aボタンを押したらフェードを開始
-	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
+	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
 	{
 		if (!m_isManualFlag)
 		{
@@ -169,11 +169,11 @@ void TitleScene::Draw()
 	{
 		if (!m_isManualFlag)
 		{
-			DrawFormatStringToHandle(kPressAPosX, kPressAPosY, 0x00ffff, m_fontHandle, "Press A Button");
+			DrawFormatStringToHandle(kPressAPosX, kPressAPosY, 0xdc143c, m_fontHandle, "Press B Button");
 		}
 		else
 		{
-			DrawFormatStringToHandle(kStartPosX, kStartPosY, 0x00ffff, m_fontHandle, "Press A Start");
+			DrawFormatStringToHandle(kStartPosX, kStartPosY, 0xdc143c, m_fontHandle, "Press B Start");
 		}
 	}
 	

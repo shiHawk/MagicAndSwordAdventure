@@ -25,7 +25,7 @@ public:
 	void End();
 	void Update();
 	void PlayBGM();
-	void PlayPlayerAttackSE(int attackCount);
+	void PlayPlayerAttackSE(int attackCount); // SEの再生
 	void PlayEnemyAttackSE();
 	int FadeBGMVol(); // フェードに合わせて音量を小さくする
 	void StopBGM();

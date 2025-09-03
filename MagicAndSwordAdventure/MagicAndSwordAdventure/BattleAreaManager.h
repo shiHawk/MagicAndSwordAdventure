@@ -47,19 +47,13 @@ private:
 	// 現在バトルエリア内にいる敵のリスト
 	std::vector<std::shared_ptr<NormalSkelton>> m_activeNormalSkeltons;
 	std::vector<std::shared_ptr<WizardSkelton>> m_activeWizardSkeltons;
-	/// <summary>
-	/// 戦闘開始
-	/// </summary>
+	// 戦闘開始
 	void EnterBattle(const VECTOR& centerPos);
 
-	/// <summary>
-	/// プレイヤーの移動制限
-	/// </summary>
+	// プレイヤーの移動制限
 	void ConstraintPlayerMovement();
 
-	/// <summary>
-	///  バトルが終わっているかをチェック
-	/// </summary>
+	//  バトルが終わっているかをチェック
 	void CheckBattleEnd(std::vector<std::shared_ptr<NormalSkelton>>& normalSkeltons,
 		std::vector<std::shared_ptr<WizardSkelton>>& wizardSkeltons);
 };

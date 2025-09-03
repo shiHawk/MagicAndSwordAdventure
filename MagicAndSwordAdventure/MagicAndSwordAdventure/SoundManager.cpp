@@ -27,7 +27,7 @@ void SoundManager::Init(SceneManager* pSceneManager)
 	m_playerFirstAttackSoundHandle = LoadSoundMem("Data/sound/firstattack.mp3");
 	m_playerSecondAttackSoundHandle = LoadSoundMem("Data/sound/secondattack.mp3");
 	m_playerThirdAttackSoundHandle = LoadSoundMem("Data/sound/thirdattack.mp3");
-	m_enemyAttackSoundHandle = LoadSoundMem("Data/sound/enemyatack.mp3");
+	m_enemyAttackSoundHandle = LoadSoundMem("Data/sound/enemyattack.mp3");
 }
 
 void SoundManager::End()
@@ -108,6 +108,6 @@ void SoundManager::StopBGM()
 {
 	if (m_currentBgmHandle != -1) {
 		StopSoundMem(m_currentBgmHandle);
-		m_currentBgmHandle = -1; // クリアしておく
+		m_currentBgmHandle = -1; // ハンドルをクリアしておく
 	}
 }

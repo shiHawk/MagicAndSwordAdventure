@@ -86,5 +86,6 @@ private:
 	bool m_isAttackingAnim;
 	bool m_isDamageAnim;
 	VECTOR m_attackDir;
+	bool m_isNowMoving;
 };
 

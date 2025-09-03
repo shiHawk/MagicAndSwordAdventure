@@ -26,7 +26,7 @@ namespace
 	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
 	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	// 最大HP
-	constexpr int kMaxHp = 100;
+	constexpr int kMaxHp = 80;
 	constexpr int kMaxHomingTime = 60; // 追尾する時間
 	//int attackCount = 0;
 }
@@ -92,15 +92,11 @@ void WizardSkelton::Update()
 	}
 	if (!m_isDead)
 	{
-		m_enemyToPlayer = VSub(m_pos, m_pPlayer->GetPos());
+		m_enemyToPlayer = VSub(m_pPlayer->GetPos(),m_pos);
 		// エネミーからプレイヤーまでの距離の大きさ
 		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 		//printfDx(L"m_enemyToPlayerDistance:%f\n",m_enemyToPlayerDistance);
-		// 
-		if (m_enemyToPlayerDistance < kSerchRange && !m_isTrackFlag)
-		{
-			TrackPlayer();
-		}
+		
 		// 索敵範囲内に入ったら攻撃する
 		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0 && !attack.active && !m_isCasting)
 		{
@@ -174,11 +170,11 @@ void WizardSkelton::DoAttack()
 	}
 	if (m_enemyToPlayer.x > 0)
 	{
-		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
+		MV1SetRotationXYZ(m_modelHandle, kRightDir);
 	}
 	else
 	{
-		MV1SetRotationXYZ(m_modelHandle, kRightDir);
+		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	}
 	// プレイヤーの位置に向かって攻撃を飛ばす
 	attack.pos.x += m_attackDir.x * kAttackSpeed * kMoveAccRate;
@@ -239,10 +235,6 @@ void WizardSkelton::OnDeath()
 
 void WizardSkelton::Draw() const
 {
-	if (m_isCasting)
-	{
-		
-	}
 	MV1DrawModel(m_modelHandle);
 	if (attack.active && !m_isDying)
 	{
@@ -263,10 +255,11 @@ bool WizardSkelton::IsAttackActive() const
 
 void WizardSkelton::TrackPlayer()
 {
-	if (VSize(m_enemyToPlayer) < 100.0f)
+	VECTOR moveDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
+	if (VSize(m_enemyToPlayer) > 100.0f)
 	{
-		m_pos.x = m_attackDir.x * kMoveSpeed * kMoveDecRate;
-		m_pos.z = m_attackDir.z * kMoveSpeed * kMoveDecRate;
+		m_pos.x += moveDir.x * kMoveSpeed * kMoveDecRate;
+		m_pos.z += moveDir.z * kMoveSpeed * kMoveDecRate;
 	}
 	else
 	{

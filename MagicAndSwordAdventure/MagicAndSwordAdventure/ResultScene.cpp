@@ -32,9 +32,8 @@ namespace
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
 	// ランク判定の基準スコア
-	constexpr int kRankScoreS = 23500;  // Sランク以上
-	constexpr int kRankScoreA = 16950;  // Aランク以上
-	constexpr int kRankScoreB = 0;      // Bランク以上
+	constexpr int kRankScoreS = 23500;  // Sランク
+	constexpr int kRankScoreA = 16950;  // Aランク
 }
 ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
@@ -105,7 +104,7 @@ SceneBase* ResultScene::Update()
 {
 	UpdateFade();
 	SoundManager::GetInstance()->Update();
-	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_1))
+	if (!m_isNextScene && !IsFadingOut() && Pad::isTrigger(PAD_INPUT_2))
 	{
 		StartFadeOut();
 		m_isNextScene = true;
@@ -133,7 +132,7 @@ void ResultScene::Draw()
 	DrawFormatStringToHandle(kCharaPosX,kScorePosY, kFontColorRed, m_fontHandle, "Total Score: %d",m_pScoreManager->GetScore());
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatStringToHandle(kCharaPosX, kPressBPosY, kFontColorBlue, m_fontHandle,"Press A Title");
+		DrawFormatStringToHandle(kCharaPosX, kPressBPosY, kFontColorBlue, m_fontHandle,"Press B Title");
 	}
 	
 	if (m_pScoreManager->GetScore() >= kRankScoreS)

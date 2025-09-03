@@ -6,7 +6,7 @@ namespace
 	constexpr int kHpGaugeWidth = 400;
 	constexpr int kHpGaugeLeft = 80;
 	constexpr int kHpGaugeTop = 50;
-	constexpr int kHpTextPosY = 17;
+	constexpr int kHpTextPosY = 14;
 	constexpr int kSrcX = 462; // 切り出し位置(X)
 	constexpr int kSrcY = 293; // 切り出し位置(Y)
 	constexpr unsigned int kHpGaugeColor = 0x00ff00;// ゲージの色
@@ -103,7 +103,7 @@ void UIManager::DrawHp()
 	}
 	else
 	{
-		SetDrawBright(255, 255, 255);
+		SetDrawBright(255, 255, 255); 
 		DrawGraph(10, 10, m_playerIconHandle, true);
 		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_hpGaugeHandle, true);
 	}
