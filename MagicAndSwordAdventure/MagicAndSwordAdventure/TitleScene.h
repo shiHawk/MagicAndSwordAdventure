@@ -31,5 +31,6 @@ private:
 	int m_fontHandle;
 	int m_manualHandle;
 	bool m_isManualFlag; // ‘€ìà–¾‚ğ•\¦‚·‚é‚©
+	bool m_isPlayingMovie;
 };
 

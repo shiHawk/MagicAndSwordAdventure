@@ -54,7 +54,8 @@ TitleScene::TitleScene():
 	m_playerPos({ 0.0f,0.0f,0.0f }),
 	m_fontHandle(-1),
 	m_manualHandle(-1),
-	m_isManualFlag(false)
+	m_isManualFlag(false),
+	m_isPlayingMovie(true)
 {
 }
 
@@ -97,6 +98,7 @@ void TitleScene::Init()
 	m_manualHandle = LoadGraph("Data/title/WarriorAdventure_manual.png");
 	m_fontHandle = CreateFontToHandle("Arial Black", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	m_BGHandle = LoadGraph("Data/title/title_BG.mp4");
+	m_isPlayingMovie = true;
 }
 
 void TitleScene::End()
@@ -115,7 +117,13 @@ SceneBase* TitleScene::Update()
 	UpdateFade();
 	SoundManager::GetInstance()->Update();
 	m_time = GetNowCount() / kMillisecondsPerSecond;
+	if (GetMovieStateToGraph(m_BGHandle) == 0)
+	{
+		SeekMovieToGraph(m_BGHandle, 0);
+		PlayMovieToGraph(m_BGHandle);
+	}
 	PlayMovieToGraph(m_BGHandle);
+	
 	// タイトルロゴが上下するための位置補正
 	m_offsetY = static_cast<int>(sin(m_time * kTitleBobFrequency) * kTitleBobAmplitude);
 	// Aボタンを押したらフェードを開始
