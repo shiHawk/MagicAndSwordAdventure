@@ -57,8 +57,8 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	m_cameraPos = kCameraPos;
 
 	// カメラがどこを見ているか(注視点)
-	m_cameraTarget = kCameraTarget;
-
+	m_cameraTarget = VGet(m_pPlayer->GetPos().x, 50.0f, m_pPlayer->GetPos().z);
+	m_cameraMoveTargetPos = VGet(m_pPlayer->GetPos().x, 50.0f, m_pPlayer->GetPos().z);
 	// カメラの位置と注視点を指定する
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 

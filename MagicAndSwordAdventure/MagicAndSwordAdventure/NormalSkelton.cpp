@@ -31,7 +31,7 @@ namespace
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	constexpr float kAnimSpeedakeAStand = 0.3f; // 構えているときの再生速度
 	// 最大HP
-	constexpr int kMaxHp = 200;
+	constexpr int kMaxHp = 160;
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
 	// モデルのスケール

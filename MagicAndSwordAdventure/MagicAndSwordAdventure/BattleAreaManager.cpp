@@ -132,7 +132,7 @@ void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 	// 画面中央をバトルエリアの中心とする
 	m_battleAreaCenterPos = VGet(screenCenter.x,0.0f,0.0f);
 	// 戦闘用のカメラに切り替え(カメラは動かさない)
-	m_pCamera->ChangeBattleCamera(m_battleAreaCenterPos);
+	m_pCamera->ChangeBattleCamera(m_pPlayer->GetPos());
 
 	// バトルエリア内の敵だけアクティブに入れる
 	// 以前のアクティブリストを空にする

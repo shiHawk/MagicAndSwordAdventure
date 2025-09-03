@@ -218,9 +218,7 @@ void GameScene::Draw()
 	{
 		wizardSkelton->Draw();
 	}
-	m_pUIManager->DrawHp();
-	m_pUIManager->DrawDestroyScore();
-	m_pUIManager->DrawElapsedTimeSeconds();
+	m_pUIManager->Draw();
 	m_pUIManager->DrawNumberOfEnemiesRemaining(GetRemainingEnemies());
 	m_pEffectManager->Draw();
 	if (!m_pBattleArea->IsInBattle())

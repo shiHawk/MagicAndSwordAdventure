@@ -32,7 +32,7 @@ namespace
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
 	// ランク判定の基準スコア
-	constexpr int kRankScoreS = 21800;  // Sランク以上
+	constexpr int kRankScoreS = 23500;  // Sランク以上
 	constexpr int kRankScoreA = 16950;  // Aランク以上
 	constexpr int kRankScoreB = 0;      // Bランク以上
 }

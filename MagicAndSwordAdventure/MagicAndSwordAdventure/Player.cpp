@@ -84,7 +84,8 @@ m_prevPos({0,0,0}),
 m_distanceAfterMoving(0.0f),
 attack({ 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f }),
 m_isAttackingAnim(false),
-m_isDamageAnim(false)
+m_isDamageAnim(false),
+m_attackDir({0.0f,0.0f,0.0f})
 {
 }
 
@@ -172,7 +173,7 @@ void Player::Update()
 			{
 				targetAnimNo = kDashAnimNo;
 			}
-			else
+			else 
 			{
 				targetAnimNo = kWalkAnimNo;
 			}
@@ -216,7 +217,7 @@ void Player::Draw() const
 	MV1DrawModel(m_modelHandle);
 	if (attack.active)
 	{
-		//DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
+		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 }
 
@@ -269,58 +270,31 @@ void Player::DoAttack()
 		attack.count = 1;
 	}
 	attack.comboDuration = kMaxComboDuration;
-	if (m_vec.y > 0)
-	{
-		m_pAnimation->ChangeAnim(m_modelHandle, kJumpAttackAnimNo, true, kAnimSpeedMedium);// ジャンプ攻撃
-	}
-	else
-	{
-		switch (attack.count) {
-		case 1:
-			m_power = kFirstAttackPower; // 攻撃力の変更
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, kAnimSpeedFast);
-			break;
-		case 2:
-			m_power = kSecondAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedFast+0.2f);
-			break;
-		case 3:
-			m_power = kThirdAttackPower;
-			m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, kAnimSpeedFast+0.3f);
-			break;
-		}
+	
+	switch (attack.count) {
+	case 1:
+		m_power = kFirstAttackPower; // 攻撃力の変更
+		m_pAnimation->ChangeAnim(m_modelHandle, kAttack1AnimNo, false, kAnimSpeedFast);
+		break;
+	case 2:
+		m_power = kSecondAttackPower;
+		m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedFast + 0.2f);
+		break;
+	case 3:
+		m_power = kThirdAttackPower;
+		m_pAnimation->ChangeAnim(m_modelHandle, kAttack3AnimNo, false, kAnimSpeedFast + 0.3f);
+		break;
 	}
 	//printfDx(L"attack.count:%d\n", attack.count);
-	if (m_playerDir == Dir::Right)
-	{
-		// 攻撃の時に少し前進する
-		m_vec.x = +kMoveSpeed * 0.5f;
-		attack.pos.x = m_pos.x + attack.attackOffSetX;
-		attack.pos.z = m_pos.z;
-	}
-	if(m_playerDir == Dir::Left)
-	{
-		// 攻撃の時に少し前進する
-		m_vec.x = -kMoveSpeed * 0.5f;
-		attack.pos.x = m_pos.x - attack.attackOffSetX;
-		attack.pos.z = m_pos.z;
-	}
-	if (m_playerDir == Dir::Front)
-	{
-		// 攻撃の時に少し前進する
-		m_vec.z = -kMoveSpeed * 0.5f;
-		attack.pos.x = m_pos.x;
-		attack.pos.z = m_pos.z - 60.0f;
-	}
-	if (m_playerDir == Dir::Back)
-	{
-		// 攻撃の時に少し前進する
-		m_vec.z = kMoveSpeed * 0.5f;
-		attack.pos.x = m_pos.x;
-		attack.pos.z = m_pos.z + 60.0f;
-	}
-	attack.timer = kAttackDuration;
-	attack.pos.y = m_pos.y+attack.attackOffSetY;
+	// 攻撃位置の決定
+	attack.pos.x = m_pos.x + m_attackDir.x * 60.0f;
+	attack.pos.y = m_pos.y + attack.attackOffSetY;
+	attack.pos.z = m_pos.z + m_attackDir.z * 60.0f;
+
+	attack.timer = kAttackDuration; // 攻撃持続時間の設定
+	// 攻撃するときに少し前進する
+	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.5f); 
+	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.5f); 
 }
 
 void Player::DoEvade()
@@ -530,6 +504,9 @@ void Player::HandleInput()
 		{
 			m_vec.x /= length;
 			m_vec.z /= length;
+			m_attackDir.x = m_vec.x;
+			m_attackDir.y = 0.0f;
+			m_attackDir.z = m_vec.z;
 		}
 		
 		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)

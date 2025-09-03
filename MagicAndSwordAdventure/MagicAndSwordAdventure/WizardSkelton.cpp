@@ -26,7 +26,7 @@ namespace
 	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
 	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	// 最大HP
-	constexpr int kMaxHp = 160;
+	constexpr int kMaxHp = 100;
 	constexpr int kMaxHomingTime = 60; // 追尾する時間
 	//int attackCount = 0;
 }
