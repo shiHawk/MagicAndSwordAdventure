@@ -125,7 +125,7 @@ void Stage::End()
 
 void Stage::Updata()
 {
-	// Še•Ç‚â°‚Ìpos‚Ìİ’è
+	// •Ç‚Ìpos‚Ìİ’è
 	for (int i = 0; i < m_tileTotal;i++)
 	{
 		if (i < m_tileTotal / 2)
@@ -149,6 +149,7 @@ void Stage::Updata()
 			MV1SetPosition(m_tileModelHandles[i], m_tilePos);
 		}
 	}
+	// °‚Ìpos‚Ìİ’è
 	for (int i = 0; i < m_wallNum;i++)
 	{
 		m_wallPos.x = m_stageStart + i * m_wallSize;

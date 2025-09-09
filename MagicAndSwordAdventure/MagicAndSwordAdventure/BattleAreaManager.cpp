@@ -130,7 +130,7 @@ void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 	m_battleState = State::InBattle;
 	VECTOR screenCenter = ConvScreenPosToWorldPos(VGet(Game::kScreenWidth*0.5f,0.0f,0.0f));
 	// 画面中央をバトルエリアの中心とする
-	m_battleAreaCenterPos = VGet(screenCenter.x,0.0f,0.0f);
+	m_battleAreaCenterPos = VGet(m_pPlayer->GetPos().x,0.0f,0.0f);
 	// 戦闘用のカメラに切り替え(カメラは動かさない)
 	m_pCamera->ChangeBattleCamera(m_pPlayer->GetPos());
 

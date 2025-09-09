@@ -2,6 +2,7 @@
 #include "SoundManager.h"
 #include "DxLib.h"
 #include <cmath>
+#include <limits>
 #include "game.h"
 #include "Pad.h"
 #include "ResultScene.h"
@@ -87,7 +88,7 @@ void GameScene::Init()
 	m_pCamera->Init(m_pPlayer);
 	m_pScoreManager->Init();
 	m_pStage->Init();
-	m_pPlayer->Init(m_pAnimation);
+	m_pPlayer->Init(m_pAnimation,this);
 	m_pBattleArea->Init(m_pPlayer, m_pCamera);
 	m_pBattleArea->SetEnemys(m_NormalSkeltons,m_WizardSkeltons);
 	m_pUIManager->Init(m_pPlayer, m_pScoreManager,m_pCamera);
@@ -250,11 +251,6 @@ int GameScene::GetRemainingEnemies()
 		if (!wizardSkelton->IsDead()) ++m_remainingEnemysCount; // €‚ñ‚Å‚¢‚È‚¢WizardSkelton‚Ì”‚ğƒJƒEƒ“ƒg
 	}
 	return m_remainingEnemysCount;
-}
-
-bool GameScene::GetNearestEnemyPosition(const VECTOR& playerPos, VECTOR& outEnemyPos)
-{
-	return false;
 }
 
 bool GameScene::IsAreAllEnemiesDefeated()

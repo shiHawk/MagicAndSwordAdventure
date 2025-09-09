@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "DxLib.h"
 #include "Pad.h"
+#include "GameScene.h"
 
 namespace
 {
@@ -96,11 +97,12 @@ Player::~Player()
 {
 }
 
-void Player::Init(std::shared_ptr<Animation> pAnimation)
+void Player::Init(std::shared_ptr<Animation> pAnimation, GameScene* gameScene)
 {
 	m_pos = kPlayerInitPos;
 	m_vec = { 0, 0, 0 };
 	m_pAnimation = pAnimation;
+	m_pGameScene = gameScene;
 	m_modelHandle = MV1LoadModel("Data/model/Barbarian.mv1");
 	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
@@ -243,7 +245,7 @@ void Player::Draw() const
 	}
 	if (attack.active)
 	{
-		//DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
+		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 }
 
@@ -576,4 +578,24 @@ void Player::HandleInput()
 		}
 		idleCount++;
 	}
+}
+
+Direction8 Player::GetDirection8FromAngle(float angle)
+{
+	const float PI_OVER_8 = DX_PI_F / 8.0f; // 22.5ìx
+
+	// ïâÇÃäpìxÇ0Å`2ÉŒÇ…ï‚ê≥
+	if (angle < 0)
+	{
+		angle += 2.0f * DX_PI_F;
+	}
+
+	if (angle < PI_OVER_8 || angle >= 15.0f * PI_OVER_8) return Direction8::Right;
+	if (angle < 3.0f * PI_OVER_8) return Direction8::UpRight;
+	if (angle < 5.0f * PI_OVER_8) return Direction8::Up;
+	if (angle < 7.0f * PI_OVER_8) return Direction8::UpLeft;
+	if (angle < 9.0f * PI_OVER_8) return Direction8::Left;
+	if (angle < 11.0f * PI_OVER_8) return Direction8::DownLeft;
+	if (angle < 13.0f * PI_OVER_8) return Direction8::Down;
+	return Direction8::DownRight;
 }

@@ -11,13 +11,25 @@ enum  class Dir
 	Front,
 	Back
 };
+enum class Direction8
+{
+	Right,      // 右
+	UpRight,    // 右上
+	Up,         // 上
+	UpLeft,     // 左上
+	Left,       // 左
+	DownLeft,   // 左下
+	Down,       // 下
+	DownRight,  // 右下
+};
+class GameScene;
 class Player:public CharacterBase
 {
 public:
 	Player();
 	~Player();
 
-	void Init(std::shared_ptr<Animation> pAnimation);
+	void Init(std::shared_ptr<Animation> pAnimation, GameScene* gameScene);
 	void End();
 	void Update();
 	void Draw() const;
@@ -48,6 +60,7 @@ private:
 	void HandleEvade();
 	void UpdateCombo();
 	void HandleInput();
+	Direction8 GetDirection8FromAngle(float angle);
 	struct EvadeData
 	{
 		int evadeCount; // 回避回数
@@ -64,13 +77,16 @@ private:
 	// ジャンプ回数
 	int m_jumpCount;
 	std::shared_ptr<Animation> m_pAnimation;
+	GameScene* m_pGameScene = nullptr;
 	// プレイヤーの回転行列
 	MATRIX m_rotMtx;
 	// プレイヤーの向いている方向
 	bool m_isDirRight;
 	bool m_isJump;
+	Direction8 m_Direction; // プレイヤーの向き
 	// 移動前の位置
 	VECTOR m_prevPos;
+	VECTOR m_rot = { 0.0f,0.0f,0.0f };
 	// 移動前と移動後の距離
 	float m_distanceAfterMoving;
 	// 直前に押されているか
