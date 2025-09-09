@@ -90,7 +90,7 @@ void GameScene::Init()
 	m_pPlayer->Init(m_pAnimation);
 	m_pBattleArea->Init(m_pPlayer, m_pCamera);
 	m_pBattleArea->SetEnemys(m_NormalSkeltons,m_WizardSkeltons);
-	m_pUIManager->Init(m_pPlayer, m_pScoreManager);
+	m_pUIManager->Init(m_pPlayer, m_pScoreManager,m_pCamera);
 	m_pCollision->Init(m_pPlayer,m_NormalSkeltons, m_WizardSkeltons);
 	m_pEffectManager->Init(m_pCollision);
 	m_pAnimation->Init();

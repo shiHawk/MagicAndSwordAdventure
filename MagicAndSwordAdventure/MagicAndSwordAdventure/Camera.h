@@ -12,6 +12,7 @@ public:
 	void Update();
 	void ChangeBattleCamera(VECTOR cameraTarget);
 	void ChangeNormalCamera() { m_isBattleCamera = false; }
+	bool IsBattleCamera() { return m_isBattleCamera; }
 private:
 	int m_lightHandle;
 	// ƒJƒƒ‰‚ÌˆÊ’u

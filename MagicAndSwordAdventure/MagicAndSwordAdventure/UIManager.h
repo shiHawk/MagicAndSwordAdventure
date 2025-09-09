@@ -2,12 +2,13 @@
 #include "DxLib.h"
 #include "Player.h"
 #include "ScoreManager.h"
+#include "Camera.h"
 class UIManager
 {
 public:
 	UIManager();
 	~UIManager();
-	void Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManager> pScoreManager);
+	void Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManager> pScoreManager, std::shared_ptr<Camera> pCamera);
 	void End();
 	void Update();
 	void Draw();
@@ -20,6 +21,7 @@ public:
 private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<ScoreManager> m_pScoreManager;
+	std::shared_ptr<Camera> m_pCamera;
 	// UI‚Ìƒnƒ“ƒhƒ‹
 	float m_hpGaugeRate;
 	int m_hpGaugeHandle;

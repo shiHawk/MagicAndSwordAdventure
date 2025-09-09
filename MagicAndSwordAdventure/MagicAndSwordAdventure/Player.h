@@ -26,9 +26,9 @@ public:
 	void OnDamage(int enemyPower);
 	void OnDeath();
 	// UŒ‚
-	void DoAttack();
+	void OnAttack();
 	// ‰ñ”ğ
-	void DoEvade();
+	void OnEvade();
 	VECTOR GetAttackPos() { return attack.pos; }
 	int GetAttackCount() { return attack.count; }
 	float GetAttackRadius() { return attack.radius; }
@@ -87,5 +87,7 @@ private:
 	bool m_isDamageAnim;
 	VECTOR m_attackDir;
 	bool m_isNowMoving;
+	int m_blinkCount; // “_–ÅŠÔ
+	bool m_isVisible; // •`‰æ‚·‚é‚©
 };
 

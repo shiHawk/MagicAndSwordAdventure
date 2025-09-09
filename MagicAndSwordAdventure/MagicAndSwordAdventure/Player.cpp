@@ -47,7 +47,7 @@ namespace
 	constexpr float kAttackDuration = 37.0f;
 	constexpr float kEvadeDuration = 40.0f;
 	// 回避速度乗数
-	constexpr float kEvadeSpeedMultiplier = 10.0f;
+	constexpr float kEvadeSpeedMultiplier = 30.0f;
 	constexpr float kEvadeJumpMultiplier = 0.5f;
 	// 各攻撃の攻撃力
 	constexpr int kFirstAttackPower = 20;
@@ -85,7 +85,9 @@ m_distanceAfterMoving(0.0f),
 attack({ 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f }),
 m_isAttackingAnim(false),
 m_isDamageAnim(false),
-m_attackDir({0.0f,0.0f,0.0f})
+m_attackDir({0.0f,0.0f,0.0f}),
+m_blinkCount(0),
+m_isVisible(true)
 {
 }
 
@@ -132,7 +134,26 @@ void Player::Update()
 				m_isDamageAnim = false;
 			}
 			m_pAnimation->UpdateAnim();
-			return; // ダメージ中は他の処理を止める（攻撃や移動させない）
+			// 点滅処理
+			if (m_blinkCount > 0)
+			{
+				m_blinkCount--;
+
+				// 5フレームごとに表示/非表示を切り替える
+				if ((m_blinkCount / 5) % 2 == 0)
+				{
+					m_isVisible = false;
+				}
+				else
+				{
+					m_isVisible = true;
+				}
+			}
+			else
+			{
+				m_isVisible = true; // 点滅終了後は常に表示
+			}
+			return; // ダメージ中は他の処理を止める(攻撃や移動させない)
 		}
 		UpdateCombo();
 		if (m_vec.y > 0)
@@ -150,7 +171,7 @@ void Player::Update()
 				m_vec.x = 0.0f;
 				m_vec.y = 0.0f;
 			}
-			DoAttack();
+			OnAttack();
 		}
 		if (attack.active)
 		{
@@ -193,6 +214,7 @@ void Player::Update()
 			m_jumpCount = 0;
 		}
 		m_pAnimation->UpdateAnim();
+		
 		// 攻撃中なら、指定カウント以降で攻撃判定ON
 		if (m_isAttackingAnim  &&!attack.active && m_pAnimation->GetPlayTime() >= 4.0f) // 攻撃アニメーション中かつまだ判定が出てない
 		{
@@ -214,7 +236,10 @@ void Player::Update()
 
 void Player::Draw() const
 {
-	MV1DrawModel(m_modelHandle);
+	if (m_isVisible)
+	{
+		MV1DrawModel(m_modelHandle);
+	}
 	if (attack.active)
 	{
 		//DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
@@ -244,6 +269,7 @@ void Player::OnDamage(int enemyPower)
 		attack.active = false;
 		m_pAnimation->ChangeAnim(m_modelHandle, kDamageAnimNo, false, kAnimSpeedMedium); // 被弾アニメーションを再生
 		m_isDamageAnim = true;
+		m_blinkCount = 60; // 点滅を開始する
 	}
 	//printfDx(L"hp:%d m_isDying:%d\n", m_hp, m_isDying);
 }
@@ -259,9 +285,9 @@ void Player::OnDeath()
 	}
 }
 
-void Player::DoAttack()
+void Player::OnAttack()
 {
-	if (m_isAttackingAnim && attack.count == 3) return; // 攻撃中なら次の攻撃を受け付けない
+	if (m_isAttackingAnim && attack.count == 3) return; // 3段階目なら攻撃が終わるまで次の攻撃を受け付けない
 	m_isAttackingAnim = true;
 	attack.count++;
 	// 三回攻撃したらまた一回目に戻る
@@ -293,11 +319,16 @@ void Player::DoAttack()
 
 	attack.timer = kAttackDuration; // 攻撃持続時間の設定
 	// 攻撃するときに少し前進する
-	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.25f); 
-	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.25f); 
+	if (attack.count == 3)
+	{
+		m_vec.x += m_attackDir.x * (kMoveSpeed * 1.5f);
+		m_vec.z += m_attackDir.z * (kMoveSpeed * 1.5f);
+	}
+	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.25f);
+	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.25f);
 }
 
-void Player::DoEvade()
+void Player::OnEvade()
 {
 	if (evadeData.evadeCount < 1)
 	{
@@ -415,7 +446,10 @@ void Player::HandleEvade()
 	//RBボタンを押したとき
 	if (Pad::isTrigger(PAD_INPUT_6))
 	{
-		DoEvade();
+		// 毎フレーム移動量をリセット
+		m_vec.x = 0.0f;
+		m_vec.z = 0.0f;
+		OnEvade();
 	}
 	if (evadeData.active)
 	{

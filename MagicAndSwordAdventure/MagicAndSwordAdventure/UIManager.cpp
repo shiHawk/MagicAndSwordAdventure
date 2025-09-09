@@ -1,5 +1,6 @@
 #include "UIManager.h"
 #include <cmath>
+
 namespace
 {
 	// HPÉQÅ[ÉW
@@ -50,10 +51,11 @@ UIManager::~UIManager()
 {
 }
 
-void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManager> pScoreManager)
+void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManager> pScoreManager, std::shared_ptr<Camera> pCamera)
 {
 	m_pPlayer = pPlayer;
 	m_pScoreManager = pScoreManager;
+	m_pCamera = pCamera;
 	m_navigationHandle = LoadGraph("Data/UI/Navigation.png");
 	m_hpGaugeHandle = LoadGraph("Data/UI/HP.png");
 	m_hpGaugeFrameHandle = LoadGraph("Data/UI/HPGaugeFrame.png");
@@ -87,7 +89,10 @@ void UIManager::Draw()
 {
 	DrawUIFrame();
 	DrawHp();
-	DrawNavigation();
+	if (!m_pCamera->IsBattleCamera())
+	{
+		DrawNavigation();
+	}
 	DrawDestroyScore();
 	DrawElapsedTimeSeconds();
 }
