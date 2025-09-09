@@ -182,7 +182,7 @@ SceneBase* GameScene::Update()
 	}
 	if (m_isHitWizardSkelton && !m_wasHitWizardSkelton)
 	{
-		SoundManager::GetInstance()->PlayPlayerAttackSE(m_pPlayer->GetAttackCount());
+		SoundManager::GetInstance()->PlayPlayerAttackSE(m_pPlayer->GetAttackCount()); // 被弾SEの再生
 	}
 	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新
 
@@ -190,7 +190,7 @@ SceneBase* GameScene::Update()
 	{
 		m_pScoreManager->SetIsPlayerDead(true);
 	}
-	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated()))
+	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated())) // プレイヤーが死亡するか敵が全滅したらフェードを開始
 	{
 		StartFadeOut();
 		
@@ -205,7 +205,6 @@ SceneBase* GameScene::Update()
 		return new ResultScene(m_pScoreManager); // フェードが終わったらリザルトシーンへ移行
 	}
 	m_pScoreManager->HpBonus(m_pPlayer->GetHp());
-	m_shadowPos = VGet(m_pPlayer->GetPos().x, kGroundPosY, m_pPlayer->GetPos().z);
 	return this;
 }
 
@@ -226,7 +225,7 @@ void GameScene::Draw()
 	m_pUIManager->Draw();
 	m_pUIManager->DrawNumberOfEnemiesRemaining(GetRemainingEnemies());
 	m_pEffectManager->Draw();
-	if (!m_pBattleArea->IsInBattle())
+	if (!m_pBattleArea->IsInBattle()) // 戦闘中でないならナビゲーションを表示
 	{
 		m_pUIManager->DrawNavigation();
 	}
@@ -251,6 +250,11 @@ int GameScene::GetRemainingEnemies()
 		if (!wizardSkelton->IsDead()) ++m_remainingEnemysCount; // 死んでいないWizardSkeltonの数をカウント
 	}
 	return m_remainingEnemysCount;
+}
+
+bool GameScene::GetNearestEnemyPosition(const VECTOR& playerPos, VECTOR& outEnemyPos)
+{
+	return false;
 }
 
 bool GameScene::IsAreAllEnemiesDefeated()

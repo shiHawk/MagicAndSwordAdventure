@@ -104,7 +104,7 @@ void WizardSkelton::Update()
 			m_isCastFinished = false;
 			ChangeAnim(m_modelHandle,kSpellCastAnimNo,false, kAnimSpeedMedium);
 		}
-		if (m_isCasting && !m_isCastFinished && GetIsAnimEnd())
+		if (m_isCasting && !m_isCastFinished && GetIsAnimEnd()) // 予備動作が終わったら攻撃に移る
 		{
 			m_isCastFinished = true;
 			m_isCasting = false;
@@ -120,7 +120,7 @@ void WizardSkelton::Update()
 				m_rollAngleZ -= DX_PI_F * 2.0f; // 360度を超えたら0度に戻す
 			}
 			attack.timer--;
-			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange)
+			if (VSize(VSub(attack.pos, m_pos)) > kAttackRange) // 攻撃の範囲を超えたら攻撃をリセット
 			{
 				attack.active = false;
 				attack.pos = { m_pos.x,-1000.0f,m_pos.z };

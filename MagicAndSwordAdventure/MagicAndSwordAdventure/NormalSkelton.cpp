@@ -120,7 +120,7 @@ void NormalSkelton::Update()
 			{
 				attack.timer++;
 			}
-			if (attack.timer >= kAttackDuration)
+			if (attack.timer >= kAttackDuration) // UŒ‚‚ÌŽ‘±ŽžŠÔ‚ªI‚í‚Á‚½‚çUŒ‚ŠÖŒW‚Ì•Ï”‚ðƒŠƒZƒbƒg
 			{
 				attack.active = false;
 				attack.pos = { 0.0f,-100.0f,0.0f };
@@ -165,6 +165,7 @@ void NormalSkelton::OnAttack()
 		ChangeAnim(m_modelHandle, kAttackAnimNo, false, kAnimSpeedSlow);
 	}
 	m_attackCount++;
+	// UŒ‚Žž‚Ì•ûŒü“]Š·
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);

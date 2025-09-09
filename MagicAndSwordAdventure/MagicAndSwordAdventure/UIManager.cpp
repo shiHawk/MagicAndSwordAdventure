@@ -82,7 +82,7 @@ void UIManager::End()
 
 void UIManager::Update()
 {
-	m_hpGaugeRate = static_cast<float>(m_pPlayer->GetHp()) / m_pPlayer->GetMaxHp();
+	m_hpGaugeRate = static_cast<float>(m_pPlayer->GetHp()) / m_pPlayer->GetMaxHp(); // 残りHPの割合を更新
 }
 
 void UIManager::Draw()
@@ -109,8 +109,8 @@ void UIManager::DrawHp()
 	else
 	{
 		SetDrawBright(255, 255, 255); 
-		DrawGraph(10, 10, m_playerIconHandle, true);
-		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_hpGaugeHandle, true);
+		DrawGraph(10, 10, m_playerIconHandle, true); // プレイヤーのアイコンの描画
+		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_hpGaugeHandle, true); // HPバーの描画
 	}
 	DrawFormatStringToHandle(kHpGaugeWidth, kHpTextPosY, kScoreColor, m_fontHandle,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
 	SetDrawBright(255, 255, 255);

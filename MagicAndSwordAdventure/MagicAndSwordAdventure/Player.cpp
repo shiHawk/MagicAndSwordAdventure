@@ -39,8 +39,9 @@ namespace
 	constexpr int kDeathAnimNo = 26;
 	constexpr int kJumpAttackAnimNo = 39;
 	constexpr int kEvadeAnimNo = 16;
+	constexpr int kJumpAnimNo = 10;
 	// アニメーションの速度
-	constexpr float kAnimSpeedFast = 0.9f; // 短めの再生の時
+	constexpr float kAnimSpeedFast = 1.1f; // 短めの再生の時
 	constexpr float kAnimSpeedMedium = 0.5f; // 中程度のテンポ
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
 	// 持続時間
@@ -175,7 +176,7 @@ void Player::Update()
 		}
 		if (attack.active)
 		{
-			attack.timer--;
+			attack.timer--; // 攻撃の持続時間の減少
 			//printfDx("attack.timer:%f\n", attack.timer);
 			if (attack.timer <= 0 || m_pAnimation->GetIsAnimEnd())
 			{
@@ -304,7 +305,7 @@ void Player::OnAttack()
 		break;
 	case 2:
 		m_power = kSecondAttackPower;
-		m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedFast + 0.2f);
+		m_pAnimation->ChangeAnim(m_modelHandle, kAttack2AnimNo, false, kAnimSpeedFast);
 		break;
 	case 3:
 		m_power = kThirdAttackPower;
@@ -433,6 +434,10 @@ void Player::HandleJump()
 	{
 		m_vec.y = kJumpPower;
 		m_jumpCount++;
+		if (!m_isAttackingAnim) // 攻撃中でなければジャンプアニメーションに切り替え
+		{
+			m_pAnimation->ChangeAnim(m_modelHandle, kJumpAnimNo, false, kAnimSpeedMedium);
+		}
 	}
 	// ジャンプは2回まで
 	if (m_jumpCount > 1)
@@ -530,20 +535,21 @@ void Player::HandleInput()
 	}
 	const bool m_isNowMoving = (m_vec.x != 0.0f || m_vec.z != 0.0f);
 
-	if (m_isNowMoving)
+	if (m_isNowMoving) // プレイヤーが移動しているなら
 	{
-		attack.count = 0;
+		attack.count = 0; // 攻撃の段階をリセットする
 		float length = sqrt(m_vec.x * m_vec.x + m_vec.z * m_vec.z);
 		if (length > 0.0f)
 		{
-			m_vec.x /= length;
+			m_vec.x /= length; // 移動ベクトルを正規化
 			m_vec.z /= length;
-			m_attackDir.x = m_vec.x;
+
+			m_attackDir.x = m_vec.x; // 攻撃の方向の更新
 			m_attackDir.y = 0.0f;
 			m_attackDir.z = m_vec.z;
 		}
 		
-		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0)
+		if (Pad::isPress(PAD_INPUT_3) && m_pos.y <= 0) // ダッシュ時は移動ベクトルを増加させる
 		{
 			m_vec.x *= kDashSpeed;
 			m_vec.z *= kDashSpeed;
@@ -553,9 +559,9 @@ void Player::HandleInput()
 			m_vec.x *= kMoveSpeed;
 			m_vec.z *= kMoveSpeed;
 		}
-		float angle = atan2(m_vec.x, m_vec.z);
+		float angle = atan2(m_vec.x, m_vec.z); // プレイヤーの角度を計算
 		angle += DX_PI_F;
-		MV1SetRotationXYZ(m_modelHandle, VGet(0.0f, angle, 0.0f));
+		MV1SetRotationXYZ(m_modelHandle, VGet(0.0f, angle, 0.0f)); // プレイヤーの方向を変える
 	}
 	else
 	{

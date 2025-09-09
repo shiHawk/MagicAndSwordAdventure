@@ -125,6 +125,7 @@ void Stage::End()
 
 void Stage::Updata()
 {
+	// Še•Ç‚â°‚Ìpos‚Ìİ’è
 	for (int i = 0; i < m_tileTotal;i++)
 	{
 		if (i < m_tileTotal / 2)

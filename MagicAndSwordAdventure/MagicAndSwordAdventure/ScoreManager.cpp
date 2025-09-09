@@ -78,10 +78,10 @@ int ScoreManager::GetScore()
 
 void ScoreManager::HpBonus(int hp)
 {
-	m_hpBonus = hp * 12;
+	m_hpBonus = hp * 12; // hpボーナスを設定
 	if (m_isPlayerDead)
 	{
-		m_hpBonus = 0;
+		m_hpBonus = 0; // もし死亡した場合はボーナスはなし
 	}
 }
 

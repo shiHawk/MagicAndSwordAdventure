@@ -30,11 +30,11 @@ public:
 		std::shared_ptr<ScoreManager> pScoreManager);
 	virtual void Init() override;
 	virtual void End() override;
-
 	virtual SceneBase* Update() override;
 	virtual void Draw() override;
 	virtual SceneID GetSceneID() const override;
 	int GetRemainingEnemies();
+	bool GetNearestEnemyPosition(const VECTOR& playerPos, VECTOR& outEnemyPos); 
 private:
 	bool IsAreAllEnemiesDefeated(); // 全滅しているかどうか
 	void MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex); // 影のテクスチャを貼るポリゴン
