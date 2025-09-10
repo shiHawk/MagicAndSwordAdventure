@@ -28,6 +28,11 @@ private:
 	int m_skeltonIconHandle; // 撃破スコアのアイコンハンドル
 	int m_timerIconHandle; // タイムボーナスのアイコンハンドル
  	int m_HPIconHandle; // HPボーナスのアイコンハンドル
+	// 文字列の横幅
+	int m_destroyScoreWidth;
+	int m_timeScoreWidth;
+	int m_hpScoreWidth;
+	int m_totalScoreWidth;
 	// ランクのハンドル
 	int m_rankSHandle; 
 	int m_rankAHandle; 

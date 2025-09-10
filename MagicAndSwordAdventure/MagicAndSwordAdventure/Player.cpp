@@ -189,7 +189,7 @@ void Player::Update()
 		HandleJump();
 		DoMove();
 		HandleEvade();
-		if (isMove)
+		if (isMove&& m_pos.y <= 0.0f)
 		{
 			idleCount = 0;
 			int targetAnimNo;
@@ -245,7 +245,7 @@ void Player::Draw() const
 	}
 	if (attack.active)
 	{
-		DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
+		//DrawSphere3D(attack.pos, attack.radius, 8, 0xff0000, 0xffffff, false);
 	}
 }
 
@@ -578,24 +578,4 @@ void Player::HandleInput()
 		}
 		idleCount++;
 	}
-}
-
-Direction8 Player::GetDirection8FromAngle(float angle)
-{
-	const float PI_OVER_8 = DX_PI_F / 8.0f; // 22.5“x
-
-	// •‰‚ÌŠp“x‚ð0`2ƒÎ‚É•â³
-	if (angle < 0)
-	{
-		angle += 2.0f * DX_PI_F;
-	}
-
-	if (angle < PI_OVER_8 || angle >= 15.0f * PI_OVER_8) return Direction8::Right;
-	if (angle < 3.0f * PI_OVER_8) return Direction8::UpRight;
-	if (angle < 5.0f * PI_OVER_8) return Direction8::Up;
-	if (angle < 7.0f * PI_OVER_8) return Direction8::UpLeft;
-	if (angle < 9.0f * PI_OVER_8) return Direction8::Left;
-	if (angle < 11.0f * PI_OVER_8) return Direction8::DownLeft;
-	if (angle < 13.0f * PI_OVER_8) return Direction8::Down;
-	return Direction8::DownRight;
 }

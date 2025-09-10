@@ -11,7 +11,7 @@ namespace
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
 	// 文字の位置
-	constexpr int kCharaPosX = 500;
+	constexpr int kCharaPosX = 850;
 	constexpr int kDestroyScorePosY = 100; // 撃破スコア
 	constexpr int kTimeScorePosY = 260; // タイムボーナス
 	constexpr int kHpScorePosY = 420; // HPボーナス
@@ -34,6 +34,9 @@ namespace
 	// ランク判定の基準スコア
 	constexpr int kRankScoreS = 23500;  // Sランク
 	constexpr int kRankScoreA = 16950;  // Aランク
+	// ランクの位置
+	constexpr int kRankPosX = 900;
+	constexpr int kRankPosY = 170;
 }
 ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
@@ -47,7 +50,11 @@ ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_HPIconHandle(-1),
 	m_rankSHandle(-1),
 	m_rankAHandle(-1),
-	m_rankBHandle(-1)
+	m_rankBHandle(-1),
+	m_destroyScoreWidth(0),
+	m_timeScoreWidth(0),
+	m_hpScoreWidth(0),
+	m_totalScoreWidth(0)
 {
 }
 
@@ -126,26 +133,35 @@ void ResultScene::Draw()
 	DrawGraph(440, 95,m_skeltonIconHandle,true);
 	DrawGraph(440, 255,m_timerIconHandle,true);
 	DrawGraph(440, 415,m_HPIconHandle,true);
-	DrawFormatStringToHandle(kCharaPosX, kDestroyScorePosY, kFontColorWhite,m_fontHandle,"Destroy Score: %d",m_pScoreManager->GetDestroyScore());
-	DrawFormatStringToHandle(kCharaPosX,kTimeScorePosY, kFontColorWhite, m_fontHandle, "Time Bonus: %d",m_pScoreManager->GetTimeBonus());
-	DrawFormatStringToHandle(kCharaPosX, kHpScorePosY, kFontColorWhite, m_fontHandle, "HP Bonus: %d",m_pScoreManager->GetHpBonus());
-	DrawFormatStringToHandle(kCharaPosX,kScorePosY, kFontColorRed, m_fontHandle, "Total Score: %d",m_pScoreManager->GetScore());
+
+	// スコアを右揃えにする
+	m_destroyScoreWidth = GetDrawFormatStringWidthToHandle(m_fontHandle, "Destroy Score: %d", m_pScoreManager->GetDestroyScore());
+	DrawFormatStringToHandle(kCharaPosX- m_destroyScoreWidth, kDestroyScorePosY, kFontColorWhite,m_fontHandle,"Destroy Score: %d",m_pScoreManager->GetDestroyScore());
+
+	m_timeScoreWidth = GetDrawFormatStringWidthToHandle(m_fontHandle, "Time Bonus: %d", m_pScoreManager->GetTimeBonus());
+	DrawFormatStringToHandle(kCharaPosX- m_timeScoreWidth,kTimeScorePosY, kFontColorWhite, m_fontHandle, "Time Bonus: %d",m_pScoreManager->GetTimeBonus());
+
+	m_hpScoreWidth = GetDrawFormatStringWidthToHandle(m_fontHandle, "HP Bonus: %d", m_pScoreManager->GetHpBonus());
+	DrawFormatStringToHandle(kCharaPosX- m_hpScoreWidth, kHpScorePosY, kFontColorWhite, m_fontHandle, "HP Bonus: %d",m_pScoreManager->GetHpBonus());
+
+	m_totalScoreWidth = GetDrawFormatStringWidthToHandle(m_fontHandle, "Total Score: %d", m_pScoreManager->GetScore());
+	DrawFormatStringToHandle(kCharaPosX- m_totalScoreWidth,kScorePosY, kFontColorRed, m_fontHandle, "Total Score: %d",m_pScoreManager->GetScore());
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatStringToHandle(kCharaPosX, kPressBPosY, kFontColorBlue, m_fontHandle,"Press B Title");
+		DrawFormatStringToHandle(kCharaPosX-300, kPressBPosY, kFontColorBlue, m_fontHandle,"Press B Title");
 	}
 	
 	if (m_pScoreManager->GetScore() >= kRankScoreS)
 	{
-		DrawGraph(840, 170, m_rankSHandle, true);
+		DrawGraph(kRankPosX, kRankPosY, m_rankSHandle, true);
 	}
 	else if (m_pScoreManager->GetScore() > kRankScoreA)
 	{
-		DrawGraph(840, 170, m_rankAHandle, true);
+		DrawGraph(kRankPosX, kRankPosY, m_rankAHandle, true);
 	}
 	else
 	{
-		DrawGraph(840, 170, m_rankBHandle, true);
+		DrawGraph(kRankPosX, kRankPosY, m_rankBHandle, true);
 	}
 	DrawFade();
 }

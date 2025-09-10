@@ -11,17 +11,7 @@ enum  class Dir
 	Front,
 	Back
 };
-enum class Direction8
-{
-	Right,      // 右
-	UpRight,    // 右上
-	Up,         // 上
-	UpLeft,     // 左上
-	Left,       // 左
-	DownLeft,   // 左下
-	Down,       // 下
-	DownRight,  // 右下
-};
+
 class GameScene;
 class Player:public CharacterBase
 {
@@ -60,7 +50,6 @@ private:
 	void HandleEvade();
 	void UpdateCombo();
 	void HandleInput();
-	Direction8 GetDirection8FromAngle(float angle);
 	struct EvadeData
 	{
 		int evadeCount; // 回避回数
@@ -83,7 +72,6 @@ private:
 	// プレイヤーの向いている方向
 	bool m_isDirRight;
 	bool m_isJump;
-	Direction8 m_Direction; // プレイヤーの向き
 	// 移動前の位置
 	VECTOR m_prevPos;
 	VECTOR m_rot = { 0.0f,0.0f,0.0f };
