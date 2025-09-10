@@ -15,7 +15,8 @@ namespace
 	constexpr int kDestroyScorePosY = 100; // 撃破スコア
 	constexpr int kTimeScorePosY = 260; // タイムボーナス
 	constexpr int kHpScorePosY = 420; // HPボーナス
-	constexpr int kScorePosY = 580; // 合計スコア
+	constexpr int kScorePosX = 550; // 合計スコア
+	constexpr int kScorePosY = 580; 
 	// 背景の位置
 	constexpr int kBGPosX = -350;
 	constexpr int kBGPosY = -150;
@@ -148,7 +149,7 @@ void ResultScene::Draw()
 	DrawFormatStringToHandle(kCharaPosX- m_totalScoreWidth,kScorePosY, kFontColorRed, m_fontHandle, "Total Score: %d",m_pScoreManager->GetScore());
 	if ((int)(GetNowCount() / kBlinkCycleMs) % 2 == 0)
 	{
-		DrawFormatStringToHandle(kCharaPosX-300, kPressBPosY, kFontColorBlue, m_fontHandle,"Press B Title");
+		DrawFormatStringToHandle(kScorePosX, kPressBPosY, kFontColorBlue, m_fontHandle,"Press B Title");
 	}
 	
 	if (m_pScoreManager->GetScore() >= kRankScoreS)

@@ -65,7 +65,6 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 	m_fontTextHandle = CreateFontToHandle("Noto Serif JP Black", 20, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	m_fontHandle = CreateFontToHandle("Noto Serif JP Black",30, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	m_uiFrameHandle = LoadGraph("Data/UI/UI_Frame.png");
-	
 }
 
 void UIManager::End()

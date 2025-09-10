@@ -12,7 +12,7 @@ SoundManager::SoundManager():
 	m_playerSecondAttackSoundHandle(-1),
 	m_playerThirdAttackSoundHandle(-1),
 	m_enemyAttackSoundHandle(-1),
-	m_soundVol(0),
+	m_volumeReduction(0),
 	m_currentBgmHandle(-1)
 {
 }
@@ -46,13 +46,13 @@ void SoundManager::Update()
 {
 	if (m_currentBgmHandle != -1)
 	{
-		ChangeVolumeSoundMem(kMaxVol * 0.8 - m_soundVol, m_currentBgmHandle); // 音量を調整
+		ChangeVolumeSoundMem(kMaxVol * 0.8 - m_volumeReduction, m_currentBgmHandle); // 音量を調整
 	}
 }
 
 void SoundManager::PlayBGM()
 {
-	m_soundVol = 0;
+	m_volumeReduction = 0;
 	// 各シーンに合わせてm_currentBgmHandleを変更する
 	if (m_pSceneManager->GetCurrentSceneID() == SceneID::TitleScene)
 	{
@@ -96,12 +96,12 @@ void SoundManager::PlayEnemyAttackSE()
 int SoundManager::FadeBGMVol()
 {
 	// 徐々に音量を下げる
-	m_soundVol += 8;
-	if (m_soundVol > kMaxVol * 0.8)
+	m_volumeReduction += 8;
+	if (m_volumeReduction > kMaxVol * 0.8)
 	{
-		m_soundVol = kMaxVol * 0.8;
+		m_volumeReduction = kMaxVol * 0.8;
 	}
-	return m_soundVol;
+	return m_volumeReduction;
 }
 
 void SoundManager::StopBGM()

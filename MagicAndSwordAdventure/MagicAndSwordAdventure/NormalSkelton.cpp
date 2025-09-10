@@ -14,7 +14,7 @@ namespace
 	constexpr float kBackLimit = 270.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
-	constexpr float kDefaultAttackCoolTime = 80.0f; // クールタイム
+	constexpr float kDefaultAttackCoolTime = 70.0f; // クールタイム
 	constexpr float kDefaultPreparingTime = 115.0f; // 追跡から攻撃に移る時間
 	constexpr float kAttackDuration = 27.0f; // 攻撃の持続時間
 

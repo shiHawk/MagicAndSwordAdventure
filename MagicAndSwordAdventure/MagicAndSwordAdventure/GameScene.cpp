@@ -194,7 +194,6 @@ SceneBase* GameScene::Update()
 	if (!m_isNextScene && !IsFadingOut() && (m_pPlayer->IsDead() || IsAreAllEnemiesDefeated())) // プレイヤーが死亡するか敵が全滅したらフェードを開始
 	{
 		StartFadeOut();
-		
 		m_isNextScene = true;
 	}
 	if (IsFadingOut())

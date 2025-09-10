@@ -100,7 +100,7 @@ Player::~Player()
 void Player::Init(std::shared_ptr<Animation> pAnimation, GameScene* gameScene)
 {
 	m_pos = kPlayerInitPos;
-	m_vec = { 0, 0, 0 };
+	m_vec = { 0.0f, 0.0f, 0.0f };
 	m_pAnimation = pAnimation;
 	m_pGameScene = gameScene;
 	m_modelHandle = MV1LoadModel("Data/model/Barbarian.mv1");
@@ -111,7 +111,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation, GameScene* gameScene)
 	m_power = kFirstAttackPower;
 	m_hp = kMaxHp;
 	m_isDead = false;
-	attack = { 35.0f, { -500,0,0 }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
+	attack = { 35.0f, { -500.0f,0.0f,0.0f }, false, 0.0f, 0, 30.0f, 60.0f, 40.0f };
 }
 
 void Player::End()
@@ -322,13 +322,13 @@ void Player::OnAttack()
 
 	attack.timer = kAttackDuration; // UŒ‚‘±ŠÔ‚Ìİ’è
 	// UŒ‚‚·‚é‚Æ‚«‚É­‚µ‘Oi‚·‚é
-	if (attack.count == 3)
+	if (attack.count == 3) // 3’i–Ú‚Í‘å‚«‚­“¥‚İ‚Ş
 	{
 		m_vec.x += m_attackDir.x * (kMoveSpeed * 1.5f);
 		m_vec.z += m_attackDir.z * (kMoveSpeed * 1.5f);
 	}
-	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.25f);
-	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.25f);
+	m_vec.x += m_attackDir.x * (kMoveSpeed * 0.5f);
+	m_vec.z += m_attackDir.z * (kMoveSpeed * 0.5f);
 }
 
 void Player::OnEvade()

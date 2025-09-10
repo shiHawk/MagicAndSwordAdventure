@@ -35,7 +35,7 @@ private:
 	~SoundManager() {};
 	SceneManager* m_pSceneManager;
 	//Scene m_scene;
-	int m_soundVol;
+	int m_volumeReduction; // âπó ÇÃå∏è≠ó 
 	int m_currentBgmHandle;
 	int m_titleBgmHandle;
 	int m_gameSceneBgmHandle;
