@@ -28,6 +28,8 @@ namespace
 	// 最大HP
 	constexpr int kMaxHp = 80;
 	constexpr int kMaxHomingTime = 60; // 追尾する時間
+	// 攻撃力
+	constexpr int kPower = 20;
 	// 吹き飛んでいる時間
 	constexpr float kKnockBackSpeed = 5.0f;
 	constexpr float kKnockbackDuration = 0.5f;
@@ -57,7 +59,8 @@ m_barrelHandle(-1),
 m_rollAngleZ(0.0f),
 m_attackDir({0.0f,0.0f,0.0f}),
 m_homingTimer(0),
-m_isTrackFlag(false)
+m_isTrackFlag(false),
+m_attackCount(0)
 {
 }
 
@@ -75,7 +78,7 @@ void WizardSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_isDying = false;
 	m_isDead = false;
 	m_hp = kMaxHp;
-	m_power = 20;
+	m_power = kPower;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
 	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(kScaleSize, kScaleSize, kScaleSize));
@@ -258,11 +261,27 @@ void WizardSkelton::Draw() const
 #if _DEBUG
 	/*DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
 	DrawSphere3D(VGet(m_pos.x, m_pos.y + kDebugOffSet, m_pos.z), kSerchRange, 8, 0xffff00, 0xffffff, false);*/
-	
 #endif
 }
 
 bool WizardSkelton::IsAttackActive() const
 {
 	return m_attack.active; 
+}
+
+void WizardSkelton::TrackPlayer()
+{
+	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
+	m_pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;
+	m_pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveDecRate;
+	if (m_enemyToPlayer.x > 0)
+	{
+		MV1SetRotationXYZ(m_modelHandle, kRightDir);
+	}
+	else
+	{
+		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
+	}
+	// 移動アニメーション
+	ChangeAnim(m_modelHandle, kWalkAnimNo, true, kAnimSpeedFast);
 }

@@ -29,13 +29,10 @@ namespace
 	constexpr float kAnimSpeedFast = 0.5f; // 短めの再生の時
 	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	constexpr float kAnimSpeedSlow = 1.0f; // 長めの再生の時
-	constexpr float kAnimSpeedakeAStand = 0.3f; // 構えているときの再生速度
 	// 最大HP
 	constexpr int kMaxHp = 100;
 	// 敵の攻撃力
 	constexpr int kPower = 40;
-	// 点滅周期
-	constexpr int kBlinkCycleMs = 500;
 	// モデルのスケール
 	constexpr int kModelScale = 45;
 	// 吹き飛んでいる時間
@@ -49,7 +46,7 @@ namespace
 	constexpr float kFramesPerSecond = 60.0f;
 	// 画面端のオフセット
 	constexpr float kLimitPosOffSet = 0.001f;
-	// 死亡後のポジションのオフセット
+	// 死亡後のポジション
 	constexpr float kDeadPosY = -1000.0f;
 }
 
@@ -71,7 +68,7 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 	m_pos = VAdd(m_pos, pos);
 	m_attack.timer = 0.0f;
 	m_attack.attackCoolTime = -1.0f;
-	m_attack.pos = VGet(m_pos.x - m_attack.attackOffSetX, 0, 0);
+	m_attack.pos = VGet(m_pos.x - m_attack.attackOffSetX, 0.0f, 0.0f);
 	m_preparingTime = kDefaultPreparingTime;
 	m_modelHandle = MV1LoadModel("Data/model/Skeleton_Rogue.mv1");
 	m_isDead = false;

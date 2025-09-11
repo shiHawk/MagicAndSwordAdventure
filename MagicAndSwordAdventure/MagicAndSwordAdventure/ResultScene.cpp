@@ -38,6 +38,14 @@ namespace
 	// ランクの位置
 	constexpr int kRankPosX = 900;
 	constexpr int kRankPosY = 170;
+	// アイコンの位置
+	constexpr int kIconPosX = 440;
+	constexpr int kSkeltonIconPosY = 95;
+	constexpr int kTimerIconPosY = 255;
+	constexpr int kHPIconPosY = 415;
+	// フォントのサイズ、太さ
+	constexpr int kFontSize = 30;
+	constexpr int kFontThick = 5;
 }
 ResultScene::ResultScene(std::shared_ptr<ScoreManager> pScoreManager) :
 	m_cameraPos({ 0.0f,0.0f,0.0f }),
@@ -86,7 +94,7 @@ void ResultScene::Init()
 	SetCameraNearFar(kCameraNearClip, kCameraFarClip);
 	SoundManager::GetInstance()->PlayBGM();
 	m_resultHandle = LoadGraph("Data/UI/result_seat.png");
-	m_fontHandle = CreateFontToHandle("Arial Black", 30, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	m_fontHandle = CreateFontToHandle("Arial Black", kFontSize, kFontThick, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	m_skeltonIconHandle = LoadGraph("Data/UI/skeltonIcon.png");
 	m_timerIconHandle = LoadGraph("Data/UI/timerIcon.png");
 	m_HPIconHandle = LoadGraph("Data/UI/hpIcon.png");
@@ -131,9 +139,9 @@ SceneBase* ResultScene::Update()
 void ResultScene::Draw()
 {
 	DrawGraph(kBGPosX, kBGPosY,m_resultHandle,true);
-	DrawGraph(440, 95,m_skeltonIconHandle,true);
-	DrawGraph(440, 255,m_timerIconHandle,true);
-	DrawGraph(440, 415,m_HPIconHandle,true);
+	DrawGraph(kIconPosX, kSkeltonIconPosY,m_skeltonIconHandle,true);
+	DrawGraph(kIconPosX, kTimerIconPosY,m_timerIconHandle,true);
+	DrawGraph(kIconPosX, kHPIconPosY,m_HPIconHandle,true);
 
 	// スコアを右揃えにする
 	m_destroyScoreWidth = GetDrawFormatStringWidthToHandle(m_fontHandle, "Destroy Score: %d", m_pScoreManager->GetDestroyScore());

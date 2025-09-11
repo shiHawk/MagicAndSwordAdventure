@@ -38,6 +38,9 @@ namespace
 	constexpr float kCameraFarClip = 3000.0f;
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
+	// フォントのサイズ、太さ
+	constexpr int kFontSize = 20;
+	constexpr int kFontThick = 3;
 }
 
 TitleScene::TitleScene():
@@ -92,7 +95,7 @@ void TitleScene::Init()
 	m_titleHandle = LoadGraph("Data/title/WarriorAdventureTitle.png");
 	m_titleBGHandle = LoadGraph("Data/title/TitleBG.png");
 	m_manualHandle = LoadGraph("Data/title/WarriorAdventure_manual.png");
-	m_fontHandle = CreateFontToHandle("Arial Black", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	m_fontHandle = CreateFontToHandle("Arial Black", kFontSize, kFontThick, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	m_BGHandle = LoadGraph("Data/title/title_BG.mp4");
 	m_isPlayingMovie = true;
 }

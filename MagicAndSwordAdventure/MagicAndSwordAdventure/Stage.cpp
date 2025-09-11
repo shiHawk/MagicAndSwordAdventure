@@ -32,6 +32,7 @@ namespace
 
 	// 初期位置オフセット
 	constexpr float kTileWallInitialPosY = -10.0f; // タイル・壁のY初期位置
+	constexpr float kTileWallInitialPosZ = 100.0f; // タイル・壁のZ初期位置
 }
 
 Stage::Stage():
@@ -58,8 +59,8 @@ Stage::~Stage()
 
 void Stage::Init()
 {
-	m_tilePos = { 0.0f,-10.0f,100.0f };
-	m_wallPos = { 0.0f,-10.0f,100.0f };
+	m_tilePos = { 0.0f,kTileWallInitialPosY,kTileWallInitialPosZ };
+	m_wallPos = { 0.0f,kTileWallInitialPosY,kTileWallInitialPosZ };
 	m_tileTotal = kInitialTileCount;
 	m_wallNum = kInitialWallCount;
 	m_stageStart = kStageStartPos;
@@ -79,7 +80,6 @@ void Stage::Init()
 	MV1SetScale(m_gateFrameModelHandle, VGet(kWallScaleX, kWallScaleYZ, kWallScaleYZ));
 	MV1SetRotationXYZ(m_gateFrameModelHandle, VGet(0.0f, kDoorRotationY, 0.0f));
 
-	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
 	if (m_tileModelBase == -1 || m_tileGrateModelBase == -1)
 	{
 		printfDx("読み込み失敗\n");

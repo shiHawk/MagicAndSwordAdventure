@@ -6,7 +6,9 @@ namespace
 	constexpr float kMillisecondsPerSecond = 1000.0f;  // ミリ秒から秒への変換
 	constexpr int kTimeBonusMultiplier = 20;           // 経過時間をボーナスに変換する倍率
 	constexpr int kHpBonusMultiplier = 12;             // HPをボーナスに変換する倍率
-}ScoreManager::ScoreManager():
+}
+
+ScoreManager::ScoreManager():
 	m_score(0),
 	m_startTime(0),
 	m_elapsedTimeSeconds(0.0f),

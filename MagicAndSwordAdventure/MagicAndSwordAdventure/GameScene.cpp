@@ -8,7 +8,6 @@
 #include "ResultScene.h"
 namespace
 {
-	constexpr float kGroundPosY = 20.0f;
 	// キャラの位置とサイズから影の頂点配列を作る
 	constexpr float kLeftShadow = -30.0f;
 	constexpr float kRightShadow = 40.0f;
@@ -18,10 +17,11 @@ namespace
 	constexpr int kShadowPolygonNum = 2;
 	// 影用のポリゴンの頂点数
 	constexpr int kPolygonVertex = 6;
+	constexpr int kColorMaxValue = 255;
 }
 GameScene::GameScene():
 	m_isNextScene(false),
-	m_remainingEnemysCount(30),
+	m_remainingEnemysCount(0),
 	m_isHitPlayer(false),
 	m_wasHitPlayer(false),
 	m_isHitNormalSkelton(false),
@@ -296,7 +296,7 @@ void GameScene::MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex)
 	for (int i = 0; i < kPolygonVertex; i++)
 	{
 		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
-		vertex[i].dif = GetColorU8(255, 255, 255, m_shadowAlpha);
+		vertex[i].dif = GetColorU8(kColorMaxValue, kColorMaxValue, kColorMaxValue, m_shadowAlpha);
 		vertex[i].spc = GetColorU8(0, 0, 0, 0);
 	}
 }
@@ -307,7 +307,7 @@ void GameScene::DrawCharacterShadow()
 
 	// プレイヤーの影
 	MakeShadowVertex(m_pPlayer->GetPos(), vertex);
-	DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+	DrawPolygon3D(vertex, kShadowPolygonNum, m_shadowGraphHandle, TRUE);
 
 	// ノーマルスケルトンの影
 	for (auto& normalSkelton : m_NormalSkeltons)

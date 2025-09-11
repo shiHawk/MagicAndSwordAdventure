@@ -17,6 +17,7 @@ public:
 	float GetAttackRadius() { return m_attack.radius; }
 	bool IsAttackActive() const;
 private:
+	void TrackPlayer();
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<ScoreManager> m_pScoreManager;
 	AttackSphere m_attack;
