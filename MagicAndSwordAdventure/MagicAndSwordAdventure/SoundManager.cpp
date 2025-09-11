@@ -3,6 +3,7 @@
 namespace
 {
 	constexpr int kMaxVol = 255;
+	constexpr int kFadeStepVolume = 8;        // フェードアウト時に1フレームで下げる音量
 }
 SoundManager::SoundManager():
 	m_titleBgmHandle(-1),
@@ -46,7 +47,7 @@ void SoundManager::Update()
 {
 	if (m_currentBgmHandle != -1)
 	{
-		ChangeVolumeSoundMem(kMaxVol * 0.8 - m_volumeReduction, m_currentBgmHandle); // 音量を調整
+		ChangeVolumeSoundMem(kMaxVol - m_volumeReduction, m_currentBgmHandle); // 音量を調整
 	}
 }
 
@@ -96,10 +97,10 @@ void SoundManager::PlayEnemyAttackSE()
 int SoundManager::FadeBGMVol()
 {
 	// 徐々に音量を下げる
-	m_volumeReduction += 8;
-	if (m_volumeReduction > kMaxVol * 0.8)
+	m_volumeReduction += kFadeStepVolume;
+	if (m_volumeReduction > kMaxVol)
 	{
-		m_volumeReduction = kMaxVol * 0.8;
+		m_volumeReduction = kMaxVol;
 	}
 	return m_volumeReduction;
 }

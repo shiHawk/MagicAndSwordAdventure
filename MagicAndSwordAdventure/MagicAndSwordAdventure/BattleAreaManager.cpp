@@ -3,6 +3,8 @@
 namespace
 {
 	constexpr int kDivNum = 16;
+	constexpr float kBattleAreaRadiusSize = 350.0f;
+	constexpr float kBattleTriggerDistance = 300.0f;
 }
 BattleAreaManager::BattleAreaManager():
 	m_battleAreaCenterPos({0.0f,0.0f,0.0f}),
@@ -27,8 +29,8 @@ void BattleAreaManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<Ca
 	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;
 	m_battleAreaCenterPos = { 0.0f,0.0f,0.0f };
-	m_battleAreaRadius = 350.0f;
-	m_battleTriggerDistance = 300.0f;
+	m_battleAreaRadius = kBattleAreaRadiusSize;
+	m_battleTriggerDistance = kBattleTriggerDistance;
 	m_battleState = State::None;
 }
 

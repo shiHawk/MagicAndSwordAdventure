@@ -4,13 +4,6 @@
 #include "Animation.h"
 #include "CharacterBase.h"
 #include <memory>
-enum  class Dir
-{
-	Right,
-	Left,
-	Front,
-	Back
-};
 
 class GameScene;
 class Player:public CharacterBase
@@ -31,17 +24,16 @@ public:
 	void OnAttack();
 	// 回避
 	void OnEvade();
-	VECTOR GetAttackPos() { return attack.pos; }
-	int GetAttackCount() { return attack.count; }
-	float GetAttackRadius() { return attack.radius; }
-	bool IsAttackActive() const { return attack.active; }
+	VECTOR GetAttackPos() { return m_attack.pos; }
+	int GetAttackCount() { return m_attack.count; }
+	float GetAttackRadius() { return m_attack.radius; }
+	bool IsAttackActive() const { return m_attack.active; }
 	bool IsDirRight() { return m_isDirRight; }
-	bool IsMoving();
+	bool IsMoving() { return m_isMovingFlag; };
 	bool IsDead() { return m_isDead; }
 	int GetHp() { return m_hp; }
 	bool IsPinch();
 	int GetMaxHp();
-	AttackSphere attack = { 30,{-500,0,0},false,0.0f,0,30.0f,60.0f,40.0f};
 	void AddPos(VECTOR offset);
 private:
 	// 移動
@@ -56,10 +48,10 @@ private:
 		bool active; // 回避状態
 		float timer; // 回避時間
 	};
-	EvadeData evadeData = { 0,false,0.0f };
+	EvadeData m_evadeData = { 0,false,0.0f };
+	AttackSphere m_attack;
 	// 攻撃が出る方向
 	bool m_isAttackDirRight;
-	Dir m_playerDir;
 	VECTOR m_screenPos;
 	int m_damageFrame;
 	int m_hp;
@@ -93,5 +85,11 @@ private:
 	bool m_isNowMoving;
 	int m_blinkCount; // 点滅時間
 	bool m_isVisible; // 描画するか
+	// 振り返るだけで移動したと判定させないために
+	bool m_isMove = false;
+	// 連続で移動アニメーションを呼ばないようにする
+	int m_moveCount = 0;
+	int m_idleCount = 0;
+	bool m_isStartGravity = false;
 };
 

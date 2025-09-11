@@ -38,7 +38,6 @@ namespace
 	constexpr float kCameraFarClip = 3000.0f;
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
-	constexpr float kModelScale = 50.0f; // モデルのスケール
 }
 
 TitleScene::TitleScene():
@@ -50,12 +49,12 @@ TitleScene::TitleScene():
 	m_offsetY(0),
 	m_titleBGHandle(-1),
 	m_BGHandle(-1),
-	m_modelHandle(-1),
 	m_playerPos({ 0.0f,0.0f,0.0f }),
 	m_fontHandle(-1),
 	m_manualHandle(-1),
 	m_isManualFlag(false),
-	m_isPlayingMovie(true)
+	m_isPlayingMovie(true),
+	m_isNextScene(false)
 {
 }
 
@@ -63,10 +62,7 @@ void TitleScene::Init()
 {
 	m_fadeBright = 0;
 	m_fadeSpeed = -kFadeSpeed;
-	m_modelHandle = MV1LoadModel("Data/model/Barbarian.mv1");
 	m_playerPos = { 0.0f,0.0f,0.0f };
-	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
-	MV1SetPosition(m_modelHandle, m_playerPos);
 	m_isManualFlag = false;
 
 	// 3D表示の設定
@@ -105,7 +101,6 @@ void TitleScene::End()
 {
 	DeleteGraph(m_titleHandle);
 	DeleteGraph(m_titleBGHandle);
-	MV1DeleteModel(m_modelHandle);
 	MV1DeleteModel(m_manualHandle);
 	DeleteFontToHandle(m_fontHandle);
 	DeleteGraph(m_BGHandle);

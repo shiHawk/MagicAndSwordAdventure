@@ -2,10 +2,11 @@
 #include "DxLib.h"
 namespace
 {
-	constexpr int kMaxTimeBonus = 1000;
-	constexpr float kMillisecondsPerSecond = 1000.0f; // ミリ秒から秒への変換
-}
-ScoreManager::ScoreManager():
+	constexpr int kMaxTimeBonus = 1000;                // タイムボーナス計算の上限基準
+	constexpr float kMillisecondsPerSecond = 1000.0f;  // ミリ秒から秒への変換
+	constexpr int kTimeBonusMultiplier = 20;           // 経過時間をボーナスに変換する倍率
+	constexpr int kHpBonusMultiplier = 12;             // HPをボーナスに変換する倍率
+}ScoreManager::ScoreManager():
 	m_score(0),
 	m_startTime(0),
 	m_elapsedTimeSeconds(0.0f),
@@ -64,7 +65,7 @@ int ScoreManager::GetTimeBonus()
 	}
 	else
 	{
-		m_timeBonus = (kMaxTimeBonus - m_elapsedTimeSeconds) * 20;
+		m_timeBonus = (kMaxTimeBonus - m_elapsedTimeSeconds) * kTimeBonusMultiplier;
 		if (m_timeBonus < 0) m_timeBonus = 0; // ボーナスがマイナスにならないように
 	}
 	return m_timeBonus;
@@ -78,7 +79,7 @@ int ScoreManager::GetScore()
 
 void ScoreManager::HpBonus(int hp)
 {
-	m_hpBonus = hp * 12; // hpボーナスを設定
+	m_hpBonus = hp * kHpBonusMultiplier; // hpボーナスを設定
 	if (m_isPlayerDead)
 	{
 		m_hpBonus = 0; // もし死亡した場合はボーナスはなし

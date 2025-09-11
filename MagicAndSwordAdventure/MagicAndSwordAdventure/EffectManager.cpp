@@ -4,6 +4,8 @@
 namespace
 {
 	constexpr int kParticleMax = 8000;
+	constexpr float kPlayerHitEffectSize = 20.0f;
+	constexpr float kEnemyHitEffectSize = 30.0f;
 }
 
 EffectManager::EffectManager():
@@ -42,7 +44,7 @@ void EffectManager::Update()
 	if (m_isHitPlayer && !m_wasHitPlayer)
 	{
 		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle); // エフェクトを再生
-		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 20.0f, 20.0f, 20.0f); // エフェクトのサイズを設定
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, kPlayerHitEffectSize, kPlayerHitEffectSize, kPlayerHitEffectSize); // エフェクトのサイズを設定
 		SetHitEffectPosPlayer(); // エフェクトの位置を設定
 	}
 	m_wasHitPlayer = m_isHitPlayer;
@@ -61,7 +63,7 @@ void EffectManager::Update()
 	if (m_isHitNormalSkelton && !m_wasHitNormalSkelton)
 	{
 		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle); // エフェクトを再生
-		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 30.0f, 30.0f, 30.0f); // エフェクトのサイズを設定
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, kEnemyHitEffectSize, kEnemyHitEffectSize, kEnemyHitEffectSize); // エフェクトのサイズを設定
 		SetHitEffectPosNormalSkelton(); // エフェクトの位置を設定
 	}
 	m_wasHitNormalSkelton = m_isHitNormalSkelton; // ヒット情報の更新
@@ -80,7 +82,7 @@ void EffectManager::Update()
 	if (m_isHitWizardSkelton && !m_wasHitWizardSkelton)
 	{
 		m_playEffectHandle = PlayEffekseer3DEffect(m_effectHandle); // エフェクトを再生
-		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, 30.0f, 30.0f, 30.0f); // エフェクトのサイズを設定
+		SetScalePlayingEffekseer3DEffect(m_playEffectHandle, kEnemyHitEffectSize, kEnemyHitEffectSize, kEnemyHitEffectSize); // エフェクトのサイズを設定
 		SetHitEffectPosWizardSkelton(); // エフェクトの位置を設定
 	}
 	m_wasHitWizardSkelton = m_isHitWizardSkelton; // ヒット情報の更新

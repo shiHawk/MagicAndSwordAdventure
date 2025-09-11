@@ -13,6 +13,7 @@ namespace
 	constexpr float kColRadius = 30.0f;
 	// ç≈ëÂë¨ìx
 	constexpr float kMaxSpeed = 15.0f;
+	constexpr float kPreparingTime = 60.0f;
 }
 Enemy::Enemy()
 {
@@ -21,12 +22,10 @@ Enemy::Enemy()
 	m_moveSpeed = 0.0f;
 	m_enemyToPlayerDistance = 0.0f;
 	m_destroyScore = 0;
-	m_preparingTime = 60.0f;
+	m_preparingTime = kPreparingTime;
 	m_enemyToPlayer = { 0.0f,0.0f,0.0f };
 	m_isDirRight = false;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
-	m_knockbackDuration = 30.0f;
-	m_knockbackSpeed = 0.0f;
 	m_knockbackTimer = 0.0f;
 }
 

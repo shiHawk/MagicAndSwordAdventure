@@ -23,10 +23,6 @@ private:
 	VECTOR m_cameraMoveTargetPos;
 	// ƒJƒƒ‰‚Ì‹–ìŠp
 	float m_viewAngle;
-	// ƒJƒƒ‰ˆÚ“®‰‰o
-	float m_cameraMoveAngle;
-	int m_CountDownFrame;
-
 	bool m_isBattleCamera;
 
 	std::shared_ptr<Player> m_pPlayer;

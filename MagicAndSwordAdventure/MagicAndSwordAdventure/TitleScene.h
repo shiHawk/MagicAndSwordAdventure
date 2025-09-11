@@ -17,10 +17,9 @@ private:
 	int m_titleHandle;
 	int m_titleBGHandle;
 	int m_BGHandle;
-	int m_modelHandle;
 	float m_time;
 	int m_offsetY;
-	bool m_isNextScene = false;
+	bool m_isNextScene;
 	VECTOR m_playerPos;
 	// ƒJƒƒ‰‚ÌˆÊ’u
 	VECTOR m_cameraPos;

@@ -14,6 +14,10 @@ namespace
 	constexpr float kRightShadow = 40.0f;
 	constexpr float kFrontShadow = 25.0f;
 	constexpr float kBackShadow = -25.0f;
+	// 影用のポリゴンの数
+	constexpr int kShadowPolygonNum = 2;
+	// 影用のポリゴンの頂点数
+	constexpr int kPolygonVertex = 6;
 }
 GameScene::GameScene():
 	m_isNextScene(false),
@@ -25,7 +29,6 @@ GameScene::GameScene():
 	m_wasHitNormalSkelton(false),
 	m_wasHitWizardSkelton(false),
 	m_shadowGraphHandle(-1),
-	m_shadowPos({0.0f,0.0f,0.0f}),
 	m_shadowAlpha(0)
 {
 }
@@ -101,7 +104,6 @@ void GameScene::Init()
 	m_isHitWizardSkelton = false;
 	m_isHitPlayer = false;
 	m_shadowGraphHandle = LoadGraph("Data/UI/Shadow.png");
-	m_shadowPos = { 0.0f,0.0f,0.0f };
 	m_shadowAlpha = 255;
 }
 
@@ -291,7 +293,7 @@ void GameScene::MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex)
 	vertex[5].pos = VGet(pos.x + kRightShadow, 0.0f, pos.z + kBackShadow);
 	vertex[5].u = 1.0f; vertex[5].v = 1.0f;
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < kPolygonVertex; i++)
 	{
 		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
 		vertex[i].dif = GetColorU8(255, 255, 255, m_shadowAlpha);
@@ -301,7 +303,7 @@ void GameScene::MakeShadowVertex(const VECTOR& pos, VERTEX3D* vertex)
 
 void GameScene::DrawCharacterShadow()
 {
-	VERTEX3D vertex[6];
+	VERTEX3D vertex[kPolygonVertex];
 
 	// プレイヤーの影
 	MakeShadowVertex(m_pPlayer->GetPos(), vertex);
@@ -312,7 +314,7 @@ void GameScene::DrawCharacterShadow()
 	{
 		if (normalSkelton->IsDead()) continue;
 		MakeShadowVertex(normalSkelton->GetPos(), vertex);
-		DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+		DrawPolygon3D(vertex, kShadowPolygonNum, m_shadowGraphHandle, TRUE);
 	}
 
 	// ウィザードスケルトンの影
@@ -320,6 +322,6 @@ void GameScene::DrawCharacterShadow()
 	{
 		if (wizardSkelton->IsDead()) continue;
 		MakeShadowVertex(wizardSkelton->GetPos(), vertex);
-		DrawPolygon3D(vertex, 2, m_shadowGraphHandle, TRUE);
+		DrawPolygon3D(vertex, kShadowPolygonNum, m_shadowGraphHandle, TRUE);
 	}
 }

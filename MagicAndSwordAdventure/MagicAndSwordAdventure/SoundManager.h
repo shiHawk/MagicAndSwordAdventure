@@ -1,12 +1,6 @@
 #pragma once
 #include "DxLib.h"
 #include <memory>
-enum class Scene
-{
-	TitleScene,
-	GameScene,
-	ResultScene
-};
 class SceneManager;
 class SoundManager
 {
@@ -34,7 +28,6 @@ private:
 	SoundManager();
 	~SoundManager() {};
 	SceneManager* m_pSceneManager;
-	//Scene m_scene;
 	int m_volumeReduction; // âπó ÇÃå∏è≠ó 
 	int m_currentBgmHandle;
 	int m_titleBgmHandle;

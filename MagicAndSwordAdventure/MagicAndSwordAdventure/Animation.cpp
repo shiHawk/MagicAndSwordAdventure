@@ -1,7 +1,10 @@
 #include "Animation.h"
 #include "DxLib.h"
 
-
+namespace
+{
+	constexpr float kBlendRateIncrement = 0.01f;
+}
 Animation::Animation():
 	m_animTotalTime(0),
 	m_playTime(0.0f),
@@ -11,7 +14,7 @@ Animation::Animation():
 	m_isLoop(true),
 	m_isEnd(false),
 	m_modelHandle(-1),
-	m_timeIncrement(0.5f),
+	m_timeIncrement(0.0f),
 	m_blendRate(0.0f),
 	m_isBlending(false),
 	m_isNowPlaying(false),
@@ -88,7 +91,7 @@ void Animation::UpdateBlendAnim(int modelHandle, int animNo)
 	m_blendRate += 0.01;
 	if (m_blendRate > 1.0f)
 	{
-		m_blendRate = 1.0f;
+		m_blendRate = kBlendRateIncrement;
 		m_isBlending = false;
 		m_nextPlayTime += m_timeIncrement;
 		MV1SetAttachAnimTime(m_modelHandle, animNo, m_nextPlayTime);

@@ -5,12 +5,14 @@ class CharacterBase:public Animation
 {
 public:
 	CharacterBase();
+	~CharacterBase();
 	virtual void Update() = 0;
 	VECTOR GetPos() { return m_pos; };
 	void SetPos(VECTOR nextPos) { m_pos = nextPos; }
 	int GetHp() const { return m_hp; }
 	int GetPower() const { return m_power; }
-	bool GetAttackActive() { return attack.active; }
+	bool GetAttackActive() { return m_attack.active; }
+	protected:
 	VECTOR m_pos;
 	VECTOR m_vec;
 	int m_modelHandle;
@@ -34,6 +36,6 @@ public:
 		float attackOffSetY; // 攻撃のY座標のオフセット
 		float attackCoolTime; // 攻撃のクールタイム
 	};
-	AttackSphere attack;
+	AttackSphere m_attack;
 };
 

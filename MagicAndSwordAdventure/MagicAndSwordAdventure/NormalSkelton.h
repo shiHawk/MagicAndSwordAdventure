@@ -14,14 +14,15 @@ public:
 	void OnDamage();
 	void OnDeath();
 	void Draw()const;
-	VECTOR GetAttackPos() { return attack.pos; };
-	float GetAttackRadius() { return attack.radius; }
-	bool IsAttackActive() const { return attack.active; }
-	AttackSphere attack = { 30,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f };
+	VECTOR GetAttackPos() { return m_attack.pos; };
+	float GetAttackRadius() { return m_attack.radius; }
+	bool IsAttackActive() const { return m_attack.active; }
+	
 private:
 	void TrackPlayer();
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<ScoreManager> m_pScoreManager;
+	AttackSphere m_attack;
 	// プレイヤーに向かうベクトル
 	VECTOR m_toPlayerDir;
 	bool m_isMove;
@@ -30,6 +31,5 @@ private:
 	int m_idleCount = 0;
 	bool m_isPreparingAttack = false; // 攻撃準備中（構えアニメ中）
 	bool m_isPrepared = false; // 構えアニメが完了したか
-	int m_weponModelHandel;
 };
 

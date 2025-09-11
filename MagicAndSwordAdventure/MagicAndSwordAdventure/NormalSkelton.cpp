@@ -10,7 +10,7 @@ namespace
 	constexpr float kSerchRange = 500.0f; // 索敵範囲
 	constexpr float kAttackRange = 90.0f; // 攻撃範囲
 	constexpr float kMoveSpeed = 4.0f; // 移動速度
-	constexpr float kDebugOffSet = 45.0f;
+	constexpr float kAttckOffSet = 40.0f;
 	constexpr float kBackLimit = 270.0f;
 	// 減速
 	constexpr float kMoveDecRate = 0.80f;
@@ -32,20 +32,34 @@ namespace
 	constexpr float kAnimSpeedakeAStand = 0.3f; // 構えているときの再生速度
 	// 最大HP
 	constexpr int kMaxHp = 100;
+	// 敵の攻撃力
+	constexpr int kPower = 40;
 	// 点滅周期
 	constexpr int kBlinkCycleMs = 500;
 	// モデルのスケール
 	constexpr int kModelScale = 45;
+	// 吹き飛んでいる時間
+	constexpr float kKnockBackSpeed = 5.0f;
+	constexpr float kKnockbackDuration = 0.5f;
+	// 撃破スコア
+	constexpr int kDestroyScore = 300;
+	// 攻撃の範囲
+	constexpr float kAttackRadius = 30.0f;
+	// 秒数変換
+	constexpr float kFramesPerSecond = 60.0f;
+	// 画面端のオフセット
+	constexpr float kLimitPosOffSet = 0.001f;
+	// 死亡後のポジションのオフセット
+	constexpr float kDeadPosY = -1000.0f;
 }
 
 NormalSkelton::NormalSkelton():
 	m_toPlayerDir({0.0f,0.f,0.0f}),
 	m_isMove(false),
 	m_moveCount(0),
-	attack({ 30.0f,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,60.0f,40.0,60.0f }),
+	m_attack({0.0f,{m_pos.x - m_attack.attackOffSetX,0,0},false,0,0,0,0.0f,0.0,0.0f }),
 	m_isPreparingAttack(false),
-	m_isPrepared(false),
-	m_weponModelHandel(-1)
+	m_isPrepared(false)
 {
 }
 
@@ -53,42 +67,36 @@ void NormalSkelton::Init(std::shared_ptr<Player> pPlayer, VECTOR pos, std::share
 {
 	m_pPlayer = pPlayer;
 	m_pScoreManager = pScoreManager;
-	m_pos = { 0,0,0 };
+	m_pos = { 0.0f,0.0f,0.0f };
 	m_pos = VAdd(m_pos, pos);
-	attack.timer = 40.0f;
-	attack.attackCoolTime = -1.0f;
-	attack.pos = VGet(m_pos.x - attack.attackOffSetX, 0, 0);
+	m_attack.timer = 0.0f;
+	m_attack.attackCoolTime = -1.0f;
+	m_attack.pos = VGet(m_pos.x - m_attack.attackOffSetX, 0, 0);
 	m_preparingTime = kDefaultPreparingTime;
 	m_modelHandle = MV1LoadModel("Data/model/Skeleton_Rogue.mv1");
-	m_weponModelHandel = MV1LoadModel("Data/model/Skeleton_Blade.mv1");
 	m_isDead = false;
 	m_isDying = false;
 	m_hp = kMaxHp;
-	m_power = 40;
+	m_power = kPower;
 	m_knockbackDir = { 0.0f,0.0f,0.0f };
-	m_knockbackSpeed = 5.0f;
-	m_knockbackDuration = 0.5f;
 	m_knockbackTimer = 0.0f;
 	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
-	MV1SetScale(m_weponModelHandel, VGet(0.1f, 0.1f, 0.1f));
 	MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	AttachAnim(m_modelHandle, kIdleAnimNo);
-	m_destroyScore = 300;
-	attack = { 30.0f,{m_pos.x - attack.attackOffSetX,0,0},false,0,0,30,40.0f,40.0,60.0f };
+	m_destroyScore = kDestroyScore;
+	m_attack = { kAttackRadius,{m_pos.x - m_attack.attackOffSetX,0,0},false,0,0,kAttackDuration,kAttckOffSet,kAttckOffSet,kDefaultAttackCoolTime };
 }
 
 void NormalSkelton::End()
 {
 	MV1DeleteModel(m_modelHandle);
-	MV1DeleteModel(m_weponModelHandel);
-	m_pos = { m_pos.x,m_pos.y - 1000.0f,m_pos.z };
-	attack.pos = { attack.pos.x,attack.pos.y - 1000.0f,attack.pos.z };
-	attack.active = false;
+	m_pos = { m_pos.x,kDeadPosY,m_pos.z };
+	m_attack.pos = { m_attack.pos.x,m_attack.pos.y,m_attack.pos.z };
+	m_attack.active = false;
 }
 
 void NormalSkelton::Update()
 {
-	//SetModelFramePos(m_modelHandle,14, m_weponModelHandel);
 	if (m_isDying)
 	{
 		OnDeath();
@@ -101,7 +109,7 @@ void NormalSkelton::Update()
 		m_enemyToPlayerDistance = VSize(m_enemyToPlayer);
 		//printfDx(L"m_enemyToPlayer.x:%f\n",m_enemyToPlayer.x);
 		// 索敵範囲内に入ったらプレイヤーを追う
-		if (m_enemyToPlayerDistance < kSerchRange && attack.attackCoolTime < 0)
+		if (m_enemyToPlayerDistance < kSerchRange && m_attack.attackCoolTime < 0)
 		{
 			TrackPlayer();
 		}
@@ -114,18 +122,18 @@ void NormalSkelton::Update()
 			}
 		}
 
-		if (attack.active)
+		if (m_attack.active)
 		{
 			if (GetAttachAnimNo() == kAttackAnimNo)
 			{
-				attack.timer++;
+				m_attack.timer++;
 			}
-			if (attack.timer >= kAttackDuration) // 攻撃の持続時間が終わったら攻撃関係の変数をリセット
+			if (m_attack.timer >= kAttackDuration) // 攻撃の持続時間が終わったら攻撃関係の変数をリセット
 			{
-				attack.active = false;
-				attack.pos = { 0.0f,-100.0f,0.0f };
-				attack.timer = 0.0f;
-				attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
+				m_attack.active = false;
+				m_attack.pos = { 0.0f,-100.0f,0.0f };
+				m_attack.timer = 0.0f;
+				m_attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_preparingTime = kDefaultPreparingTime;
 				m_attackCount = 0;
 				m_isPreparingAttack = false;
@@ -139,7 +147,7 @@ void NormalSkelton::Update()
 		else
 		{
 			// 攻撃が終わっているならクールタイムを減らす
-			attack.attackCoolTime--;
+			m_attack.attackCoolTime--;
 		}
 		if (GetIsAnimEnd() && !m_isMove )
 		{
@@ -158,7 +166,7 @@ void NormalSkelton::Update()
 void NormalSkelton::OnAttack()
 {
 	if (m_isDying || m_isDead) return;
-	attack.active = true;
+	m_attack.active = true;
 	if (m_attackCount < 1)
 	{
 		// 攻撃アニメーションに変更
@@ -169,15 +177,15 @@ void NormalSkelton::OnAttack()
 	if (m_enemyToPlayer.x > 0)
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
-		attack.pos.x = m_pos.x - attack.attackOffSetX;
+		m_attack.pos.x = m_pos.x - m_attack.attackOffSetX;
 	}
 	else
 	{
 		MV1SetRotationXYZ(m_modelHandle, kRightDir);
-		attack.pos.x = m_pos.x + attack.attackOffSetX;
+		m_attack.pos.x = m_pos.x + m_attack.attackOffSetX;
 	}
-	attack.pos.y = m_pos.y + attack.attackOffSetY;
-	attack.pos.z = m_pos.z;
+	m_attack.pos.y = m_pos.y + m_attack.attackOffSetY;
+	m_attack.pos.z = m_pos.z;
 }
 
 void NormalSkelton::OnDamage()
@@ -197,11 +205,11 @@ void NormalSkelton::OnDamage()
 	{
 		m_hp = 0;
 		m_isDying = true;
-		attack.active = false;
+		m_attack.active = false;
 		// 吹き飛ぶ方向を決める
 		m_knockbackDir = VNorm(VSub(m_pos, m_pPlayer->GetPos()));
 		// タイマーをセット
-		m_knockbackTimer = m_knockbackDuration;
+		m_knockbackTimer = kKnockbackDuration;
 		ChangeAnim(m_modelHandle, kDeathAnimNo, false, kAnimSpeedDeath);
 	}
 	//printfDx(L"hp:%d\n", m_hp);
@@ -209,11 +217,11 @@ void NormalSkelton::OnDamage()
 
 void NormalSkelton::OnDeath()
 {
-	attack.active = false;
+	m_attack.active = false;
 	if (m_knockbackTimer > 0.0f)
 	{
-		m_pos = VAdd(m_pos, VScale(m_knockbackDir, m_knockbackSpeed));
-		m_knockbackTimer -= 1.0f / 60.0f; // m_knockbackTimerを減少
+		m_pos = VAdd(m_pos, VScale(m_knockbackDir, kKnockBackSpeed));
+		m_knockbackTimer -= 1.0f / kFramesPerSecond; // m_knockbackTimerを減少
 	}
 	if (GetIsAnimEnd())
 	{
@@ -228,7 +236,6 @@ void NormalSkelton::OnDeath()
 void NormalSkelton::Draw() const
 {
 	MV1DrawModel(m_modelHandle);
-	//MV1DrawModel(m_weponModelHandel);
 #if _DEBUG
 	/*DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kColRadius, 8, 0xff0000, 0xffffff, false);
 	DrawSphere3D(VGet(m_pos.x,m_pos.y + kDebugOffSet,m_pos.z), kSerchRange, 8, 0x00ff00, 0xffffff, false);
@@ -256,7 +263,7 @@ void NormalSkelton::TrackPlayer()
 	if (m_enemyToPlayerDistance < kAttackRange)
 	{
 		// 移動アニメーションを停止し、構えているアニメーションに切り替える
-		if (!m_isPreparingAttack && !attack.active)
+		if (!m_isPreparingAttack && !m_attack.active)
 		{
 			ChangeAnim(m_modelHandle, kTakeAStandAnimNo, true, kAnimSpeedFast);
 			m_isPreparingAttack = true;
@@ -278,7 +285,7 @@ void NormalSkelton::TrackPlayer()
 		m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
 		if (m_pos.z >= kBackLimit)
 		{
-			m_pos.z = kBackLimit - 0.001f;
+			m_pos.z = kBackLimit - kLimitPosOffSet;
 		}
 		// プレイヤーの位置に向かう
 		m_pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;

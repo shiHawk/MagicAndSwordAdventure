@@ -1,5 +1,9 @@
 #include "Collision.h"
-
+namespace
+{
+	constexpr float kPlayerDefaultInvincibilityTime = 100.0f;
+	constexpr float kEnemyDefaultInvincibilityTime = 30.0f;
+}
 Collision::Collision():
 	m_isPlayerHit(false),
 	m_normalSkeltonHit(false),
@@ -40,9 +44,9 @@ void Collision::Init(std::shared_ptr<Player> pPlayer,std::vector<std::shared_ptr
 	m_normalSkeltonInvincibilityTime.resize(m_normalSkeltons.size(), 0.0f);
 	m_wizardSkeltonHit.resize(m_wizardSkeltons.size(), false);
 	m_wizardSkeltonInvincibilityTime.resize(m_wizardSkeltons.size(), 0.0f);
-	m_invincibilityTime = 160.0f;
-	m_playerInvincibilityTime = 100.0f;
-	m_playerToNormalSkeltonAttack = VGet(200.0f,0.0f,0.0f);
+	m_invincibilityTime = kPlayerDefaultInvincibilityTime;
+	m_playerInvincibilityTime = kPlayerDefaultInvincibilityTime;
+	m_playerToNormalSkeltonAttack = VGet(0.0f,0.0f,0.0f);
 }
 
 void Collision::End()
@@ -85,7 +89,7 @@ void Collision::Update()
 			{
 				normalSkelton->OnDamage();
 				m_normalSkeltonHit[i] = true;
-				m_normalSkeltonInvincibilityTime[i] = 30.0f;
+				m_normalSkeltonInvincibilityTime[i] = kEnemyDefaultInvincibilityTime;
 				m_normalSkeltonHitPos = CalcHitPosition(m_pPlayer->GetAttackPos(),normalSkelton->GetPos());
 				m_normalSkeltonHitPos.y = m_normalSkeltonHitPos.y * 2;
 			}
@@ -168,7 +172,7 @@ void Collision::PlayerHit(float enemyAttackToPlayer, float playerRadius, float e
 	{
 		m_isPlayerHit = true;
 		m_pPlayer->OnDamage(enemyPower);
-		m_playerInvincibilityTime = 100.0f;
+		m_playerInvincibilityTime = kPlayerDefaultInvincibilityTime;
 		m_playerHitPos = CalcHitPosition(enemyAttackPos,m_pPlayer->GetPos());
 		m_playerHitPos.y = m_playerHitPos.y * 2;
 	}
@@ -182,7 +186,6 @@ void Collision::EnemyHit(float playerAttackToEnemy, float playerRadius, float en
 		if (playerAttackActive)
 		{
 			enemyHit = true;
-			m_invincibilityTime = 1000.0f;
 		}
 	}
 }

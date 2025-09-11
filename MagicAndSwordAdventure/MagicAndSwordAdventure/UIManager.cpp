@@ -24,12 +24,23 @@ namespace
 	// 残り敵数の位置
 	constexpr int kEnemyRemainPosX = 1000;
 	constexpr unsigned int kEnemyRemainColor = 0xff4500;
+	// アイコンの位置
+	constexpr int kIconPos = 10;
 	// 点滅周期
 	constexpr float kBlinkCycleSeconds = 2.0f;
 	constexpr float kFramePerSecond = 60.0f;
 	constexpr float kMillisecondsPerSecond = 1000.0f; // ミリ秒から秒への変換
+	// フォントのサイズ、太さ
+	constexpr int kFontTextSize = 20;
+	constexpr int kFontSize = 30;
+	constexpr int kFontThick = 5;
 
+	constexpr float kSinAmplitudeScale = 0.5f;        // sin波のスケーリング (-1.0 → -0.5)
+	constexpr float kSinOffset = 0.5f;                // sin波のオフセット (-0.5 → +0.5)
+	constexpr int kBlinkAlphaRange = 128;             // 透明度の変化範囲
+	constexpr int kBlinkAlphaBase = 128;              // 最小透明度(完全には透明にならない)
 }
+
 UIManager::UIManager() :
 	m_hpGaugeRate(0.0f),
 	m_navigationHandle(-1),
@@ -62,8 +73,8 @@ void UIManager::Init(std::shared_ptr<Player> pPlayer, std::shared_ptr<ScoreManag
 	m_playerIconHandle = LoadGraph("Data/UI/Player_Icon.png");
 	m_playerIconPinchHandle = LoadGraph("Data/UI/Player_Icon_Pinch.png");
 	m_playerHpGaugePinchHandle = LoadGraph("Data/UI/HP_pinch.png");
-	m_fontTextHandle = CreateFontToHandle("Noto Serif JP Black", 20, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
-	m_fontHandle = CreateFontToHandle("Noto Serif JP Black",30, 5, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	m_fontTextHandle = CreateFontToHandle("Noto Serif JP Black", kFontTextSize, kFontThick, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
+	m_fontHandle = CreateFontToHandle("Noto Serif JP Black", kFontSize, kFontThick, DX_FONTTYPE_ANTIALIASING_EDGE_8X8);
 	m_uiFrameHandle = LoadGraph("Data/UI/UI_Frame.png");
 }
 
@@ -101,25 +112,23 @@ void UIManager::DrawHp()
 	DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, 400, kHpTextPosY, m_hpGaugeFrameHandle, true);
 	if (m_pPlayer->IsPinch())
 	{
-		DrawGraph(10, 10, m_playerIconPinchHandle, true); // HPが3分の1以下ならピンチ状態のアイコンにする
+		DrawGraph(kIconPos, kIconPos, m_playerIconPinchHandle, true); // HPが3分の1以下ならピンチ状態のアイコンにする
 		// HPバーの色を変える
 		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_playerHpGaugePinchHandle, true);
 	}
 	else
-	{
-		SetDrawBright(255, 255, 255); 
-		DrawGraph(10, 10, m_playerIconHandle, true); // プレイヤーのアイコンの描画
+	{ 
+		DrawGraph(kIconPos, kIconPos, m_playerIconHandle, true); // プレイヤーのアイコンの描画
 		DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, static_cast<int>(kHpGaugeWidth * m_hpGaugeRate), kHpTextPosY, m_hpGaugeHandle, true); // HPバーの描画
 	}
 	DrawFormatStringToHandle(kHpGaugeWidth, kHpTextPosY, kScoreColor, m_fontHandle,"%d/%d", m_pPlayer->GetHp(), m_pPlayer->GetMaxHp());
-	SetDrawBright(255, 255, 255);
 }
 
 void UIManager::DrawNavigation()
 {
 	m_blinkTime = GetNowCount() / kMillisecondsPerSecond;
 	m_blinkProgress = fmod(m_blinkTime, kBlinkCycleSeconds) / kBlinkCycleSeconds; // 0~1の範囲で正規化
-	m_alpha = static_cast<int>((std::sin(m_blinkProgress * DX_PI * 2) * 0.5f + 0.5f) * 128+128); // 128~255に変換(完全には透明にならない)
+	m_alpha = static_cast<int>((std::sin(m_blinkProgress * DX_PI * 2) * kSinAmplitudeScale + kSinOffset) * kBlinkAlphaRange + kBlinkAlphaBase); // 128~255に変換(完全には透明にならない)
 	// アルファブレンドモード設定
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, m_alpha);
 	DrawGraph(kNavigationPosX, 0, m_navigationHandle, true);

@@ -23,12 +23,10 @@ namespace
 	constexpr float kBlue = 0.0f;
 }
 Camera::Camera():
-	m_cameraMoveAngle(0.0f),
-	m_viewAngle(DX_PI_F / 3.0f),
-	m_cameraPos({ -400.0f,0.0f,0.0f }),
-	m_cameraTarget({ -400.0f,0.0f,0.0f }),
-	m_CountDownFrame(220),
-	m_cameraMoveTargetPos({ -400.0f,0.0f,0.0f }),
+	m_viewAngle(kViewAngle),
+	m_cameraPos(kCameraPos),
+	m_cameraTarget(kCameraPos),
+	m_cameraMoveTargetPos(kCameraPos),
 	m_isBattleCamera(false),
 	m_lightHandle(-1)
 {
@@ -57,8 +55,8 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	m_cameraPos = kCameraPos;
 
 	// カメラがどこを見ているか(注視点)
-	m_cameraTarget = VGet(m_pPlayer->GetPos().x, 50.0f, m_pPlayer->GetPos().z);
-	m_cameraMoveTargetPos = VGet(m_pPlayer->GetPos().x, 50.0f, m_pPlayer->GetPos().z);
+	m_cameraTarget = VGet(m_pPlayer->GetPos().x, kCameraTarget.y, m_pPlayer->GetPos().z);
+	m_cameraMoveTargetPos = VGet(m_pPlayer->GetPos().x, kCameraTarget.y, m_pPlayer->GetPos().z);
 	// カメラの位置と注視点を指定する
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 
