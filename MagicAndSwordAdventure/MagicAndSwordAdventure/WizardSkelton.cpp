@@ -7,6 +7,7 @@ namespace
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
 	constexpr float kSerchRange = 500.0f; // 索敵範囲
 	constexpr float kAttackRange = 400.0f; // 攻撃範囲
+	constexpr float kTrackPlayerRange = 200.0f; // 追跡範囲
 	constexpr float kMoveSpeed = 4.0f; // 移動速度
 	constexpr float kAttackSpeed = 2.5f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
@@ -36,7 +37,7 @@ namespace
 	// 攻撃の範囲
 	constexpr float kAttackRadius = 20.0f;
 	constexpr float kAttckOffSetX = 30.0f;
-	constexpr float kAttckOffSetY = 40.0f;
+	constexpr float kAttckOffSetY = 20.0f;
 	// モデルのスケールサイズ
 	constexpr float kScaleSize = 45.0f;
 	constexpr float kBarrelScaleSize = 0.25f;
@@ -94,7 +95,7 @@ void WizardSkelton::End()
 {
 	MV1DeleteModel(m_modelHandle);
 	MV1DeleteModel(m_barrelHandle);
-	m_attack.pos = { m_attack.pos.x,m_attack.pos.y - 1000.0f,m_attack.pos.z };
+	m_attack.pos = { m_attack.pos.x,kDeadPosY,m_attack.pos.z };
 	m_attack.active = false;
 	m_pos = { m_pos.x,m_pos.y + kDeadPosY,m_pos.z };
 	m_isTrackFlag = false;
@@ -140,7 +141,7 @@ void WizardSkelton::Update()
 			if (VSize(VSub(m_attack.pos, m_pos)) > kAttackRange) // 攻撃の範囲を超えたら攻撃をリセット
 			{
 				m_attack.active = false;
-				m_attack.pos = { m_pos.x,-1000.0f,m_pos.z };
+				m_attack.pos = { m_pos.x,kDeadPosY,m_pos.z };
 				ChangeAnim(m_modelHandle, kIdleAnimNo, false, kAnimSpeedFast);
 				m_attack.timer = kAttackDuration;
 				m_attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
@@ -196,7 +197,7 @@ void WizardSkelton::DoAttack()
 	// プレイヤーの位置に向かって攻撃を飛ばす
 	m_attack.pos.x += m_attackDir.x * kAttackSpeed * kMoveAccRate;
 	m_attack.pos.z += m_attackDir.z * kAttackSpeed * kMoveAccRate;
-	m_attack.pos.y = 20.0f;
+	m_attack.pos.y = kAttckOffSetY;
 
 	MV1SetPosition(m_barrelHandle,m_attack.pos);
 	MV1SetRotationXYZ(m_barrelHandle, VGet(DX_PI_F / 2.0f + DX_PI_F, 0.0f, m_rollAngleZ));
