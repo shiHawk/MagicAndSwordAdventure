@@ -3,8 +3,23 @@
 namespace
 {
 	constexpr int kDivNum = 16;
-	constexpr float kBattleAreaRadiusSize = 350.0f;
+	constexpr float kBattleAreaRadiusSize = 400.0f;
 	constexpr float kBattleTriggerDistance = 300.0f;
+	constexpr int kSegmentCount = 64;    // 円周を分割する数
+	constexpr float kLineWidth = 10.0f; // ラインの太さ
+	// 光るエフェクト用定数
+	constexpr float kGlowSpeed = 0.005f;    // 明滅スピード
+	constexpr float kGlowMinOffset = 0.5f;      // sin波を0～1に補正するためのオフセット
+	constexpr float kGlowAmplitude = 0.5f;      // sin波の振幅
+	constexpr float kColorMaxValue = 255.0f;    // 8bitカラー最大値
+
+	// 水色の固定ベースカラー
+	constexpr int kBaseRed = 50;                 // 基本赤成分
+	constexpr int kBaseGreen = 200;                // 基本緑成分
+	constexpr int kBaseBlue = 200;                // 基本青成分（明滅でここから加算）
+
+	// 円形分割用
+	constexpr float kTwoPi = DX_PI_F * 2.0f; // 2π
 }
 BattleAreaManager::BattleAreaManager():
 	m_battleAreaCenterPos({0.0f,0.0f,0.0f}),
@@ -127,10 +142,41 @@ bool BattleAreaManager::IsFinished()
 	return m_battleState == State::Finish;
 }
 
+void BattleAreaManager::DrawBattleAreaBodary()
+{
+	if (m_battleState == State::InBattle)
+	{
+		// 明滅する輝き計算
+		float glow = (sinf(GetNowCount() * kGlowSpeed) * kGlowAmplitude + kGlowMinOffset) * kColorMaxValue;
+		int glowColor = GetColor(kBaseRed, kBaseGreen, kBaseBlue + static_cast<int>(glow));
+		for (int i = 0; i < kSegmentCount; ++i)
+		{
+			// 2点分の角度を計算
+			float angle1 = kTwoPi * i / kSegmentCount;
+			float angle2 = kTwoPi * (i + 1) / kSegmentCount;
+
+			// 円周上の2点を計算
+			VECTOR p1 = VGet(
+				m_battleAreaCenterPos.x + cosf(angle1) * m_battleAreaRadius,
+				m_battleAreaCenterPos.y,
+				m_battleAreaCenterPos.z + sinf(angle1) * m_battleAreaRadius
+			);
+
+			VECTOR p2 = VGet(
+				m_battleAreaCenterPos.x + cosf(angle2) * m_battleAreaRadius,
+				m_battleAreaCenterPos.y,
+				m_battleAreaCenterPos.z + sinf(angle2) * m_battleAreaRadius
+			);
+			// 境界線を描画
+			DrawLine3D(p1, p2, glowColor);
+		}
+	}
+}
+
 void BattleAreaManager::EnterBattle(const VECTOR& centerPos)
 {
 	m_battleState = State::InBattle;
-	VECTOR screenCenter = ConvScreenPosToWorldPos(VGet(Game::kScreenWidth*0.5f,0.0f,0.0f));
+	VECTOR screenCenter = ConvScreenPosToWorldPos(VGet(centerPos.x*0.5f,0.0f,0.0f));
 	// 画面中央をバトルエリアの中心とする
 	m_battleAreaCenterPos = VGet(screenCenter.x,0.0f,0.0f);
 	// 戦闘用のカメラに切り替え(カメラは動かさない)

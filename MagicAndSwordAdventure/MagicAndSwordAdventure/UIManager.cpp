@@ -10,6 +10,7 @@ namespace
 	constexpr int kHpTextPosY = 14;
 	constexpr int kSrcX = 462; // 切り出し位置(X)
 	constexpr int kSrcY = 293; // 切り出し位置(Y)
+	constexpr int kHpGaugeFrameWidth = 400; // ゲージの横幅
 	constexpr unsigned int kHpGaugeColor = 0x00ff00;// ゲージの色
 	// ナビゲーションの位置
 	constexpr int kNavigationPosX = 1100;
@@ -109,7 +110,7 @@ void UIManager::Draw()
 
 void UIManager::DrawHp()
 {
-	DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, 400, kHpTextPosY, m_hpGaugeFrameHandle, true);
+	DrawRectGraph(kHpGaugeLeft, kHpGaugeTop, kSrcX, kSrcY, kHpGaugeFrameWidth, kHpTextPosY, m_hpGaugeFrameHandle, true);
 	if (m_pPlayer->IsPinch())
 	{
 		DrawGraph(kIconPos, kIconPos, m_playerIconPinchHandle, true); // HPが3分の1以下ならピンチ状態のアイコンにする

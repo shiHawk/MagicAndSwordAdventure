@@ -231,6 +231,7 @@ void GameScene::Draw()
 	{
 		m_pUIManager->DrawNavigation();
 	}
+	m_pBattleArea->DrawBattleAreaBodary();
 	DrawFade();
 	//m_pBattleArea->DebugDraw();
 }

@@ -19,6 +19,7 @@ public:
 	void DebugDraw();
 	bool IsInBattle(); // í“¬’†‚©
 	bool IsFinished(); // í“¬‚ªI—¹‚µ‚Ä‚¢‚é‚©
+	void DrawBattleAreaBodary();
 private:
 	enum class State
 	{

@@ -545,8 +545,7 @@ void Player::HandleInput()
 		float length = sqrt(m_vec.x * m_vec.x + m_vec.z * m_vec.z);
 		if (length > 0.0f)
 		{
-			m_vec.x /= length; // 移動ベクトルを正規化
-			m_vec.z /= length;
+			m_vec = VNorm(m_vec);
 
 			m_attackDir.x = m_vec.x; // 攻撃の方向の更新
 			m_attackDir.y = 0.0f;
