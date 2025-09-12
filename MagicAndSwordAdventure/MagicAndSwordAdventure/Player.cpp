@@ -117,7 +117,7 @@ void Player::Init(std::shared_ptr<Animation> pAnimation, GameScene* gameScene)
 	m_modelHandle = MV1LoadModel("Data/model/Barbarian.mv1");
 	MV1SetScale(m_modelHandle, VGet(kModelScale, kModelScale, kModelScale));
 	MV1SetRotationXYZ(m_modelHandle, kRightDir);
-	m_pAnimation->AttachAnim(m_modelHandle, 1);
+	m_pAnimation->AttachAnim(m_modelHandle, kIdleAnimNo);
 	m_prevPos = m_pos;
 	m_power = kFirstAttackPower;
 	m_hp = kMaxHp;

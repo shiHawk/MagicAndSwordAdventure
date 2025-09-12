@@ -21,8 +21,6 @@ private:
 	VECTOR m_cameraTarget;
 	// カメラの目標移動位置
 	VECTOR m_cameraMoveTargetPos;
-	// カメラの視野角
-	float m_viewAngle;
 	bool m_isBattleCamera;
 
 	std::shared_ptr<Player> m_pPlayer;

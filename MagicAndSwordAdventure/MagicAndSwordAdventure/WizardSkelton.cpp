@@ -7,13 +7,13 @@ namespace
 	constexpr float kColRadius = 25.0f; // 敵本体の当たり判定
 	constexpr float kSerchRange = 500.0f; // 索敵範囲
 	constexpr float kAttackRange = 400.0f; // 攻撃範囲
-	constexpr float kTrackPlayerRange = 200.0f; // 追跡範囲
+	constexpr float kTrackPlayerRange = 300.0f; // 追跡範囲
 	constexpr float kMoveSpeed = 4.0f; // 移動速度
 	constexpr float kAttackSpeed = 2.5f; // 移動速度
 	constexpr float kDebugOffSet = 45.0f;
 	constexpr float kMoveAccRate = 1.1f;// 加速
 	constexpr float kMoveDecRate = 0.80f;// 減速
-	constexpr float kDefaultAttackCoolTime = 120.0f;
+	constexpr float kDefaultAttackCoolTime = 90.0f;
 	constexpr float kAttackDuration = 60.0f; // 攻撃の持続時間
 	// アニメーションの番号
 	constexpr int kIdleAnimNo = 41;
@@ -27,7 +27,7 @@ namespace
 	constexpr float kAnimSpeedMedium = 0.7f; // 中程度のテンポ
 	constexpr float kAnimSpeedDeath = 0.4f; // 死亡時の再生速度
 	// 最大HP
-	constexpr int kMaxHp = 80;
+	constexpr int kMaxHp = 60;
 	constexpr int kMaxHomingTime = 60; // 追尾する時間
 	// 攻撃力
 	constexpr int kPower = 20;
@@ -116,16 +116,24 @@ void WizardSkelton::Update()
 		//printfDx(L"m_enemyToPlayerDistance:%f\n",m_enemyToPlayerDistance);
 		
 		// 索敵範囲内に入ったら攻撃する
-		if (m_enemyToPlayerDistance < kSerchRange && m_attack.attackCoolTime < 0 && !m_attack.active && !m_isCasting)
+		if (m_enemyToPlayerDistance < kSerchRange)
 		{
-			m_isCasting = true;
-			m_isCastFinished = false;
-			ChangeAnim(m_modelHandle,kSpellCastAnimNo,false, kAnimSpeedMedium);
+			if (m_enemyToPlayerDistance > kTrackPlayerRange && !m_isCasting && !m_attack.active)
+			{
+				TrackPlayer();
+			}
+			else if(m_attack.attackCoolTime < 0 && !m_attack.active && !m_isCasting)
+			{
+				m_isCasting = true;
+				m_isCastFinished = false;
+				ChangeAnim(m_modelHandle, kSpellCastAnimNo, false, kAnimSpeedMedium);
+			}
 		}
 		if (m_isCasting && !m_isCastFinished && GetIsAnimEnd()) // 予備動作が終わったら攻撃に移る
 		{
 			m_isCastFinished = true;
 			m_isCasting = false;
+			m_attack.pos = VGet(m_pos.x - m_attack.attackOffSetX, kAttckOffSetY, m_pos.z);
 			m_attack.active = true;
 			ChangeAnim(m_modelHandle, kAttackAnimNo, false, kAnimSpeedFast);
 		}
@@ -147,6 +155,7 @@ void WizardSkelton::Update()
 				m_attack.attackCoolTime = kDefaultAttackCoolTime; // 再度クールタイムを設定
 				m_attackCount = 0;
 				m_isAttackEnd = false;
+				m_isTrackFlag = false;
 			}
 		}
 		else
@@ -176,7 +185,6 @@ void WizardSkelton::DoAttack()
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
 	if (m_attackCount == 0) // m_attackCountが0から1になるときを攻撃開始フレームとする
 	{
-		m_attack.active = true;
 		m_attackDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos)); // 攻撃の初期方向を計算
 		m_homingTimer = kMaxHomingTime; // 追尾タイマーをセット
 	}
@@ -272,6 +280,7 @@ bool WizardSkelton::IsAttackActive() const
 
 void WizardSkelton::TrackPlayer()
 {
+	m_isTrackFlag = true;
 	m_toPlayerDir = VNorm(VSub(m_pPlayer->GetPos(), m_pos));
 	m_pos.x += m_toPlayerDir.x * kMoveSpeed * kMoveDecRate;
 	m_pos.z += m_toPlayerDir.z * kMoveSpeed * kMoveDecRate;
@@ -284,5 +293,8 @@ void WizardSkelton::TrackPlayer()
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	}
 	// 移動アニメーション
-	ChangeAnim(m_modelHandle, kWalkAnimNo, true, kAnimSpeedFast);
+	if (GetAttachAnimNo() != kWalkAnimNo)
+	{
+		ChangeAnim(m_modelHandle, kWalkAnimNo, true, kAnimSpeedFast);
+	}
 }

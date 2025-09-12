@@ -10,7 +10,7 @@ namespace
 	constexpr float kRightLimitCamera = 4807.0f;
 	constexpr float kLeftLimitCamera = -2355.0f;
 	// カメラの位置と注視点
-	constexpr VECTOR kCameraPos = { -4800.0f,300.0f,-840.0f };
+	constexpr VECTOR kDefaultCameraPos = { -4800.0f,300.0f,-840.0f };
 	constexpr VECTOR kCameraTarget = { -4800.0f,50.0f,0.0f };
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
@@ -21,12 +21,13 @@ namespace
 	constexpr float kRed = 1.0f;
 	constexpr float kGreen = 0.647f;
 	constexpr float kBlue = 0.0f;
+	// バトルカメラのpos.z
+	constexpr float kBattleCameraPosZ = -900.0f;
 }
 Camera::Camera():
-	m_viewAngle(kViewAngle),
-	m_cameraPos(kCameraPos),
-	m_cameraTarget(kCameraPos),
-	m_cameraMoveTargetPos(kCameraPos),
+	m_cameraPos(kDefaultCameraPos),
+	m_cameraTarget(kDefaultCameraPos),
+	m_cameraMoveTargetPos(kDefaultCameraPos),
 	m_isBattleCamera(false),
 	m_lightHandle(-1)
 {
@@ -52,7 +53,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	// カメラの位置の初期化を行う
 
 	// カメラ(始点)の位置
-	m_cameraPos = kCameraPos;
+	m_cameraPos = kDefaultCameraPos;
 
 	// カメラがどこを見ているか(注視点)
 	m_cameraTarget = VGet(m_pPlayer->GetPos().x, kCameraTarget.y, m_pPlayer->GetPos().z);
@@ -61,8 +62,7 @@ void Camera::Init(std::shared_ptr<Player> pPlayer)
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 
 	// カメラの視野角を設定する
-	m_viewAngle = kViewAngle;
-	SetupCamera_Perspective(m_viewAngle);
+	SetupCamera_Perspective(kViewAngle);
 
 	// カメラのnear,farを設定する
 	// 画面に表示される距離の範囲を設定する
@@ -99,6 +99,11 @@ void Camera::Update()
 		// 徐々に目標位置まで近づける
 		m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 		m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
+		m_cameraPos.z = std::lerp(m_cameraPos.z, kDefaultCameraPos.z, kLerpSpeed);
+	}
+	else
+	{
+		m_cameraPos.z = std::lerp(m_cameraPos.z, kBattleCameraPosZ, kLerpSpeed);
 	}
 	// ステージの左端まで行ったらカメラがそれ以上先に行かない様にする
 	if (m_cameraPos.x < kLeftLimitCamera)
@@ -112,7 +117,7 @@ void Camera::Update()
 		m_cameraPos.x = kRightLimitCamera;
 		m_cameraTarget.x = kRightLimitCamera;
 	}
-	
+	//printfDx("m_cameraPos.z:%f\n", m_cameraPos.z);
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	//printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
 }
@@ -123,7 +128,7 @@ void Camera::ChangeBattleCamera(VECTOR cameraTarget)
 	// 徐々に目標位置まで近づける
 	m_cameraPos.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
 	m_cameraTarget.x = std::lerp(m_cameraPos.x, m_cameraMoveTargetPos.x, kLerpSpeed);
-	//printfDx(L"m_cameraTarget.x:%f\nm_cameraPos.x:%f\n", m_cameraTarget.x,m_cameraPos.x);
+	
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos, m_cameraTarget);
 	m_isBattleCamera = true; 
 }

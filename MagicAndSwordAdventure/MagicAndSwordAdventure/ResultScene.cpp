@@ -6,7 +6,7 @@
 namespace
 {
 	// カメラの位置と注視点
-	constexpr VECTOR kCameraPos = { 0.0f,200.0f,-840.0f };
+	constexpr VECTOR kDefaultCameraPos = { 0.0f,200.0f,-840.0f };
 	constexpr VECTOR kCameraTarget = { 0.0f,50.0f,0.0f };
 	// カメラの視野角
 	constexpr float kViewAngle = 0.447f;
@@ -78,7 +78,7 @@ void ResultScene::Init()
 	// カメラの位置の初期化を行う
 
 	// カメラ(始点)の位置
-	m_cameraPos= kCameraPos;
+	m_cameraPos= kDefaultCameraPos;
 
 	// カメラがどこを見ているか(注視点)
 	m_cameraTarget= kCameraTarget;
