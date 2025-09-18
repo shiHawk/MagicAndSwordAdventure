@@ -202,6 +202,7 @@ void WizardSkelton::DoAttack()
 	{
 		MV1SetRotationXYZ(m_modelHandle, kLeftDir);
 	}
+
 	// プレイヤーの位置に向かって攻撃を飛ばす
 	m_attack.pos.x += m_attackDir.x * kAttackSpeed * kMoveAccRate;
 	m_attack.pos.z += m_attackDir.z * kAttackSpeed * kMoveAccRate;
