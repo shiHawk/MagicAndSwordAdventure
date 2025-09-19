@@ -545,7 +545,8 @@ void Player::HandleInput()
 		float length = sqrt(m_vec.x * m_vec.x + m_vec.z * m_vec.z);
 		if (length > 0.0f)
 		{
-			m_vec = VNorm(m_vec);
+			m_vec.x /= length;
+			m_vec.z /= length;
 
 			m_attackDir.x = m_vec.x; // UŒ‚‚Ì•ûŒü‚ÌXV
 			m_attackDir.y = 0.0f;
