@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>"C:\Users\志鷹瑛仁\Documents\GitHub\MagicAndSwordAdventure\Dxlib_VC"</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"C:\Users\MikiY\OneDrive\ドキュメント\GitHub\MagicAndSwordAdventure\Dxlib_VC"</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -143,7 +143,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>"C:\Users\志鷹瑛仁\Documents\GitHub\MagicAndSwordAdventure\Dxlib_VC"</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>"C:\Users\MikiY\OneDrive\ドキュメント\GitHub\MagicAndSwordAdventure\Dxlib_VC"</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
